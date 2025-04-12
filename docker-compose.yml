@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: hcalvo
+      POSTGRES_PASSWORD: 1A2a3a4a.
+      POSTGRES_DB: bigfoot.snow
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - postgres_net
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: hectorhinojales21@gmail.com
+      PGADMIN_DEFAULT_PASSWORD: 1A2a3a4a.
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgres
+    networks:
+      - postgres_net
+
+volumes:
+  postgres_data:
+
+networks:
+  postgres_net:
+    driver: bridge

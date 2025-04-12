@@ -1,16 +1,9 @@
-# Astro Starter Kit: Basics
 
-```sh
-pnpm create astro@latest -- --template basics
-```
+# 🏔️ Bigfoot.Snow – Proyecto TFG
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/withastro/astro/tree/latest/examples/basics)
-[![Open with CodeSandbox](https://assets.codesandbox.io/github/button-edit-lime.svg)](https://codesandbox.io/p/sandbox/github/withastro/astro/tree/latest/examples/basics)
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/withastro/astro?devcontainer_path=.devcontainer/basics/devcontainer.json)
+Aplicación web para la gestión de alquiler de equipos de nieve y reservas de clases con instructores. Este proyecto utiliza **Astro** como solución integral, combinando frontend y backend mediante endpoints, y gestionando los datos con **PostgreSQL + Prisma**. El entorno de desarrollo incluye contenedores Docker para facilitar la portabilidad y el despliegue.
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
-
-![just-the-basics](https://github.com/withastro/astro/assets/2244813/a0a5533c-a856-4198-8470-2d67b1d7c554)
+---
 
 ## 🚀 Project Structure
 
@@ -28,8 +21,6 @@ Inside of your Astro project, you'll see the following folders and files:
 └── package.json
 ```
 
-To learn more about the folder structure of an Astro project, refer to [our guide on project structure](https://docs.astro.build/en/basics/project-structure/).
-
 ## 🧞 Commands
 
 All commands are run from the root of the project, from a terminal:
@@ -43,6 +34,75 @@ All commands are run from the root of the project, from a terminal:
 | `pnpm astro ...`       | Run CLI commands like `astro add`, `astro check` |
 | `pnpm astro -- --help` | Get help using the Astro CLI                     |
 
-## 👀 Want to learn more?
+## ✅ Estado actual
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+- [x] Estructura inicial del proyecto creada
+- [x] Astro funcionando con Tailwind CSS
+- [x] PostgreSQL y pgAdmin dockerizados
+- [x] Prisma configurado y en funcionamiento
+- [x] Endpoint `/api/usuarios` creado para lectura desde la base de datos
+
+---
+
+## 🧩 Desarrollo de funcionalidades
+
+### 🔁 Conexión e interacción con base de datos
+
+- [x] Crear archivo `.env` con `DATABASE_URL`
+- [x] Definir el modelo `Usuario` en Prisma
+- [x] Sincronizar con `npx prisma db push`
+- [x] Probar consulta desde endpoint `/api/usuarios`
+- [ ] Crear formulario básico para insertar nuevos usuarios
+- [ ] Implementar endpoint `POST` para insertar datos desde formulario
+- [ ] Añadir más modelos: `Reserva`, `Instructor`, `Producto`, `Categoría`, etc.
+- [ ] Crear relaciones entre tablas en `schema.prisma`
+- [ ] Añadir validaciones a los datos recibidos
+
+---
+
+### 🧑‍💻 Interfaz de usuario y experiencia
+
+- [x] Estructura inicial de componentes (layouts, páginas)
+- [x] Carga de estilos globales con Tailwind
+- [ ] Crear navegación principal (Home, Reservas, Alquiler, Contacto)
+- [ ] Diseñar vista de productos con tarjetas
+- [ ] Implementar vista de reservas disponibles
+- [ ] Adaptar diseño a dispositivos móviles (responsive)
+
+---
+
+### 🛠️ Infraestructura y despliegue
+
+- [x] Docker Compose para PostgreSQL y pgAdmin
+- [ ] Añadir Dockerfile para app Astro
+- [ ] Ampliar `docker-compose.yml` para incluir Astro
+- [ ] Preparar entorno de producción
+- [ ] Configurar VPS con Ubuntu + Docker
+- [ ] Desplegar aplicación completa en VPS
+
+---
+
+### 🔌 Funcionalidades adicionales
+
+- [ ] Integración con API meteorológica para mostrar estado de la nieve
+- [ ] Sistema de reservas con control de fechas y disponibilidad
+- [ ] Envío de correos de confirmación al reservar
+- [ ] Añadir sistema de autenticación de usuarios (login/registro)
+- [ ] Panel de administración para gestionar instructores, productos y reservas
+
+---
+
+## 🧠 Notas de desarrollo
+
+- Se trabaja desde Ubuntu con WSL2 para asegurar compatibilidad con el entorno de producción.
+- La base de datos se gestiona desde pgAdmin: [http://localhost:5050](http://localhost:5050)
+- Prisma Client se genera automáticamente al hacer `prisma db push`.
+- La estructura está basada en Astro con endpoints integrados, sin separar backend y frontend.
+
+---
+
+## ✨ Autor
+
+**Héctor Calvo Sánchez**  
+Estudiante de 2º DAW – Proyecto de Fin de Grado 2025  
+
