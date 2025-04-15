@@ -1,0 +1,39 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Hacer una reserva">
+  <h1 class="text-2xl font-bold mb-4">Reservar equipo o clase</h1>
+
+  <form method="POST" action="/api/reservas" enctype="application/x-www-form-urlencoded">
+
+    <label>
+      Usuario ID:
+      <input type="number" name="usuarioId" value="1" required class="input" />
+    </label>
+
+    <label>
+      Fecha Inicio:
+      <input type="datetime-local" name="fechaInicio" required class="input" />
+    </label>
+
+    <label>
+      Fecha Fin:
+      <input type="datetime-local" name="fechaFin" required class="input" />
+    </label>
+
+    <label>
+      Producto ID (opcional):
+      <input type="number" name="productoId" class="input" />
+    </label>
+
+    <label>
+      Clase ID (opcional):
+      <input type="number" name="claseId" class="input" />
+    </label>
+
+    <button type="submit" class="bg-blue-600 text-white py-2 px-4 rounded">
+      Reservar
+    </button>
+  </form>
+</Layout>

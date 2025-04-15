@@ -1,1 +1,18 @@
 @import "tailwindcss";
+@import "@fontsource/permanent-marker";
+
+
+@font-face {
+    font-family: 'BlowBrush';
+    src: url('/fonts/blowbrush.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+  }
+  
+.font-blowbrush {
+    font-family: 'BlowBrush', sans-serif;
+}
+
+.text-standard{
+    font-size: 20px;
+}

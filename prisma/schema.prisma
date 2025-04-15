@@ -14,6 +14,53 @@ datasource db {
 }
 
 model Usuario {
-  id    Int    @id @default(autoincrement())
+  id        Int       @id @default(autoincrement())
+  nombre    String
+  email     String    @unique
+  reservas  Reserva[]
+  createdAt DateTime  @default(now())
+}
+
+model Instructor {
+  id     Int     @id @default(autoincrement())
   nombre String
+  clases Clase[]
+}
+
+model Clase {
+  id           Int        @id @default(autoincrement())
+  fecha        DateTime
+  duracion     Int // en minutos
+  precio       Float
+  instructor   Instructor @relation(fields: [instructorId], references: [id])
+  instructorId Int
+  reservas     Reserva[]
+}
+
+model Categoria {
+  id        Int        @id @default(autoincrement())
+  nombre    String
+  productos Producto[]
+}
+
+model Producto {
+  id          Int       @id @default(autoincrement())
+  nombre      String
+  descripcion String?
+  precioDia   Float
+  categoria   Categoria @relation(fields: [categoriaId], references: [id])
+  categoriaId Int
+  reservas    Reserva[]
+}
+
+model Reserva {
+  id          Int       @id @default(autoincrement())
+  fechaInicio DateTime
+  fechaFin    DateTime
+  usuario     Usuario   @relation(fields: [usuarioId], references: [id])
+  usuarioId   Int
+  clase       Clase?    @relation(fields: [claseId], references: [id])
+  claseId     Int?
+  producto    Producto? @relation(fields: [productoId], references: [id])
+  productoId  Int?
 }
