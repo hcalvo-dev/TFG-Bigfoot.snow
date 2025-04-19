@@ -17,14 +17,18 @@ model Usuario {
   id        Int       @id @default(autoincrement())
   nombre    String
   email     String    @unique
+  password  String
   reservas  Reserva[]
   createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 }
 
 model Instructor {
-  id     Int     @id @default(autoincrement())
-  nombre String
-  clases Clase[]
+  id        Int      @id @default(autoincrement())
+  nombre    String
+  clases    Clase[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Clase {
@@ -35,32 +39,53 @@ model Clase {
   instructor   Instructor @relation(fields: [instructorId], references: [id])
   instructorId Int
   reservas     Reserva[]
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 }
 
 model Categoria {
   id        Int        @id @default(autoincrement())
   nombre    String
   productos Producto[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Producto {
-  id          Int       @id @default(autoincrement())
-  nombre      String
-  descripcion String?
-  precioDia   Float
-  categoria   Categoria @relation(fields: [categoriaId], references: [id])
-  categoriaId Int
-  reservas    Reserva[]
+  id            Int              @id @default(autoincrement())
+  nombre        String
+  descripcion   String?
+  precioDia     Float
+  categoria     Categoria        @relation(fields: [categoriaId], references: [id])
+  categoriaId   Int
+  reservas      ProductoReserva[]
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 }
 
 model Reserva {
-  id          Int       @id @default(autoincrement())
+  id          Int              @id @default(autoincrement())
   fechaInicio DateTime
   fechaFin    DateTime
-  usuario     Usuario   @relation(fields: [usuarioId], references: [id])
+  usuario     Usuario          @relation(fields: [usuarioId], references: [id])
   usuarioId   Int
-  clase       Clase?    @relation(fields: [claseId], references: [id])
+  clase       Clase?           @relation(fields: [claseId], references: [id])
   claseId     Int?
-  producto    Producto? @relation(fields: [productoId], references: [id])
-  productoId  Int?
+  productos   ProductoReserva[]  // Relación N:M real
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
+
+// Tabla intermedia para la relación N:M entre Producto y Reserva
+model ProductoReserva {
+  reserva    Reserva  @relation(fields: [reservaId], references: [id])
+  reservaId  Int
+
+  producto   Producto @relation(fields: [productoId], references: [id])
+  productoId Int
+
+  cantidad   Int      @default(1) // cantidad del producto reservado
+
+  @@id([reservaId, productoId]) // clave compuesta
+}
+

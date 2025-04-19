@@ -1,5 +1,6 @@
 ---
 const navItems = ['INICIO', 'EQUIPOS', 'CLASES', 'CONTACTO'];
+const navLinks = ['/', 'equipos', 'clases', 'contacto'];
 import MenuClient from './dropdown.tsx';
 import { ShoppingCart, Search } from '@lucide/astro';
 ---
@@ -29,7 +30,7 @@ import { ShoppingCart, Search } from '@lucide/astro';
           navItems.map((item) => (
             <li>
               <a
-                href="#"
+                href={navLinks[navItems.indexOf(item)]}
                 class="hover:text-blue-500 font-bold text-standard font-blowbrush tracking-widest">
                 {item}
               </a>
@@ -56,7 +57,7 @@ import { ShoppingCart, Search } from '@lucide/astro';
             navItems.map((item) => (
               <li>
                 <a
-                  href="#"
+                  href={navLinks[navItems.indexOf(item)]}
                   class="text-white text-xl pt-4 hover:text-blue-500 text-standard font-blowbrush tracking-widest">
                   {item}
                 </a>
@@ -88,7 +89,7 @@ import { ShoppingCart, Search } from '@lucide/astro';
 
           <!-- Login -->
           <a
-            href="#"
+            href="login"
             class="flex	justify-center space-x-2 text-standard font-blowbrush tracking-widest text-white hover:text-blue-600 transition-colors">
             <!-- Puedes reemplazar esto con tu SVG inline o React component -->
             <img src="/img/icon_cuenta_white.svg" alt="Mi cuenta" class="w-7 h-7" />
@@ -128,7 +129,7 @@ import { ShoppingCart, Search } from '@lucide/astro';
 
       <!-- Mi Cuenta -->
       <a
-        href="#"
+        href="login"
         class="flex flex-col items-center text-black hover:text-blue-600 transition">
         <!-- Puedes reemplazar esto con tu SVG inline o React component -->
         <img src="/img/icon_cuenta.svg" alt="Mi cuenta" class="w-8 h-8" />

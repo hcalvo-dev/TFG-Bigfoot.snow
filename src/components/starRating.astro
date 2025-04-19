@@ -8,6 +8,7 @@ const empty = 5 - full - (half ? 1 : 0);
 
 <div class="flex text-blue-600 text-xl space-x-1">
   {Array.from({ length: full }).map(() => <span>★</span>)}
-  {half && <span>⯨</span>} <!-- o usa un SVG de media estrella -->
+  {half && <span>⯨</span>}
+  <!-- o usa un SVG de media estrella -->
   {Array.from({ length: empty }).map(() => <span>☆</span>)}
 </div>

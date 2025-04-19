@@ -1,37 +1,44 @@
 ---
 import StarRating from './starRating.astro';
-import { Instagram,X, GithubIcon,Linkedin, Youtube } from '@lucide/astro';
+import { Instagram, X, GithubIcon, Linkedin, Youtube } from '@lucide/astro';
 ---
 
 <div class="w-full overflow-hidden leading-none text-zinc-900">
-  <svg class="block w-full h-12" viewBox="0 0 1440 100" preserveAspectRatio="none">
-    <path fill="currentColor" d="M0,64 C180,96 360,0 540,32 C720,64 900,96 1080,64 C1260,32 1380,48 1440,64 L1440,100 L0,100 Z" />
+  <svg
+    class="block w-full h-12"
+    viewBox="0 0 1440 100"
+    preserveAspectRatio="none">
+    <path
+      fill="currentColor"
+      d="M0,64 C180,96 360,0 540,32 C720,64 900,96 1080,64 C1260,32 1380,48 1440,64 L1440,100 L0,100 Z"
+    ></path>
   </svg>
 </div>
-<footer class="bg-zinc-900 text-white pt-16 pb-12 px-6 md:px-16">
-  
-  <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-[1fr_1fr_1.5fr_1fr] gap-8 border-b border-zinc-700 pb-12">
-
+<footer class="bg-zinc-900 text-white pt-14 pb-12 px-6 md:px-16">
+  <div
+    class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-[1fr_1fr_1.5fr_1fr] gap-8 border-b border-zinc-700 pb-12">
     <!-- COLUMNA 1: Branding y RRSS -->
     <div class="flex flex-col justify-between">
       <div>
-        <h2 class="text-3xl font-blowbrush tracking-widest mb-4">BIGFOOT</h2>
-        <p class="text-sm text-zinc-400">Tu portal de nieve y aventura en las montañas de España.</p>
+        <h2 class="text-4xl font-blowbrush tracking-widest mb-4">BIGFOOT</h2>
+        <p class="text-sm text-zinc-400">
+          Tu portal de nieve y aventura en las montañas de España.
+        </p>
       </div>
       <div class="mt-6 flex gap-4 text-xl">
-        <a href="#" class="hover:text-blue-400" aria-label="Instagram">
+        <a href="#" class="hover:text-blue-600" aria-label="Instagram">
           <Instagram class="w-5 h-5" />
         </a>
-        <a href="#" class="hover:text-blue-400" aria-label="TikTok">
+        <a href="#" class="hover:text-blue-600" aria-label="TikTok">
           <X class="w-5 h-5" />
         </a>
-        <a href="#" class="hover:text-blue-400" aria-label="TikTok">
+        <a href="#" class="hover:text-blue-600" aria-label="TikTok">
           <GithubIcon class="w-5 h-5" />
         </a>
-        <a href="#" class="hover:text-blue-400" aria-label="LinkedIn">
+        <a href="#" class="hover:text-blue-600" aria-label="LinkedIn">
           <Linkedin class="w-5 h-5" />
         </a>
-        <a href="#" class="hover:text-blue-400" aria-label="YouTube">
+        <a href="#" class="hover:text-blue-600" aria-label="YouTube">
           <Youtube class="w-5 h-5" />
         </a>
       </div>
@@ -39,47 +46,49 @@ import { Instagram,X, GithubIcon,Linkedin, Youtube } from '@lucide/astro';
 
     <!-- COLUMNA 2: Menú legal -->
     <div>
-      <h3 class="font-blowbrush text-xl tracking-widest mb-4">INFO LEGAL</h3>
-      <ul class="text-sm space-y-2 text-zinc-300">
-        <li><a href="#" class="hover:text-blue-400">¿Quiénes somos?</a></li>
-        <li><a href="#" class="hover:text-blue-400">Ventajas</a></li>
-        <li><a href="#" class="hover:text-blue-400">Condiciones generales</a></li>
-        <li><a href="#" class="hover:text-blue-400">Política de cookies</a></li>
-        <li><a href="#" class="hover:text-blue-400">Privacidad</a></li>
+      <h3 class="font-blowbrush text-2xl tracking-widest mb-4">INFO LEGAL</h3>
+      <ul class="space-y-2 text-zinc-300">
+        <li><a href="#" class="hover:text-blue-600">¿Quiénes somos?</a></li>
+        <li><a href="#" class="hover:text-blue-600">Ventajas</a></li>
+        <li>
+          <a href="#" class="hover:text-blue-600">Condiciones generales</a>
+        </li>
+        <li><a href="#" class="hover:text-blue-600">Política de cookies</a></li>
+        <li><a href="#" class="hover:text-blue-600">Privacidad</a></li>
       </ul>
     </div>
 
     <!-- COLUMNA 3: Nuestras montañas -->
     <div>
-      <h3 class="font-blowbrush text-xl tracking-widest mb-4">MONTAÑAS</h3>
-      <div class="grid grid-cols-2 gap-x-6 gap-y-4 text-sm text-zinc-300">
+      <h3 class="font-blowbrush text-2xl tracking-widest mb-4">MONTAÑAS</h3>
+      <div class="grid grid-cols-2 gap-x-6 gap-y-4 text-zinc-300">
         <div>
           <p class="font-semibold text-white">Pirineos</p>
-          <ul>
-            <li>Baqueira Beret</li>
-            <li>Formigal</li>
-            <li>Cerler</li>
-            <li>Boí Taüll</li>
+          <ul class="text-sm">
+            <li><a href="#" class="hover:text-blue-600">Baqueira Beret</a></li>
+            <li><a href="#" class="hover:text-blue-600">Formigal</a></li>
+            <li><a href="#" class="hover:text-blue-600">Cerler</a></li>
+            <li><a href="#" class="hover:text-blue-600">Boí Taüll</a></li>
           </ul>
         </div>
         <div>
           <p class="font-semibold text-white">Sistema Central</p>
           <ul>
-            <li>Navacerrada</li>
-            <li>Valdesquí</li>
+            <li><a href="#" class="hover:text-blue-600">Navacerrada</a></li>
+            <li><a href="#" class="hover:text-blue-600">Valdesquí</a></li>
           </ul>
         </div>
         <div>
           <p class="font-semibold text-white">Cordillera Cantábrica</p>
           <ul>
-            <li>San Isidro</li>
-            <li>Leitariegos</li>
+            <li><a href="#" class="hover:text-blue-600">San Isidro</a></li>
+            <li><a href="#" class="hover:text-blue-600">Leitariegos</a></li>
           </ul>
         </div>
         <div>
           <p class="font-semibold text-white">Sierra Nevada</p>
           <ul>
-            <li>Granada</li>
+            <li><a href="#" class="hover:text-blue-600">Granada</a></li>
           </ul>
         </div>
       </div>
@@ -87,9 +96,14 @@ import { Instagram,X, GithubIcon,Linkedin, Youtube } from '@lucide/astro';
 
     <!-- COLUMNA 4: Códigos y valoración -->
     <div>
-      <h3 class="font-blowbrush text-xl tracking-widest mb-4">CÓDIGOS Y CONSEJOS</h3>
+      <h3 class="font-blowbrush text-2xl tracking-widest mb-4">
+        CÓDIGOS Y CONSEJOS
+      </h3>
       <p class="text-sm text-zinc-300 mb-2">
-        Mira nuestros <a href="/codigos-promocionales" class="text-blue-400 underline">códigos promocionales</a> y ahorra en tu próxima aventura.
+        Mira nuestros <a
+          href="/codigos-promocionales"
+          class="text-blue-600 underline">códigos promocionales</a
+        > y ahorra en tu próxima aventura.
       </p>
       <div class="flex items-center gap-2 mt-2">
         <StarRating rating={4.5} />
@@ -100,8 +114,8 @@ import { Instagram,X, GithubIcon,Linkedin, Youtube } from '@lucide/astro';
   </div>
 
   <!-- Footer Bottom -->
-  <div class="mt-10 text-center text-sm text-zinc-500">
-    <p class="text-base font-blowbrush tracking-widest text-white">
+  <div class="mt-10 text-center text-zinc-500">
+    <p class="text-lg font-blowbrush tracking-widest text-white">
       COPYRIGHT ©2025 BIGFOOT.SNOW
     </p>
     <p class="mt-1 text-xs">Todos los derechos reservados.</p>
