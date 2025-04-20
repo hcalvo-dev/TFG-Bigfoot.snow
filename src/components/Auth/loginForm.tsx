@@ -4,36 +4,46 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useNavigate, useLocation } from 'react-router-dom';
+import PasswordInput from './PasswordInput'; 
 
+// Importo las librerías necesarias
+
+// Defino el esquema de validación con Zod
 const schema = z
-  .object({
-    name: z.string().min(3, 'El nombre es obligatorio').optional(),
-    email: z.string().email('Correo inválido'),
-    password: z
-      .string()
-      .min(6, 'Mínimo 6 caracteres')
-      .regex(
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[-_.:*;]).{6,}$/,
-        'Debe incluir mayúscula, minúscula, número y símbolo (-_.:*;)'
-      ),
-    confirmPassword: z.string().optional(),
-  })
-  .refine((data) => {
-    if (data.confirmPassword !== undefined && data.confirmPassword !== data.password) {
-      return false;
-    }
-    return true;
-  }, {
-    message: 'Las contraseñas no coinciden',
-    path: ['confirmPassword'],
-  });
+.object({
+  name: z.string().min(3, 'El nombre es obligatorio').optional(),
+  email: z.string().email('Correo inválido'),
+  password: z
+  .string()
+  .min(6, 'Mínimo 6 caracteres')
+  .regex(
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[-_.:*;]).{6,}$/,
+    'Debe incluir mayúscula, minúscula, número y símbolo (-_.:*;)'
+  ),
+  confirmPassword: z.string().optional(),
+})
+.refine((data) => {
+  if (data.confirmPassword !== undefined && data.confirmPassword !== data.password) {
+    return false;
+  }
+  return true;
+}, {
+  message: 'Las contraseñas no coinciden',
+  path: ['confirmPassword'],
+});
 
+// Defino el componente AuthForm, que es el formulario de autenticación
 export default function AuthForm() {
   const [mode, setMode] = useState<'login' | 'register'>('login');
   const [message, setMessage] = useState('');
   const [csrfToken, setCsrfToken] = useState('');
   const [success, setSuccess] = useState(false);
-
+  
+  const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from || '/';
+  
   const {
     register,
     handleSubmit,
@@ -79,7 +89,9 @@ export default function AuthForm() {
       if (!res.ok) return setMessage(`❌ ${response.message || 'Error'}`);
       setMessage('');
       setSuccess(true);
-      setTimeout(() => setSuccess(false), 2000);
+      setTimeout(() => {
+        window.location.href = from; 
+      }, 1500);
     } catch (err) {
       setMessage('❌ ERROR AL CONECTAR CON EL SERVIDOR');
     }
@@ -162,23 +174,13 @@ export default function AuthForm() {
               />
               {errors.email && <p className="text-red-500 text-sm mt-1 text-left">{errors.email.message}</p>}
             </div>
-            <div>
-              <input
-                type="password"
-                {...register('password')}
-                placeholder="CONTRASEÑA"
-                className={`px-3 py-[6px] rounded-md w-full bg-zinc-800 text-white placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-blue-500 ${errors.password ? 'border border-red-500' : ''}`}
-              />
-              {errors.password && <p className="text-red-500 text-sm mt-1 text-left">{errors.password.message}</p>}
+            <div className="relative">
+            <PasswordInput {...register('password')} placeholder="CONTRASEÑA" className={`px-3 py-[6px] rounded-md w-full bg-zinc-800 text-white placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-blue-500 ${errors.email ? 'border border-red-500' : ''}`} />
+            {errors.password && <p className="text-red-500 text-sm mt-1 text-left">{errors.password.message}</p>}
             </div>
             {mode === 'register' && (
               <div>
-                <input
-                  type="password"
-                  {...register('confirmPassword')}
-                  placeholder="REPETIR CONTRASEÑA"
-                  className={`px-3 py-[6px] rounded-md w-full bg-zinc-800 text-white placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-blue-500 ${errors.confirmPassword ? 'border border-red-500' : ''}`}
-                />
+                <PasswordInput {...register('confirmPassword')} placeholder="REPETIR CONTRASEÑA" className={`px-3 py-[6px] rounded-md w-full bg-zinc-800 text-white placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-blue-500 ${errors.email ? 'border border-red-500' : ''}`} />      
                 {errors.confirmPassword && (
                   <p className="text-red-500 text-sm mt-1 text-left">{errors.confirmPassword.message}</p>
                 )}
@@ -226,6 +228,9 @@ export default function AuthForm() {
               setMode(mode === 'login' ? 'register' : 'login');
               reset();
               setMessage('');
+                // cambia la ruta sin recargar
+              
+              navigate(`/${mode === 'login' ? 'register' : 'login'}`);
             }}
             className="text-blue-400 hover:underline font-bold cursor-pointer"
           >

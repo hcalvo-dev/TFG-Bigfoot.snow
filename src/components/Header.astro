@@ -3,6 +3,7 @@ const navItems = ['INICIO', 'EQUIPOS', 'CLASES', 'CONTACTO'];
 const navLinks = ['/', 'equipos', 'clases', 'contacto'];
 import MenuClient from './dropdown.tsx';
 import { ShoppingCart, Search } from '@lucide/astro';
+import AccountLinkWrapper from '../components/Auth/AccountLinkWrapper';
 ---
 
 <style>
@@ -88,15 +89,7 @@ import { ShoppingCart, Search } from '@lucide/astro';
           </a>
 
           <!-- Login -->
-          <a
-            href="login"
-            class="flex	justify-center space-x-2 text-standard font-blowbrush tracking-widest text-white hover:text-blue-600 transition-colors">
-            <!-- Puedes reemplazar esto con tu SVG inline o React component -->
-            <img src="/img/icon_cuenta_white.svg" alt="Mi cuenta" class="w-7 h-7" />
-            <span class="">
-              MI CUENTA
-            </span>
-          </a>
+          <AccountLinkWrapper client:only="react" />
         </div>
       </div>
     </nav>
@@ -128,15 +121,7 @@ import { ShoppingCart, Search } from '@lucide/astro';
       </a>
 
       <!-- Mi Cuenta -->
-      <a
-        href="login"
-        class="flex flex-col items-center text-black hover:text-blue-600 transition">
-        <!-- Puedes reemplazar esto con tu SVG inline o React component -->
-        <img src="/img/icon_cuenta.svg" alt="Mi cuenta" class="w-8 h-8" />
-        <span class="text-xs font-semibold font-blowbrush tracking-widest">
-          MI CUENTA
-        </span>
-      </a>
+      <AccountLinkWrapper client:only="react" />
     </div>
   </div>
 
