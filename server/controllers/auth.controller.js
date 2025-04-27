@@ -40,8 +40,12 @@ export const registerUser = async (req, res) => {
 
   const hashedPassword = await bcrypt.hash(password, 10);
 
+  const rol = await prisma.rol.findUnique({
+    where: { nombre: 'user' },
+  });
+
   const user = await prisma.usuario.create({
-    data: { nombre: name, email, password: hashedPassword },
+    data: { nombre: name, email, password: hashedPassword, rolId: rol.id },
   });
 
   res.status(201).json({ message: 'Usuario registrado correctamente', user });

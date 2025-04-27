@@ -16,3 +16,17 @@
 .text-standard{
     font-size: 20px;
 }
+
+.text-transparent {
+    color: transparent;
+  }
+  
+  .stroke-2 {
+    -webkit-text-stroke-width: 2px;
+    -webkit-text-stroke-color: black;
+  }
+  
+  .stroke-black {
+    -webkit-text-stroke-color: black;
+  }
+  

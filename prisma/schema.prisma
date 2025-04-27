@@ -13,79 +13,160 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Rol {
+  id       Int       @id @default(autoincrement())
+  nombre   String    @unique
+  usuarios Usuario[]
+}
+
 model Usuario {
-  id        Int       @id @default(autoincrement())
-  nombre    String
-  email     String    @unique
-  password  String
-  reservas  Reserva[]
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  id             Int            @id @default(autoincrement())
+  nombre         String
+  email          String         @unique
+  password       String
+  rol            Rol            @relation(fields: [rolId], references: [id])
+  rolId          Int
+  estadoCuenta   Boolean        @default(true)
+  reservas       Reserva[]
+  notificaciones Notificacion[]
+  valoraciones   Valoracion[]
+  instructor     Instructor?
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
 }
 
 model Instructor {
-  id        Int      @id @default(autoincrement())
-  nombre    String
-  clases    Clase[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id             Int                        @id @default(autoincrement())
+  especialidad   String
+  experiencia    Int
+  fotoUrl        String
+  activo         Boolean                    @default(true)
+  usuario        Usuario                    @relation(fields: [userId], references: [id])
+  userId         Int                        @unique
+  clases         Clase[]
+  disponibilidad InstructorDisponibilidad[]
+  createdAt      DateTime                   @default(now())
+  updatedAt      DateTime                   @updatedAt
 }
 
 model Clase {
-  id           Int        @id @default(autoincrement())
-  fecha        DateTime
-  duracion     Int // en minutos
+  id           Int          @id @default(autoincrement())
+  titulo       String
+  descripcion  String
+  nivel        String
+  duracion     Int
   precio       Float
-  instructor   Instructor @relation(fields: [instructorId], references: [id])
+  tipo         String
+  instructor   Instructor   @relation(fields: [instructorId], references: [id])
   instructorId Int
   reservas     Reserva[]
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  valoraciones Valoracion[]
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+}
+
+model InstructorDisponibilidad {
+  id           Int        @id @default(autoincrement())
+  instructor   Instructor @relation(fields: [instructorId], references: [id])
+  instructorId Int
+  fecha        DateTime
+  horaInicio   DateTime
+  horaFin      DateTime
+  disponible   Boolean
 }
 
 model Categoria {
   id        Int        @id @default(autoincrement())
-  nombre    String
+  nombre    String     @unique
   productos Producto[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
 }
 
 model Producto {
-  id            Int              @id @default(autoincrement())
-  nombre        String
-  descripcion   String?
-  precioDia     Float
-  categoria     Categoria        @relation(fields: [categoriaId], references: [id])
-  categoriaId   Int
-  reservas      ProductoReserva[]
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  id             Int                      @id @default(autoincrement())
+  nombre         String
+  descripcion    String?
+  precioDia      Float
+  estado         String
+  imagenUrl      String
+  stockTotal     Int
+  categoria      Categoria                @relation(fields: [categoriaId], references: [id])
+  categoriaId    Int
+  reservas       ProductoReserva[]
+  disponibilidad ProductoDisponibilidad[]
+  valoraciones   Valoracion[]
+  createdAt      DateTime                 @default(now())
+  updatedAt      DateTime                 @updatedAt
+}
+
+model ProductoDisponibilidad {
+  id                 Int      @id @default(autoincrement())
+  producto           Producto @relation(fields: [productoId], references: [id])
+  productoId         Int
+  fecha              DateTime
+  cantidadDisponible Int
 }
 
 model Reserva {
-  id          Int              @id @default(autoincrement())
-  fechaInicio DateTime
-  fechaFin    DateTime
-  usuario     Usuario          @relation(fields: [usuarioId], references: [id])
-  usuarioId   Int
-  clase       Clase?           @relation(fields: [claseId], references: [id])
-  claseId     Int?
-  productos   ProductoReserva[]  // Relación N:M real
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id           Int               @id @default(autoincrement())
+  fechaInicio  DateTime
+  fechaFin     DateTime
+  fechaReserva DateTime          @default(now())
+  estado       String
+  metodoPago   String
+  total        Float
+  usuario      Usuario           @relation(fields: [usuarioId], references: [id])
+  usuarioId    Int
+  clase        Clase?            @relation(fields: [claseId], references: [id])
+  claseId      Int?
+  productos    ProductoReserva[]
+  factura      Factura?
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
 }
 
-// Tabla intermedia para la relación N:M entre Producto y Reserva
 model ProductoReserva {
   reserva    Reserva  @relation(fields: [reservaId], references: [id])
   reservaId  Int
-
   producto   Producto @relation(fields: [productoId], references: [id])
   productoId Int
+  cantidad   Int      @default(1)
 
-  cantidad   Int      @default(1) // cantidad del producto reservado
-
-  @@id([reservaId, productoId]) // clave compuesta
+  @@id([reservaId, productoId])
 }
 
+model Factura {
+  id           Int      @id @default(autoincrement())
+  reserva      Reserva  @relation(fields: [reservaId], references: [id])
+  reservaId    Int      @unique
+  fechaEmision DateTime @default(now())
+  total        Float
+  iva          Float
+  pdfUrl       String
+}
+
+model Notificacion {
+  id         Int      @id @default(autoincrement())
+  usuario    Usuario  @relation(fields: [usuarioId], references: [id])
+  usuarioId  Int
+  tipo       String
+  mensaje    String
+  fechaEnvio DateTime @default(now())
+  leido      Boolean  @default(false)
+  canal      String   @default("email")
+}
+
+model Valoracion {
+  id         Int       @id @default(autoincrement())
+  usuario    Usuario   @relation(fields: [usuarioId], references: [id])
+  usuarioId  Int
+  tipo       String
+  puntuacion Int       @default(5)
+  comentario String
+  fecha      DateTime  @default(now())
+  clase      Clase?    @relation(fields: [claseId], references: [id])
+  claseId    Int?
+  producto   Producto? @relation(fields: [productoId], references: [id])
+  productoId Int?
+}

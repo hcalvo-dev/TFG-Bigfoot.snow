@@ -3,7 +3,9 @@ const navItems = ['INICIO', 'EQUIPOS', 'CLASES', 'CONTACTO'];
 const navLinks = ['/', 'equipos', 'clases', 'contacto'];
 import MenuClient from './dropdown.tsx';
 import { ShoppingCart, Search } from '@lucide/astro';
-import AccountLinkWrapper from '../components/Auth/AccountLinkWrapper';
+import {AccountLinkWrapper,AccountLinkWrapper_lateral} from '../components/Auth/AccountLinkWrapper';
+
+
 ---
 
 <style>
@@ -13,12 +15,13 @@ import AccountLinkWrapper from '../components/Auth/AccountLinkWrapper';
 </style>
 
 <header
-  class="w-full px-4 py-2 flex justify-between items-center bg-gray-300 text-black z-50 fixed top-0">
+  id="main-header" 
+  class="transition-all duration-500 ease-in-out w-full px-4 py-2 flex justify-between items-center text-black z-50 fixed top-0 bg-gray-200/25">
   <!-- Logo + Nav -->
   <div class="flex items-center space-x-6">
     <!-- Logo -->
     <a href="/" class="flex items-center space-x-2">
-      <img src="/img/logo_1.svg" alt="Logo" class="w-12 h-12" />
+      <img src="/img/logo_1.svg" alt="Logo" class="w-12 h-12 m-0 pr-0.5" />
       <h1 class="text-4xl text-black font-bold font-blowbrush tracking-widest">
         BIGFOOT
       </h1>
@@ -51,15 +54,15 @@ import AccountLinkWrapper from '../components/Auth/AccountLinkWrapper';
         id="side-menu"
         class="fixed top-0 right-0 h-full w-1/2 lg:w-1/3 bg-gray-600 shadow-xl z-50 transform translate-x-full transition-transform duration-500 ease-in-out">
         <div class="flex justify-end p-4">
-          <button id="menu-close" class="text-black text-2xl">&times;</button>
+          <button id="menu-close" class="text-black flex top-1 absolute text-5xl cursor-pointer">&times;</button>
         </div>
-        <ul class="flex flex-col p-6">
+        <ul class="flex flex-col pt-12 px-6 pb-6">
           {
             navItems.map((item) => (
               <li>
                 <a
                   href={navLinks[navItems.indexOf(item)]}
-                  class="text-white text-xl pt-4 hover:text-blue-500 text-standard font-blowbrush tracking-widest">
+                  class="text-white text-xl pt-4 hover:text-blue-600 text-standard font-blowbrush tracking-widest">
                   {item}
                 </a>
               </li>
@@ -89,7 +92,7 @@ import AccountLinkWrapper from '../components/Auth/AccountLinkWrapper';
           </a>
 
           <!-- Login -->
-          <AccountLinkWrapper client:only="react" />
+          <AccountLinkWrapper_lateral client:only="react" />
         </div>
       </div>
     </nav>
@@ -142,3 +145,22 @@ import AccountLinkWrapper from '../components/Auth/AccountLinkWrapper';
 </header>
 
 <MenuClient client:load />
+
+<!-- Script para manejar scroll -->
+<script>
+  window.addEventListener('DOMContentLoaded', () => {
+    const header = document.getElementById('main-header');
+
+    window.addEventListener('scroll', () => {
+      if (!header) return;
+
+      if (window.scrollY > 10) {
+        header.classList.add('bg-gray-300/100');
+        header.classList.remove('bg-gray-300/25');
+      } else {
+        header.classList.remove('bg-gray-300/100');
+        header.classList.add('bg-gray-300/25');
+      }
+    });
+  });
+</script>

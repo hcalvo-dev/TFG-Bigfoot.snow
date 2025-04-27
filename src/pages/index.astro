@@ -1,25 +1,13 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import BrokenImageEffect from '../components/Break_Image/BrokenImageEffect.tsx';
 ---
 
 <Layout title="BIGFOOT : Snowboard y Ski">
   <main>
-    <section>
-      <div
-        class="inset-0 flex flex-col justify-center items-center text-center p-6 my-19">
-        <h2
-          class="text-7xl text-black font-bold tracking-widest font-blowbrush mb-6">
-          DOMINA LA NIEVE !<br />VIVE LA CALLE
-        </h2>
-        <div class="space-x-4">
-          <a href="#" class="bg-blue-700 px-6 py-3 rounded-full"
-            >Alquila tu equipo
-          </a>
-          <a href="#" class="bg-blue-300 px-6 py-3 rounded-full"
-            >Reserva tu clase
-          </a>
-        </div>
-      </div>
+    <!-- NUEVA sección para controlar scroll y animación -->
+    <section class="relative w-full min-h-[300vh]">
+      <BrokenImageEffect client:only="react" />
     </section>
   </main>
 </Layout>

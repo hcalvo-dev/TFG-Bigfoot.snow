@@ -50,6 +50,9 @@ importers:
       jsonwebtoken:
         specifier: 9.0.2
         version: 9.0.2
+      lucide-react:
+        specifier: ^0.503.0
+        version: 0.503.0(react@19.1.0)
       nodemailer:
         specifier: 6.10.1
         version: 6.10.1
@@ -65,6 +68,9 @@ importers:
       react-hook-form:
         specifier: 7.55.0
         version: 7.55.0(react@19.1.0)
+      react-parallax-tilt:
+        specifier: ^1.7.293
+        version: 1.7.293(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       react-router:
         specifier: 7.5.1
         version: 7.5.1(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -2231,6 +2237,11 @@ packages:
   lru-cache@5.1.1:
     resolution: {integrity: sha512-KpNARQA3Iwv+jTA0utUVVbrh+Jlrr1Fv0e56GGzAFOXN7dk/FviaDW8LHmK52DlcH4WP2n6gI8vN1aesBFgo9w==}
 
+  lucide-react@0.503.0:
+    resolution: {integrity: sha512-HGGkdlPWQ0vTF8jJ5TdIqhQXZi6uh3LnNgfZ8MHiuxFfX3RZeA79r2MW2tHAZKlAVfoNE8esm3p+O6VkIvpj6w==}
+    peerDependencies:
+      react: ^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
+
   magic-string@0.30.17:
     resolution: {integrity: sha512-sNPKHvyjVf7gyjwS4xGTaW/mCnF8wnjtifKBEhxfZ7E/S8tQ0rssrwGNn6q8JH/ohItJfSQp9mBtQYuTlH5QnA==}
 
@@ -2683,6 +2694,12 @@ packages:
 
   react-is@16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
+
+  react-parallax-tilt@1.7.293:
+    resolution: {integrity: sha512-Ss56E6T8GNwxUEymWPE4rfYXjBcvqpnSnqXDZRv2YITo4dLYkqeuUkhn6fAPlkvoAT6qaTx6p8m3oM8NJX31Ng==}
+    peerDependencies:
+      react: ^15.0.0 || ^16.0.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+      react-dom: ^15.0.0 || ^16.0.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
   react-refresh@0.17.0:
     resolution: {integrity: sha512-z6F7K9bV85EfseRCp2bzrpyQ0Gkw1uLoCel9XBVWPg/TjRj94SkJzUTGfOa4bs7iJvBWtQG0Wq7wnI0syw3EBQ==}
@@ -5811,6 +5828,10 @@ snapshots:
     dependencies:
       yallist: 3.1.1
 
+  lucide-react@0.503.0(react@19.1.0):
+    dependencies:
+      react: 19.1.0
+
   magic-string@0.30.17:
     dependencies:
       '@jridgewell/sourcemap-codec': 1.5.0
@@ -6426,6 +6447,11 @@ snapshots:
       react: 19.1.0
 
   react-is@16.13.1: {}
+
+  react-parallax-tilt@1.7.293(react-dom@19.1.0(react@19.1.0))(react@19.1.0):
+    dependencies:
+      react: 19.1.0
+      react-dom: 19.1.0(react@19.1.0)
 
   react-refresh@0.17.0: {}
 

@@ -35,13 +35,15 @@ const schema = z
 
 // Defino el componente AuthForm, que es el formulario de autenticación
 export default function AuthForm() {
-  const [mode, setMode] = useState<'login' | 'register'>('login');
+  const location = useLocation();
+  const [mode, setMode] = useState<'login' | 'register'>(
+    location.pathname === '/register' ? 'register' : 'login'
+  );
   const [message, setMessage] = useState('');
   const [csrfToken, setCsrfToken] = useState('');
   const [success, setSuccess] = useState(false);
   
   const navigate = useNavigate();
-  const location = useLocation();
   const from = location.state?.from || '/';
   
   const {

@@ -1,0 +1,12 @@
+---
+import Layout from '../layouts/Layout.astro';
+import AuthWrapper from '../components/Auth/AuthWrapper.tsx';
+---
+
+<Layout title="BIGFOOT : Snowboard y Ski">
+  <main>
+    <section class="flex flex-col justify-center items-center text-center p-6 mt-23 mb-12">
+      <AuthWrapper client:only="react" />
+    </section>
+  </main>
+</Layout>
