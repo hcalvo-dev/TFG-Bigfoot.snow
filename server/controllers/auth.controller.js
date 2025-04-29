@@ -67,6 +67,7 @@ export const loginUser = async (req, res) => {
   if (!isValid) {
     return res.status(401).json({ message: 'Contraseña incorrecta' });
   }
+
   const secret = JWT_SECRET;
 
   if (!secret) {
@@ -80,7 +81,7 @@ export const loginUser = async (req, res) => {
     { expiresIn: '2h' }
   );
 
-  // Enviar el token como cookie httpOnly o en el cuerpo
+  // Enviar el token como cookie httpOnly
   res
     .cookie('token', token, { httpOnly: true, secure: true, sameSite: 'strict' })
     .json({ message: 'Login correcto', token });

@@ -7,8 +7,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigate, useLocation } from 'react-router-dom';
 import PasswordInput from './PasswordInput'; 
 
-// Importo las librerías necesarias
-
 // Defino el esquema de validación con Zod
 const schema = z
 .object({
@@ -33,12 +31,14 @@ const schema = z
   path: ['confirmPassword'],
 });
 
-// Defino el componente AuthForm, que es el formulario de autenticación
+// Defino el componente AuthForm, que es el formulario de autenticación.
 export default function AuthForm() {
   const location = useLocation();
   const [mode, setMode] = useState<'login' | 'register'>(
     location.pathname === '/register' ? 'register' : 'login'
   );
+
+  // useState se emplea para crear un estado local en un componente.
   const [message, setMessage] = useState('');
   const [csrfToken, setCsrfToken] = useState('');
   const [success, setSuccess] = useState(false);
@@ -47,14 +47,16 @@ export default function AuthForm() {
   const from = location.state?.from || '/';
   
   const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm({
-    resolver: zodResolver(schema),
+    register, //Conecta los inputs al sistema de validación/control - Registra los datos.
+    handleSubmit, // Ejecuta la validación y luego llama a tu función onSubmit.
+    reset, // Reinicia el formulario a su estado inicial.
+    formState: { errors }, // Contiene los errores de validación.
+  } = useForm({ 
+    resolver: zodResolver(schema), // Resuelve el schema de validación con Zod.
   });
-
+  
+  // hook de react que se ejecuta después de que el componente se monta.
+  // Se utiliza para obtener el token CSRF del servidor.
   useEffect(() => {
     const fetchCsrf = async () => {
       try {

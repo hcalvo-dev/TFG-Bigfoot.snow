@@ -7,6 +7,9 @@ export default {
     extend: {
       fontFamily: {
       blowbrush: ['BlowBrush', 'sans-serif'],
+      screens: {
+        '1150': '1150px',
+      },
     },
   },
   },

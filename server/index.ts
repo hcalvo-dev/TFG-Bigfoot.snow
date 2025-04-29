@@ -7,23 +7,28 @@ import { PORT, ORIGIN } from './config';
 import csrf from 'csurf';
 import cookieParser from 'cookie-parser';
 
+// Importa las variables de entorno desde .env
 dotenv.config();
 
+// Inicia la aplicación Express
 const app = express();
 
+// Permite la entrada de cookies - para el manejo de CSRF 
 app.use(cookieParser());
 
-// Middlewares
+// Permite la comunicación entre el cliente y el servidor
 app.use(cors({
-    origin: ORIGIN, // la URL del cliente (tu frontend Astro)
+    origin: ORIGIN, 
     credentials: true
   }));
 
+// Middleware para parsear el JSON en las peticiones - recibe JSON y lo convierte a un objeto javascript
 app.use(express.json());
 
-// Middleware CSRF que guarda el token en una cookie
+// Crea el Middleware CSRF que guarda el token en una cookie
 const csrfProtection = csrf({ cookie: true });
 
+// Antes de procesar cualquier ruta, se ejecutara el middleware CSRF y comprobara si el token es valido
 app.use(csrfProtection);
 
 // Rutas

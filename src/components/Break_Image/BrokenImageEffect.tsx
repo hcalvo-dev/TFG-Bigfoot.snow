@@ -134,7 +134,7 @@ export default function BrokenImageEffect() {
           </div>
 
           <motion.div
-          className="absolute top-1/2 left-[15%] transform -translate-y-1/2 flex flex-col items-center gap-4"
+          className="absolute top-1/2 left-2/16  transform -translate-y-1/2 flex flex-col items-center gap-4"
           style={{ opacity: rombosOpacity }}
                 >
 
@@ -171,7 +171,7 @@ export default function BrokenImageEffect() {
         </motion.div>
 
         <motion.div
-          className="absolute top-1/2 right-[15%] transform -translate-y-1/2 flex flex-col items-center gap-4"
+          className="absolute top-1/2 right-1/10 transform -translate-y-1/2 flex flex-col items-center gap-4"
           style={{ opacity: rombosOpacity }}
         >
 
@@ -220,7 +220,34 @@ export default function BrokenImageEffect() {
           className="flex flex-col items-center gap-6 p-4"
           style={{ opacity: firstMobileBlockOpacity, y: firstMobileBlockY }}
         >
-          <img src="/img/index/rombo_1.jpg" alt="Snowboard" className="w-3/4 rounded-lg shadow-lg" />
+          <Tilt
+          tiltMaxAngleX={20}
+          tiltMaxAngleY={20}
+          glareEnable={true}
+          glareMaxOpacity={0.4}
+          glareColor="#155dfc" 
+          glarePosition="all"
+          scale={1.08}
+          transitionSpeed={2500}
+          className="relative w-80 h-80 overflow-hidden bg-gray-300 rounded-xl shadow-2xl group"
+          >
+            {/* Texto de fondo que aparece en hover */}
+            <motion.div
+              className="absolute inset-0 flex items-center justify-center z-10"
+              initial={{ opacity: 0, scale: 0.5 }}
+              whileHover={{ opacity: 0.75, scale: 1 }}
+              transition={{ duration: 0.6, ease: "easeOut" }}
+            >
+              
+            </motion.div>
+
+            {/* Imagen encima */}
+            <motion.img
+              src="/img/index/snowboard.webp"
+              alt="Snowboard"
+              className="relative w-full h-full object-cover grayscale transition-all duration-500 ease-in-out group-hover:grayscale-0"
+            />
+          </Tilt>
           <div className="text-center">
             <h2 className="text-3xl font-bold text-black mb-4">SNOWBOARD</h2>
             <p className="text-gray-700">Domina la nieve con el mejor equipo de snowboard.</p>
@@ -234,7 +261,34 @@ export default function BrokenImageEffect() {
           className="flex flex-col items-center gap-6 p-4"
           style={{ opacity: secondMobileBlockOpacity, y: secondMobileBlockY }}
         >
-          <img src="/img/index/rombo_2.jpg" alt="Ski" className="w-3/4 rounded-lg shadow-lg" />
+          <Tilt
+            tiltMaxAngleX={20}
+            tiltMaxAngleY={20}
+            glareEnable={true}
+            glareMaxOpacity={0.4}
+            glareColor="#155dfc" 
+            glarePosition="all"
+            scale={1.08}
+            transitionSpeed={2500}
+            className="relative w-80 h-80  overflow-hidden bg-gray-300 rounded-xl shadow-2xl group"
+          >
+            {/* Texto de fondo que aparece en hover */}
+            <motion.div
+              className="absolute inset-0 flex items-center justify-center z-10"
+              initial={{ opacity: 0, scale: 0.5 }}
+              whileHover={{ opacity: 0.75, scale: 1 }}
+              transition={{ duration: 0.6, ease: "easeOut" }}
+            >
+              
+            </motion.div>
+
+            {/* Imagen encima */}
+            <motion.img
+              src="/img/index/skii.webp"
+              alt="Ski"
+              className="relative w-full h-full object-cover grayscale transition-all duration-500 ease-in-out group-hover:grayscale-0"
+            />
+          </Tilt>
           <div className="text-center">
             <h2 className="text-3xl font-bold text-black mb-4">ESQUÍ</h2>
             <p className="text-gray-700">Siente la velocidad en las mejores pistas de esquí.</p>

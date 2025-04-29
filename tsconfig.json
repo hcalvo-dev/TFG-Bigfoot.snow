@@ -19,6 +19,7 @@
     "verbatimModuleSyntax": false,
     "strict": true,
     "baseUrl": ".",
-    "outDir": "dist"
+    "outDir": "dist",
+    "typeRoots": ["./node_modules/@types", "./types"]
   }
 }
