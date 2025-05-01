@@ -1,13 +1,13 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import BrokenImageEffect from '../components/Break_Image/BrokenImageEffect.tsx';
+import StickyImageEffect from '../components/Sticky_Image_Effect/StickyImageEffect.tsx';
 ---
 
 <Layout title="BIGFOOT : Snowboard y Ski">
   <main>
     <!-- NUEVA sección para controlar scroll y animación -->
     <section class="relative w-full min-h-[300vh]">
-      <BrokenImageEffect client:only="react" />
+      <StickyImageEffect client:only="react" />
     </section>
   </main>
 </Layout>

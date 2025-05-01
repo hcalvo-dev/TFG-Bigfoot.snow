@@ -1,17 +1,19 @@
-import typography from '@tailwindcss/typography';
+import typography from '@tailwindcss/typography'
+import defaultTheme from 'tailwindcss/defaultTheme'
 
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ['./src/**/*.{astro,html,js,ts,jsx,tsx}'],
   theme: {
+    screens: {
+      ...defaultTheme.screens,
+      'mobile': '920px', 
+    },
     extend: {
       fontFamily: {
-      blowbrush: ['BlowBrush', 'sans-serif'],
-      screens: {
-        '1150': '1150px',
+        blowbrush: ['BlowBrush', 'sans-serif'],
       },
     },
   },
-  },
   plugins: [typography],
-};
+}
