@@ -2,8 +2,9 @@
 const navItems = ['INICIO', 'EQUIPOS', 'CLASES', 'CONTACTO'];
 const navLinks = ['/', 'equipos', 'clases', 'contacto'];
 import MenuClient from './dropdown.tsx';
-import { ShoppingCart, Search } from '@lucide/astro';
-import {AccountLinkWrapper,AccountLinkWrapper_lateral} from '../components/Auth/AccountLinkWrapper';
+import { ShoppingCart } from '@lucide/astro';
+import SearchDropdown from './search/Search_Dropdown.tsx';
+import {AccountLinkWrapper,AccountLinkWrapper_lateral} from '../components/Auth/AccountLinkWrapper'; 
 
 
 ---
@@ -73,14 +74,7 @@ import {AccountLinkWrapper,AccountLinkWrapper_lateral} from '../components/Auth/
         <div class="flex flex-col items-start space-y-4 mt-4 px-6">
           <!-- Search -->
           <div class="relative w-full">
-            <input
-              type="text"
-              placeholder="Buscar..."
-              class="w-full pl-10 pr-4 py-2 rounded-full bg-white text-black"
-            />
-            <Search
-              class="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-600"
-            />
+            <SearchDropdown client:only="react" />
           </div>
 
           <!-- Carrito -->
@@ -102,14 +96,7 @@ import {AccountLinkWrapper,AccountLinkWrapper_lateral} from '../components/Auth/
   <div class="hidden xl:flex items-center space-x-6">
     <!-- Search -->
     <div class="relative hidden xl:block">
-      <input
-        type="text"
-        placeholder="Buscar..."
-        class="pl-10 pr-4 py-1 rounded-full bg-white text-black border border-gray-300 focus:outline-none"
-      />
-      <Search
-        class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-3 text-gray-600"
-      />
+      <SearchDropdown client:only="react" />
     </div>
 
     <!-- Iconos de cesta y cuenta -->
@@ -144,7 +131,9 @@ import {AccountLinkWrapper,AccountLinkWrapper_lateral} from '../components/Auth/
   </button>
 </header>
 
+<!-- Script para manejar el menu lateral -->
 <MenuClient client:load />
+
 
 <!-- Script para manejar scroll -->
 <script>

@@ -1,11 +1,14 @@
+// Import dependencias
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import authRoutes from './routes/auth.routes';
-import reservationRoutes from './routes/reservation.routes'; 
 import { PORT, ORIGIN } from './config';
 import csrf from 'csurf';
 import cookieParser from 'cookie-parser';
+
+// Importa las rutas
+import authRoutes from './routes/auth.routes';
+import reservationRoutes from './routes/reservation.routes'; 
 
 // Importa las variables de entorno desde .env
 dotenv.config();
