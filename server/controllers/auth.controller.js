@@ -48,7 +48,17 @@ export const registerUser = async (req, res) => {
     data: { nombre: name, email, password: hashedPassword, rolId: rol.id },
   });
 
-  res.status(201).json({ message: 'Usuario registrado correctamente', user });
+  const token = jwt.sign(
+    { userId: user.id, email: user.email , rol: rol.nombre},
+    JWT_SECRET,
+    { expiresIn: '2h' }
+  );
+
+  // Enviar el token como cookie httpOnly
+  res
+    .cookie('token', token, { httpOnly: true, secure: true, sameSite: 'strict' })
+    .status(201)
+    .json({ message: 'Usuario registrado correctamente', token });
 };
 
 export const loginUser = async (req, res) => {
@@ -56,6 +66,10 @@ export const loginUser = async (req, res) => {
 
   const user = await prisma.usuario.findUnique({
     where: { email }
+  });
+
+  const rol = await prisma.rol.findUnique({
+    where: { id: user.rolId }
   });
 
   if (!user) {
@@ -76,7 +90,7 @@ export const loginUser = async (req, res) => {
 
    // Crear el token con un secreto y duración
    const token = jwt.sign(
-    { userId: user.id, email: user.email },
+    { userId: user.id, email: user.email , rol: rol.nombre },
     secret,
     { expiresIn: '2h' }
   );

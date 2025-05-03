@@ -1,6 +1,14 @@
 ---
+export const prerender = false; 
 import Layout from '../layouts/Layout.astro';
 import AuthWrapper from '../components/Auth/AuthWrapper.tsx';
+import { checkSession } from '../../utils/checkSession';
+
+const session = checkSession(Astro.request);
+if (session.isLogged) {
+  return Astro.redirect('/perfil');
+}
+
 ---
 
 <Layout title="BIGFOOT : Snowboard y Ski">

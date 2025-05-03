@@ -1,9 +1,9 @@
-
-import { Link, useLocation } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 
 export default function AccountLink_lateral() {
   const location = window?.location.pathname;
-
+  
+  
   const handleClick = () => {
     sessionStorage.setItem('from', location);
   };

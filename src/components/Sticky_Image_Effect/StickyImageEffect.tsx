@@ -25,7 +25,7 @@ export default function StickyImageEffect() {
   const secondMobileBlockY = useTransform(scrollYProgress, [0.4, 0.59], [100, 0]);
 
   return (
-    <section ref={containerRef} className="relative w-full min-h-[500vh]">
+    <section ref={containerRef} className="relative w-full min-h-[400vh]">
       <StickyHero imageOpacity={imageOpacity} textOpacity={textOpacity} marqueeOpacity={marqueeOpacity} />
       <DesktopContent dividerOpacity={dividerOpacity} logosOpacity={logosOpacity} iconsOpacity={iconsOpacity} rombosOpacity={rombosOpacity} />
       <MobileContent

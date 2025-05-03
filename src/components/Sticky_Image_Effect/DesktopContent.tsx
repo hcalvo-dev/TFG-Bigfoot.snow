@@ -13,7 +13,7 @@ type Props = {
 
 export default function DesktopContent({ dividerOpacity, logosOpacity, iconsOpacity, rombosOpacity }: Props) {
   return (
-    <motion.div className="relative w-full min-h-[400vh] hidden md:flex flex-col items-center" style={{ opacity: dividerOpacity }}>
+    <motion.div className="relative w-full min-h-[300vh] hidden md:flex flex-col items-center" style={{ opacity: dividerOpacity }}>
       <div className="sticky top-0 h-screen w-full flex items-center justify-center">
         <div className="relative flex flex-col items-center justify-start h-full">
           {/* Puntos y línea central */}

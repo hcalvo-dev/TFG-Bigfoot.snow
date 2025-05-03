@@ -1,19 +1,19 @@
 ---
 export const prerender = false;
 import Layout from '../layouts/Layout.astro';
-import AuthWrapper from '../components/Auth/AuthWrapper.tsx';
 import { checkSession } from '../../utils/checkSession';
 
 const session = checkSession(Astro.request);
-if (session.isLogged) {
-  return Astro.redirect('/perfil');
+if (!session.isLogged) {
+  return Astro.redirect('/login');
 }
+
 ---
 
-<Layout title="BIGFOOT : Snowboard y Ski">
+<Layout title="BIGFOOT : Perfil">
   <main>
     <section class="flex flex-col justify-center items-center text-center p-6 mt-23 mb-12">
-      <AuthWrapper client:only="react" />
+      <h1>Perfil</h1>
     </section>
   </main>
 </Layout>

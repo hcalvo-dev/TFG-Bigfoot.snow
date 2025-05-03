@@ -29,6 +29,9 @@ importers:
       bcryptjs:
         specifier: 3.0.2
         version: 3.0.2
+      cookie:
+        specifier: ^1.0.2
+        version: 1.0.2
       cookie-parser:
         specifier: 1.4.7
         version: 1.4.7

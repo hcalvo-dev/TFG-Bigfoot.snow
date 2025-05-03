@@ -1,11 +1,19 @@
 ---
-const navItems = ['INICIO', 'EQUIPOS', 'CLASES', 'CONTACTO'];
-const navLinks = ['/', 'equipos', 'clases', 'contacto'];
+const navItems = [
+  { label: 'INICIO', path: '/' },
+  { label: 'EQUIPOS', path: 'equipos' },
+  { label: 'CLASES', path: 'clases' },
+  { label: 'CONTACTO', path: 'contacto' },
+  { label: 'ADMIN', path: 'admin', onlyFor: 'admin' }
+];
 import MenuClient from './dropdown.tsx';
 import { ShoppingCart } from '@lucide/astro';
 import SearchDropdown from './search/Search_Dropdown.tsx';
 import {AccountLinkWrapper,AccountLinkWrapper_lateral} from '../components/Auth/AccountLinkWrapper'; 
+import { checkSession } from '../../utils/checkSession';
 
+const session = checkSession(Astro.request);
+console.log('🔎 Sesión activa:', session);
 
 ---
 
@@ -31,17 +39,20 @@ import {AccountLinkWrapper,AccountLinkWrapper_lateral} from '../components/Auth/
     <nav class="flex">
       <!-- Desktop Menu -->
       <ul class="hidden xl:flex space-x-4 ml-10 mr-5 pl-10">
-        {
-          navItems.map((item) => (
+        {navItems.map(({ label, path, onlyFor }) => {
+          if (onlyFor && session.rol !== onlyFor) return null;
+        
+          return (
             <li>
               <a
-                href={navLinks[navItems.indexOf(item)]}
-                class="hover:text-blue-500 font-bold text-standard font-blowbrush tracking-widest">
-                {item}
+                href={path}
+                class="hover:text-blue-500 font-bold text-standard font-blowbrush tracking-widest"
+              >
+                {label}
               </a>
             </li>
-          ))
-        }
+          );
+        })}
       </ul>
 
       <!-- Overlay -->
@@ -58,17 +69,20 @@ import {AccountLinkWrapper,AccountLinkWrapper_lateral} from '../components/Auth/
           <button id="menu-close" class="text-black flex top-1 absolute text-5xl cursor-pointer">&times;</button>
         </div>
         <ul class="flex flex-col pt-12 px-6 pb-6">
-          {
-            navItems.map((item) => (
+          {navItems.map(({ label, path, onlyFor }) => {
+            if (onlyFor && session.rol !== onlyFor) return null;
+          
+            return (
               <li>
                 <a
-                  href={navLinks[navItems.indexOf(item)]}
-                  class="text-white text-xl pt-4 hover:text-blue-600 text-standard font-blowbrush tracking-widest">
-                  {item}
+                  href={path}
+                  class="text-white text-xl pt-4 hover:text-blue-600 text-standard font-blowbrush tracking-widest"
+                >
+                  {label}
                 </a>
               </li>
-            ))
-          }
+            );
+          })}
         </ul>
         <hr class="my-4 border-gray-600" />
         <div class="flex flex-col items-start space-y-4 mt-4 px-6">
