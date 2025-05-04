@@ -100,7 +100,10 @@ console.log('🔎 Sesión activa:', session);
           </a>
 
           <!-- Login -->
-          <AccountLinkWrapper_lateral client:only="react" />
+          <AccountLinkWrapper_lateral 
+            client:only="react" 
+            session={JSON.stringify(session)} 
+          />
         </div>
       </div>
     </nav>
@@ -125,7 +128,10 @@ console.log('🔎 Sesión activa:', session);
       </a>
 
       <!-- Mi Cuenta -->
-      <AccountLinkWrapper client:only="react" />
+      <AccountLinkWrapper 
+        client:only="react" 
+        session={JSON.stringify(session)} 
+      />
     </div>
   </div>
 

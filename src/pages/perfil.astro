@@ -2,18 +2,16 @@
 export const prerender = false;
 import Layout from '../layouts/Layout.astro';
 import { checkSession } from '../../utils/checkSession';
+import PerfilContent from '../components/Perfil/PerfilContent'; // Asegúrate de que la ruta sea correcta
 
 const session = checkSession(Astro.request);
 if (!session.isLogged) {
   return Astro.redirect('/login');
 }
-
 ---
 
 <Layout title="BIGFOOT : Perfil">
-  <main>
-    <section class="flex flex-col justify-center items-center text-center p-6 mt-23 mb-12">
-      <h1>Perfil</h1>
-    </section>
+  <main class="text-white min-h-screen pt-24 px-4 font-blowbrush">
+    <PerfilContent client:only="react" session={JSON.stringify(session)} />
   </main>
 </Layout>

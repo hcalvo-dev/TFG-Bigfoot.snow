@@ -1,5 +1,5 @@
 import { motion, MotionValue } from 'framer-motion';
-import { CableCar, Snowflake, SunSnow } from 'lucide-react';
+import { CableCar, Snowflake, SunSnow  } from 'lucide-react';
 import TiltImageBlock from './TiltImageBlock';
 
 const navLinks = ['forfait', 'equipos', 'weather'];

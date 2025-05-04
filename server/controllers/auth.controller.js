@@ -51,7 +51,7 @@ export const registerUser = async (req, res) => {
   const token = jwt.sign(
     { userId: user.id, email: user.email , rol: rol.nombre},
     JWT_SECRET,
-    { expiresIn: '2h' }
+    { expiresIn: '3h' }
   );
 
   // Enviar el token como cookie httpOnly
@@ -92,11 +92,12 @@ export const loginUser = async (req, res) => {
    const token = jwt.sign(
     { userId: user.id, email: user.email , rol: rol.nombre },
     secret,
-    { expiresIn: '2h' }
+    { expiresIn: '3h' }
   );
+  
 
   // Enviar el token como cookie httpOnly
   res
-    .cookie('token', token, { httpOnly: true, secure: true, sameSite: 'strict' })
+    .cookie('token', token, { httpOnly: true, secure: false, sameSite: 'lax' })
     .json({ message: 'Login correcto', token });
 };

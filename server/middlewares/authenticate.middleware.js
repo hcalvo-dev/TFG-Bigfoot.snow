@@ -2,24 +2,31 @@ import jwt from 'jsonwebtoken';
 import { JWT_SECRET } from '../config';
 import prisma from '../../src/lib/prisma';
 
-export async function authenticateToken(req, res, next) {
-  const authHeader = req.headers['authorization'] || req.cookies.token;
-  const token = authHeader?.startsWith('Bearer ') ? authHeader.split(' ')[1] : authHeader;
-
-  if (!token) {
-    return res.status(201).json({ message: 'Token no proporcionado' });
-  }
-
+export const authenticateUser = async (req, res, next) => {
   try {
+    console.log('🍪 Cookies recibidas:', req.cookies); // <-- Aquí
+    const token = req.cookies.token;
+
+    if (!token) {
+      return res.status(401).json({ message: 'No token provided' });
+    }
+
     const decoded = jwt.verify(token, JWT_SECRET);
-    const user = await prisma.usuario.findUnique({ where: { id: decoded.userId } });
+    console.log('🔓 Token decodificado:', decoded); // <-- Aquí
 
-    if (!user) return res.status(201).json({ message: 'Usuario no encontrado' });
+    const user = await prisma.usuario.findUnique({
+      where: { id: decoded.userId },
+      select: { id: true, nombre: true, email: true, rolId: true },
+    });
 
-    // Guarda el usuario en res.locals para acceso global durante la petición
-    res.locals.user = user;
+    if (!user) {
+      return res.status(401).json({ message: 'Usuario no encontrado' });
+    }
+
+    req.user = user;
     next();
   } catch (err) {
-    return res.status(201).json({ message: 'Token inválido' });
+    console.error('❌ Error en middleware auth:', err); // <-- Aquí
+    return res.status(500).json({ message: 'Error interno en autenticación' });
   }
-}
+};

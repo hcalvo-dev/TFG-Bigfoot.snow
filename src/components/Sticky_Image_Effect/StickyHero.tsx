@@ -41,7 +41,18 @@ export default function StickyHero({ imageOpacity, textOpacity, marqueeOpacity }
         </div>
       </motion.div>
 
-      <motion.div className="relative z-10 text-center" style={{ opacity: textOpacity }}>
+      <motion.div
+        className="relative z-10 text-center"
+        style={{
+          opacity: textOpacity,
+          WebkitMaskImage: 'linear-gradient(to bottom, black 80%, transparent 100%)',
+          maskImage: 'linear-gradient(to bottom, black 80%, transparent 100%)',
+          WebkitMaskSize: '100% 100%',
+          maskSize: '100% 100%',
+          WebkitMaskRepeat: 'no-repeat',
+          maskRepeat: 'no-repeat',
+        }}
+      >
         <h1 className="text-5xl md:text-7xl font-blowbrush font-bold text-zinc-900 tracking-widest">
           DOMINA LA NIEVE!<br />VIVE LA CALLE
         </h1>
