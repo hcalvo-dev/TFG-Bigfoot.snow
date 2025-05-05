@@ -164,7 +164,7 @@ export default function AuthForm() {
               <div>
                 <input
                   {...register('name')}
-                  placeholder="USUARIO"
+                  placeholder="Usuario"
                   className={`px-3 py-[6px] rounded-md w-full bg-zinc-800 text-white placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-blue-500 ${errors.name ? 'border border-red-500' : ''}`}
                 />
                 {errors.name && <p className="text-red-500 text-sm mt-1 text-left">{errors.name.message}</p>}
@@ -173,18 +173,18 @@ export default function AuthForm() {
             <div>
               <input
                 {...register('email')}
-                placeholder="CORREO ELECTRÓNICO"
+                placeholder="Correo electrónico"
                 className={`px-3 py-[6px] rounded-md w-full bg-zinc-800 text-white placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-blue-500 ${errors.email ? 'border border-red-500' : ''}`}
               />
               {errors.email && <p className="text-red-500 text-sm mt-1 text-left">{errors.email.message}</p>}
             </div>
             <div className="relative">
-            <PasswordInput {...register('password')} placeholder="CONTRASEÑA" className={`px-3 py-[6px] rounded-md w-full bg-zinc-800 text-white placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-blue-500 ${errors.email ? 'border border-red-500' : ''}`} />
+            <PasswordInput {...register('password')} placeholder="Contraseña" className={`px-3 py-[6px] rounded-md w-full bg-zinc-800 text-white placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-blue-500 ${errors.email ? 'border border-red-500' : ''}`} />
             {errors.password && <p className="text-red-500 text-sm mt-1 text-left">{errors.password.message}</p>}
             </div>
             {mode === 'register' && (
               <div>
-                <PasswordInput {...register('confirmPassword')} placeholder="REPETIR CONTRASEÑA" className={`px-3 py-[6px] rounded-md w-full bg-zinc-800 text-white placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-blue-500 ${errors.email ? 'border border-red-500' : ''}`} />      
+                <PasswordInput {...register('confirmPassword')} placeholder="Repetir contraseña" className={`px-3 py-[6px] rounded-md w-full bg-zinc-800 text-white placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-blue-500 ${errors.email ? 'border border-red-500' : ''}`} />      
                 {errors.confirmPassword && (
                   <p className="text-red-500 text-sm mt-1 text-left">{errors.confirmPassword.message}</p>
                 )}

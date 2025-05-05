@@ -24,6 +24,7 @@ export default function PerfilContent({ session }: Props) {
   };
   
   const [usuario, setUsuario] = useState<Usuario | null>(null);
+  const [reloadUser, setReloadUser] = useState(false);
   const [view, setView] = useState<'perfil' | 'clases' | 'productos' | 'instructor'>('perfil');
   const [csrfToken, setCsrfToken] = useState('');
 
@@ -45,28 +46,27 @@ export default function PerfilContent({ session }: Props) {
     }, []);
   
   // Obtenemos el usuario al cargar el componente
-    useEffect(() => {
-    const fetchUsuario = async () => {
-      try {
-        const res = await fetch('http://localhost:4000/api/auth/me', {
-          credentials: 'include',
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'CSRF-Token': csrfToken,
-          },
-        });
-        const data = await res.json();
-  
-        setUsuario(data);
-      } catch (error) {
-        console.error('Error al obtener el usuario:', error);
-      }
-    };
-  
-    // Espera a tener el CSRF token antes de hacer fetch
+  const fetchUsuario = async () => {
+    try {
+      const res = await fetch('http://localhost:4000/api/user/me', {
+        credentials: 'include',
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'CSRF-Token': csrfToken,
+        },
+      });
+      const data = await res.json();
+      setUsuario(data);
+    } catch (error) {
+      console.error('Error al obtener el usuario:', error);
+    }
+  };
+
+  useEffect(() => {
     if (csrfToken) fetchUsuario();
-  }, [csrfToken]);
+  }, [csrfToken, reloadUser]); // <- importante aquí
+  
 
     // Función para cerrar sesión
   const handleLogout = async () => {
@@ -86,7 +86,7 @@ export default function PerfilContent({ session }: Props) {
     }
   };
 
-// Función para renderizar el contenido según la vista seleccionada
+  // Función para renderizar el contenido según la vista seleccionada
   const renderContent = () => {
     switch (view) {
       case 'perfil':
@@ -97,10 +97,10 @@ export default function PerfilContent({ session }: Props) {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.3 }}
-            className="bg-white/40 rounded-xl p-6 text-sm leading-loose shadow"
+            className="bg-white/40 rounded-xl p-6 mb-8 md:mb-0 text-sm leading-loose shadow"
           >
             {usuario && csrfToken && (
-            <FormularioEdicionUsuario usuario={usuario} csrfToken={csrfToken} />
+            <FormularioEdicionUsuario usuario={usuario} csrfToken={csrfToken} onUpdateSuccess={fetchUsuario}/>
             )}
           </motion.div>
         );
@@ -155,9 +155,9 @@ export default function PerfilContent({ session }: Props) {
   `;
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-[270px_1fr] gap-4 lg:gap-8">
+    <div className="grid grid-cols-1 md:grid-cols-[270px_1fr] gap-4 md:gap-8">
       {/* Sidebar */}
-      <aside className="bg-sky-950 min-h-[82vh] font-extrabold tracking-widest rounded-2xl p-6 flex flex-col items-center shadow-lg w-full">
+      <aside className="bg-sky-950 min-h-[82vh] font-extrabold font-blowbrush tracking-widest rounded-2xl p-6 flex flex-col items-center shadow-lg w-full">
         <img src="/img/perfil/perfil.jpg" alt="avatar" className="w-30 h-30 my-3 rounded-full border-4 border-white" />
         <span className="text-xs text-gray-200 text-16 uppercase">Rol: {usuario?.rol}</span>
 
@@ -182,7 +182,7 @@ export default function PerfilContent({ session }: Props) {
               MIS PRODUCTOS
             </button>
           </li>
-
+            
           {parsedSession.rol === 'admin' && (
             <li>
               <button onClick={() => setView('instructor')} className={getButtonStyle('instructor')}>
@@ -197,7 +197,7 @@ export default function PerfilContent({ session }: Props) {
           <li>
             <button
               onClick={handleLogout}
-              className="text-red-300 hover:text-red-100 cursor-pointer transition flex items-center justify-start ml-9 gap-2"
+              className="text-red-300 hover:text-red-100 cursor-pointer transition flex items-center justify-start mx-auto md:ml-9 gap-2"
             >
               <LogOut className="w-5 h-5" />
               CERRAR SESIÓN
@@ -209,23 +209,34 @@ export default function PerfilContent({ session }: Props) {
       {/* Contenido principal */}
       <section className="flex flex-col gap-6">
         {/* Estadísticas */}
-        <div className="bg-white/40 p-4 rounded-xl tracking-widest text-center shadow">
-          <h3 className="text-3xl text-sky-950 font-bold">BIENVENIDO {usuario?.nombre?.toUpperCase() || 'USUARIO'}!</h3>
+        <div className="bg-white/40 p-4 rounded-xl font-blowbrush tracking-widest text-center shadow">
+        <AnimatePresence mode="wait">
+          <motion.h3
+            key={usuario?.nombre} // forzar animación cuando cambie el nombre
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 10 }}
+            transition={{ duration: 0.4 }}
+            className="text-3xl text-sky-950 font-bold"
+          >
+            ¡BIENVENIDO {usuario?.nombre?.toUpperCase() || 'USUARIO'}!
+          </motion.h3>
+        </AnimatePresence>
           <p className="text-gray-400 uppercase">Aquí puedes ver tus estadísticas y actividades recientes.</p>
         </div>
         {/* Resumen de actividad */}
-        <div className="grid grid-cols-1 font-extrabold tracking-widest sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 font-extrabold font-blowbrush tracking-widest sm:grid-cols-2 lg:grid-cols-3 gap-4">
           <div className="bg-white/40 p-4 rounded-xl text-center shadow">
             <h3 className="text-lg text-zinc-900">RESERVAS ACTIVAS</h3>
-            <p className="text-3xl text-blue-400 font-bold">3</p>
+            <p className="text-3xl text-blue-600 font-bold">3</p>
           </div>
-          <div className="bg-white/40 p-4 rounded-xl text-center shadow">
+          <div className="bg-white/40 p-4 rounded-xl  text-center shadow">
             <h3 className="text-lg text-zinc-900">CLASES PRÓXIMAS</h3>
-            <p className="text-3xl text-blue-400 font-bold">2</p>
+            <p className="text-3xl text-blue-600 font-bold">2</p>
           </div>
           <div className="bg-white/40 p-4 rounded-xl text-center shadow">
             <h3 className="text-lg text-zinc-900">PRODUCTOS COMPRADOS</h3>
-            <p className="text-3xl text-blue-400 font-bold">5</p>
+            <p className="text-3xl text-blue-600 font-bold">5</p>
           </div>
         </div>
 

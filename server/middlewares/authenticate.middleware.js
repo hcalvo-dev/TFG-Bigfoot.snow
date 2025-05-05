@@ -4,7 +4,6 @@ import prisma from '../../src/lib/prisma';
 
 export const authenticateUser = async (req, res, next) => {
   try {
-    console.log('🍪 Cookies recibidas:', req.cookies); // <-- Aquí
     const token = req.cookies.token;
 
     if (!token) {
@@ -12,7 +11,6 @@ export const authenticateUser = async (req, res, next) => {
     }
 
     const decoded = jwt.verify(token, JWT_SECRET);
-    console.log('🔓 Token decodificado:', decoded); // <-- Aquí
 
     const user = await prisma.usuario.findUnique({
       where: { id: decoded.userId },
@@ -26,7 +24,6 @@ export const authenticateUser = async (req, res, next) => {
     req.user = user;
     next();
   } catch (err) {
-    console.error('❌ Error en middleware auth:', err); // <-- Aquí
     return res.status(500).json({ message: 'Error interno en autenticación' });
   }
 };

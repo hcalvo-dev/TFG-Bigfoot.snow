@@ -15,66 +15,103 @@ export const registerUser = async (req, res) => {
     return res.status(400).json({ message: 'Las contraseñas no coinciden' });
   }
 
-  const existUser = await prisma.usuario.findUnique({
-    where: { email }
-  });
-
-  if (existUser) {
-    return res.status(400).json({ message: 'El usuario ya existe' });
-  }
-  // Validar el formato del email
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailRegex.test(email)) {
     return res.status(400).json({ message: 'Formato de email inválido' });
   }
 
-  // Validar la longitud del nombre
   if (name.length < 3) {
     return res.status(400).json({ message: 'El nombre debe tener al menos 3 caracteres' });
   }
-  // Validar el formato de la contraseña
+
   const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[.\-_*:;])[a-zA-Z\d.\-_*:;]{6,}$/;
   if (!passwordRegex.test(password)) {
     return res.status(400).json({ message: 'Formato de contraseña inválido' });
   }
 
   const hashedPassword = await bcrypt.hash(password, 10);
-
+  
   const rol = await prisma.rol.findUnique({
     where: { nombre: 'user' },
   });
 
+  const existUser = await prisma.usuario.findFirst({
+    where: { email },
+  });
+
+  if (existUser) {
+    if (existUser.estadoCuenta === false) {
+      // Reactivar usuario existente
+      const updatedUser = await prisma.usuario.update({
+        where: { id: existUser.id },
+        data: {
+          nombre: name,
+          password: hashedPassword,
+          estadoCuenta: true,
+        },
+      });
+
+      const rolExistente = await prisma.rol.findUnique({
+        where: { id: updatedUser.rolId },
+      });
+
+      const token = jwt.sign(
+        { userId: updatedUser.id, email: updatedUser.email, rol: rolExistente.nombre },
+        JWT_SECRET,
+        { expiresIn: '3h' }
+      );
+
+      return res
+        .cookie('token', token, { httpOnly: true, secure: true, sameSite: 'strict' })
+        .status(200)
+        .json({ message: 'Cuenta reactivada correctamente', token });
+    } else {
+      return res.status(400).json({ message: 'El usuario ya existe' });
+    }
+  }
+
+  // Crear nuevo usuario
   const user = await prisma.usuario.create({
-    data: { nombre: name, email, password: hashedPassword, rolId: rol.id },
+    data: {
+      nombre: name,
+      email,
+      password: hashedPassword,
+      rolId: rol.id,
+      estadoCuenta: true,
+    },
   });
 
   const token = jwt.sign(
-    { userId: user.id, email: user.email , rol: rol.nombre},
+    { userId: user.id, email: user.email, rol: rol.nombre },
     JWT_SECRET,
     { expiresIn: '3h' }
   );
 
-  // Enviar el token como cookie httpOnly
   res
     .cookie('token', token, { httpOnly: true, secure: true, sameSite: 'strict' })
     .status(201)
     .json({ message: 'Usuario registrado correctamente', token });
 };
 
+
 export const loginUser = async (req, res) => {
   const { email, password } = req.body;
 
   const user = await prisma.usuario.findUnique({
-    where: { email }
+    where: {  
+      email,
+      estadoCuenta: true,
+    }
   });
 
-  const rol = await prisma.rol.findUnique({
-    where: { id: user.rolId }
-  });
-
+  
   if (!user) {
     return res.status(400).json({ message: 'Usuario no encontrado' });
   }
+  
+  const rol = await prisma.rol.findUnique({
+    where: { id: user.rolId }
+  });
 
   const isValid = await bcrypt.compare(password, user.password);
 

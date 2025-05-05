@@ -4,7 +4,6 @@ const navItems = [
   { label: 'EQUIPOS', path: 'equipos' },
   { label: 'CLASES', path: 'clases' },
   { label: 'CONTACTO', path: 'contacto' },
-  { label: 'ADMIN', path: 'admin', onlyFor: 'admin' }
 ];
 import MenuClient from './dropdown.tsx';
 import { ShoppingCart } from '@lucide/astro';
@@ -39,8 +38,7 @@ console.log('🔎 Sesión activa:', session);
     <nav class="flex">
       <!-- Desktop Menu -->
       <ul class="hidden xl:flex space-x-4 ml-10 mr-5 pl-10">
-        {navItems.map(({ label, path, onlyFor }) => {
-          if (onlyFor && session.rol !== onlyFor) return null;
+        {navItems.map(({ label, path }) => {
         
           return (
             <li>
@@ -69,8 +67,7 @@ console.log('🔎 Sesión activa:', session);
           <button id="menu-close" class="text-black flex top-1 absolute text-5xl cursor-pointer">&times;</button>
         </div>
         <ul class="flex flex-col pt-12 px-6 pb-6">
-          {navItems.map(({ label, path, onlyFor }) => {
-            if (onlyFor && session.rol !== onlyFor) return null;
+          {navItems.map(({ label, path, }) => {
           
             return (
               <li>
