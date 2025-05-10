@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { User, School, ShoppingBag, LogOut, ClipboardList } from 'lucide-react';
+import { User, School, ShoppingBag, LogOut, ClipboardList, UserRoundSearch  } from 'lucide-react';
 import FormularioEdicionUsuario from './FormEditUser';
+import UsuariosTable from './UsuariosTable';
+import AltaInstructorForm from './AltaInstructor';
 
 // Definimos el tipo de las props y del usuario
 type Props = {
@@ -24,8 +26,11 @@ export default function PerfilContent({ session }: Props) {
   };
   
   const [usuario, setUsuario] = useState<Usuario | null>(null);
+  const [reservasActivas, setReservasActivas] = useState({ total: 0, datos: [] });
+  const [clasesProximas, setClasesProximas] = useState({ total: 0, datos: [] });
+  const [productosReservados, setProductosReservados] = useState({ total: 0, datos: [] });
   const [reloadUser, setReloadUser] = useState(false);
-  const [view, setView] = useState<'perfil' | 'clases' | 'productos' | 'instructor'>('perfil');
+  const [view, setView] = useState<'perfil' | 'clases' | 'productos' | 'instructor' | 'usuarios'>('perfil');
   const [csrfToken, setCsrfToken] = useState('');
 
   // Obtenemos el token CSRF al cargar el componente
@@ -63,10 +68,43 @@ export default function PerfilContent({ session }: Props) {
     }
   };
 
+  // Obtenemos las estadísticas al cargar el componente
+  const fetchEstadisticas = async () => {
+    try {
+      const endpoints = [
+        { url: '/api/estadisticas/reservas-activas', setter: setReservasActivas },
+        { url: '/api/estadisticas/clases-proximas', setter: setClasesProximas },
+        { url: '/api/estadisticas/productos-reservados', setter: setProductosReservados },
+      ];
+  
+      for (const { url, setter } of endpoints) {
+        const res = await fetch(`http://localhost:4000${url}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'CSRF-Token': csrfToken,
+          },
+          credentials: 'include',
+        });
+        const data = await res.json();
+        setter(data);
+      }
+    } catch (err) {
+      console.error('Error al obtener estadísticas:', err);
+    }
+  };
+  
+  // Actualizamos el usuario y las estadísticas al cargar el componente
   useEffect(() => {
     if (csrfToken) fetchUsuario();
-  }, [csrfToken, reloadUser]); // <- importante aquí
-  
+  }, [csrfToken, reloadUser]); 
+
+  // Actualizamos las estadísticas al cargar el componente
+  useEffect(() => {
+    if (usuario && csrfToken) {
+      fetchEstadisticas();
+    }
+  }, [usuario, csrfToken]);
 
     // Función para cerrar sesión
   const handleLogout = async () => {
@@ -112,7 +150,7 @@ export default function PerfilContent({ session }: Props) {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.3 }}
-            className="bg-white/10 rounded-xl p-6 text-sm leading-loose shadow"
+            className="bg-white/10 rounded-xl p-6 mb-8 md:mb-0 text-sm leading-loose shadow"
           >
             <h3 className="text-xl mb-4 text-blue-300">Tus clases</h3>
             <p className="text-gray-300">Aquí se mostrarán las clases en las que estás inscrito.</p>
@@ -126,7 +164,7 @@ export default function PerfilContent({ session }: Props) {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.3 }}
-            className="bg-white/10 rounded-xl p-6 text-sm leading-loose shadow"
+            className="bg-white/10 rounded-xl p-6 mb-8 md:mb-0 text-sm leading-loose shadow"
           >
             <h3 className="text-xl mb-4 text-blue-300">Tus productos comprados</h3>
             <p className="text-gray-300">Aquí verás el historial de tus productos.</p>
@@ -140,12 +178,28 @@ export default function PerfilContent({ session }: Props) {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.3 }}
-            className="bg-white/10 rounded-xl p-6 text-sm leading-loose shadow"
+            className="bg-white/10 rounded-xl p-6 mb-8 md:mb-0 text-sm leading-loose shadow"
           >
-            <h3 className="text-xl mb-4 text-blue-300">Instructores</h3>
-            <p className="text-gray-300">Aquí se mostrarán todos los instructores que están dados de alta.</p>
+            {usuario && csrfToken && (
+            <AltaInstructorForm csrfToken={csrfToken} onCreationSuccess={fetchUsuario}/>
+            )}
           </motion.div>
         );
+        case 'usuarios':
+          return (
+            <motion.div
+              key="usuarios"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.3 }}
+              className="bg-white/40 rounded-xl p-6 mb-8 md:mb-0 text-sm leading-loose shadow"
+            >
+              {usuario && csrfToken && (
+              <UsuariosTable usuario={usuario} csrfToken={csrfToken} onUpdateSuccess={fetchUsuario} />
+              )}
+            </motion.div>
+          );
     }
   };
 
@@ -161,7 +215,7 @@ export default function PerfilContent({ session }: Props) {
         <img src="/img/perfil/perfil.jpg" alt="avatar" className="w-30 h-30 my-3 rounded-full border-4 border-white" />
         <span className="text-xs text-gray-200 text-16 uppercase">Rol: {usuario?.rol}</span>
 
-        <hr className="border-t my-11 border-white/20 w-full" />
+        <hr className="border-t my-auto border-white/20 w-full" />
 
         <ul className="space-y-2 w-full text-center">
           <li>
@@ -187,13 +241,24 @@ export default function PerfilContent({ session }: Props) {
             <li>
               <button onClick={() => setView('instructor')} className={getButtonStyle('instructor')}>
                 <ClipboardList className="w-5 h-5" />
-                INSTRUCTORES
+                ALTA INSTRUCTOR
               </button>
             </li>
           )}
 
-          <hr className="border-t my-8 border-white/20 w-full" />
-
+          {parsedSession.rol === 'admin' && (
+            <li>
+              <button onClick={() => setView('usuarios')} className={getButtonStyle('usuarios')}>
+                <UserRoundSearch className="w-5 h-5" />
+                USUARIOS
+              </button>
+            </li>
+          )}
+          </ul>
+          
+          <hr className="border-t my-auto border-white/20 w-full" />
+          
+          <ul className="space-y-2 w-full text-center">
           <li>
             <button
               onClick={handleLogout}
@@ -228,15 +293,15 @@ export default function PerfilContent({ session }: Props) {
         <div className="grid grid-cols-1 font-extrabold font-blowbrush tracking-widest sm:grid-cols-2 lg:grid-cols-3 gap-4">
           <div className="bg-white/40 p-4 rounded-xl text-center shadow">
             <h3 className="text-lg text-zinc-900">RESERVAS ACTIVAS</h3>
-            <p className="text-3xl text-blue-600 font-bold">3</p>
+            <p className="text-3xl text-blue-600 font-bold">{reservasActivas.total}</p>
           </div>
           <div className="bg-white/40 p-4 rounded-xl  text-center shadow">
             <h3 className="text-lg text-zinc-900">CLASES PRÓXIMAS</h3>
-            <p className="text-3xl text-blue-600 font-bold">2</p>
+            <p className="text-3xl text-blue-600 font-bold">{clasesProximas.total}</p>
           </div>
           <div className="bg-white/40 p-4 rounded-xl text-center shadow">
             <h3 className="text-lg text-zinc-900">PRODUCTOS COMPRADOS</h3>
-            <p className="text-3xl text-blue-600 font-bold">5</p>
+            <p className="text-3xl text-blue-600 font-bold">{productosReservados.total}</p>
           </div>
         </div>
 

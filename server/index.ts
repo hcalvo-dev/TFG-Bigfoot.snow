@@ -9,6 +9,8 @@ import cookieParser from 'cookie-parser';
 // Importa las rutas
 import authRoutes from './routes/auth.routes';
 import userRoutes from './routes/user.routes';
+import estadisticasRoutes from './routes/estadisticas.routes';
+import rolesRoutes from './routes/roles.routes';
 import reservationRoutes from './routes/reserva.routes'; 
 
 // Importa las variables de entorno desde .env
@@ -38,6 +40,8 @@ app.use(csrfProtection);
 // Rutas
 app.use('/api/auth', authRoutes); 
 app.use('/api/user', userRoutes);
+app.use('/api/estadisticas', estadisticasRoutes);
+app.use('/api/roles', rolesRoutes);
 app.use('/api/reservations', reservationRoutes);
 app.get('/api/csrf-token', (req, res) => {
     res.json({ csrfToken: req.csrfToken() });

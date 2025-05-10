@@ -31,16 +31,21 @@ export default function DesktopContent({ dividerOpacity, logosOpacity, iconsOpac
           ))}
           {/* Iconos */}
           {[{ top: "40%", Icon: CableCar }, { top: "60%", Icon: Snowflake }, { top: "80%", Icon: SunSnow }].map(({ top, Icon }, i) => (
-            <motion.a
-            key={i}
-            href={`#${navLinks[i]}`}
-            style={{ top, opacity: iconsOpacity }}
-            className="absolute left-1/2 -translate-x-1/2 -translate-y-1/2 md:w-18 md:h-18 xl:w-20 xl:h-20 rounded-full bg-white hover:bg-blue-600 transition-colors duration-300 flex items-center justify-center shadow-md group"
-            whileHover={{ scale: 1.1 }}
-          >
-            <Icon className="text-gray-600 group-hover:text-white transition-colors duration-300 w-10 h-10 md:w-10 md:h-10 xl:w-12 xl:h-12" />
-          </motion.a>
-          ))}
+  <div
+    key={i}
+    className="absolute left-1/2 -translate-x-1/2 -translate-y-1/2"
+    style={{ top }}
+  >
+    <motion.a
+      href={`#${navLinks[i]}`}
+      whileHover={{ scale: 1.1 }}
+      className="origin-center md:w-18 md:h-18 xl:w-20 xl:h-20 rounded-full bg-white hover:bg-blue-600 transition-colors duration-300 flex items-center justify-center shadow-md group"
+      style={{ opacity: iconsOpacity }}
+    >
+      <Icon className="text-gray-600 group-hover:text-white transition-colors duration-300 w-10 h-10 md:w-10 md:h-10 xl:w-12 xl:h-12" />
+    </motion.a>
+  </div>
+))}    
           <div className="flex flex-col items-center gap-1 mb-4">
             <div className="w-3.5 h-3.5 rounded-full bg-black -mt-3" />
             <div className="w-2.5 h-2.5 rounded-full bg-black mt-1" />
@@ -49,11 +54,11 @@ export default function DesktopContent({ dividerOpacity, logosOpacity, iconsOpac
         </div>
 
         {/* Tilt blocks */}
-        <motion.div className="absolute rotate-[-12deg] top-1/2 left-2/16 -translate-y-1/2" style={{ opacity: rombosOpacity }}>
+        <motion.div className="absolute rotate-[-12deg] top-1/2 left-[12.5%] -translate-y-1/2" style={{ opacity: rombosOpacity }}>
           <TiltImageBlock text="SNOW" image="/img/index/snowboard.webp" />
         </motion.div>
 
-        <motion.div className="absolute rotate-[12deg] top-1/2 right-2/16 -translate-y-1/2" style={{ opacity: rombosOpacity }}>
+        <motion.div className="absolute rotate-[12deg] top-1/2 right-[12.5%] -translate-y-1/2" style={{ opacity: rombosOpacity }}>
           <TiltImageBlock text="SKI" image="/img/index/skii.webp" />
         </motion.div>
       </div>

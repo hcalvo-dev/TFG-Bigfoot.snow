@@ -128,7 +128,7 @@ export default function AuthForm() {
         transition={{ duration: 0.8, ease: 'easeInOut' }}
       >
         <div className="absolute inset-0 bg-black opacity-70 z-0 transition-all duration-700" />
-        <div className={`relative z-10 text-center ${mode === 'login' ? 'pl-13' : 'pr-10'}`}>
+        <div className={`relative z-10 text-center ${mode === 'login' ? 'pl-12' : 'pr-10'}`}>
           <h3 className="text-3xl font-black mb-4 uppercase tracking-widest font-blowbrush">
             {mode === 'login' ? '¡Bienvenido de nuevo!' : '¡Únete a la crew!'}
           </h3>

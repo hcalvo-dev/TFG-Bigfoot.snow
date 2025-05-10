@@ -1,9 +1,10 @@
-// reservation.routes.ts (ejemplo básico)
 import { Router } from 'express';
+import { getCurrentUser, updateCurrentUser, deleteCurrentUser } from '../controllers/currentUser.controller';
+import { authenticateUser } from '../middlewares/authenticate.middleware';
+import { sanitizeInputs } from '../middlewares/sanitize.middleware';
+
 const router = Router();
 
-router.get('/', (req, res) => {
-  res.json({ message: 'Rutas de reservas funcionando.' });
-});
+
 
 export default router;

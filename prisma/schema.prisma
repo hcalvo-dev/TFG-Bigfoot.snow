@@ -38,15 +38,35 @@ model Usuario {
 model Instructor {
   id             Int                        @id @default(autoincrement())
   especialidad   String
-  experiencia    Int
+  nivel          String
   fotoUrl        String
   activo         Boolean                    @default(true)
   usuario        Usuario                    @relation(fields: [userId], references: [id])
   userId         Int                        @unique
   clases         Clase[]
   disponibilidad InstructorDisponibilidad[]
+  montañas       Montaña[]                 @relation("InstructorMontaña")
   createdAt      DateTime                   @default(now())
   updatedAt      DateTime                   @updatedAt
+}
+
+model Montaña {
+  id           Int           @id @default(autoincrement())
+  nombre       String
+  ubicacion    String
+  altura       Int           // en metros
+  descripcion  String?
+  rutas        Ruta[]
+  instructores Instructor[]  @relation("InstructorMontaña")
+}
+
+model Ruta {
+  id         Int      @id @default(autoincrement())
+  nombre     String
+  dificultad String
+  longitud   Float    // en km
+  montaña    Montaña  @relation(fields: [montañaId], references: [id])
+  montañaId  Int
 }
 
 model Clase {

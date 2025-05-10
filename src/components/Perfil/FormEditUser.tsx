@@ -1,7 +1,7 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import PasswordInput from '../Auth/PasswordInput';
 import Swal from 'sweetalert2';
@@ -11,6 +11,7 @@ type Props = {
   usuario: { id: number; nombre: string; email: string; rol: string };
   csrfToken: string;
   onUpdateSuccess: () => void;
+  permitirEditarRol?: boolean; 
 };
 
 const schema = z
@@ -37,6 +38,7 @@ const schema = z
         message: 'Debe incluir mayúscula, minúscula, número y símbolo (-_.:*;)',
       }),
     confirmPassword: z.string().optional(),
+    rol: z.enum(['user', 'admin', 'instructor']).optional(),
   })
   .refine((data) => {
     if (data.password || data.confirmPassword) {
@@ -48,7 +50,7 @@ const schema = z
     message: 'Las contraseñas no coinciden',
   });
 
-export default function FormularioEdicionUsuario({ usuario, csrfToken, onUpdateSuccess  }: Props) {
+export default function FormularioEdicionUsuario({ usuario, csrfToken, onUpdateSuccess, permitirEditarRol  }: Props) {
   const [mensaje, setMensaje] = useState('');
   const [success, setSuccess] = useState(false);
   const [deleting, setDeleting] = useState(false);
@@ -80,6 +82,9 @@ export default function FormularioEdicionUsuario({ usuario, csrfToken, onUpdateS
     if (formData.password) {
       camposActualizados.password = formData.password;
     }
+    if (formData.rol && formData.rol !== usuario.rol) {
+      camposActualizados.rol = formData.rol;
+    }
 
     if (Object.keys(camposActualizados).length === 0) {
       setMensaje('❌ No se ha modificado ningún dato');
@@ -95,7 +100,7 @@ export default function FormularioEdicionUsuario({ usuario, csrfToken, onUpdateS
           'CSRF-Token': csrfToken,
         },
         credentials: 'include',
-        body: JSON.stringify(camposActualizados),
+        body: JSON.stringify({ id: usuario.id, ...camposActualizados })
       });
 
       const response = await res.json();
@@ -135,6 +140,7 @@ export default function FormularioEdicionUsuario({ usuario, csrfToken, onUpdateS
             'CSRF-Token': csrfToken,
           },
           credentials: 'include',
+          body: JSON.stringify({ id: usuario.id})
         });
 
         const data = await res.json();
@@ -150,6 +156,20 @@ export default function FormularioEdicionUsuario({ usuario, csrfToken, onUpdateS
       }
     }
   };
+  const [roles, setRoles] = useState<string[]>([]);
+
+  useEffect(() => {
+    if (typeof usuario.rol === 'string') {
+      // Solo cargar roles si es un admin editando otro usuario
+      fetch('http://localhost:4000/api/roles/get-Roles', {
+        credentials: 'include',
+        headers: { 'CSRF-Token': csrfToken },
+      })
+        .then(res => res.json())
+        .then(data => setRoles(data.map((r: any) => r.nombre).filter((nombre: string) => nombre !== 'instructor')))
+        .catch(err => console.error('Error cargando roles:', err));
+    }
+  }, [usuario.rol]);
 
   return (
     <div className="relative">
@@ -178,25 +198,42 @@ export default function FormularioEdicionUsuario({ usuario, csrfToken, onUpdateS
             {errors.email && <p className="text-red-400 text-sm mt-1">{errors.email.message}</p>}
           </div>
 
-          <div>
-            <label className="block font-bold font-blowbrush tracking-widest text-sky-950 mb-1">NUEVA CONTRASEÑA</label>
-            <PasswordInput
-              {...register('password')}
-              placeholder="********"
-              className={`w-full p-2 rounded bg-[#1f2937] text-white placeholder-gray-400 border border-white/20 focus:outline-none focus:ring-2 focus:ring-sky-500 ${errors.password ? 'border-red-500' : ''}`}
-            />
-            {errors.password && <p className="text-red-400 text-sm mt-1">{errors.password.message}</p>}
-          </div>
+          {permitirEditarRol && roles.length > 0 ? (
+            <div className="md:col-span-2">
+              <label className="block font-bold font-blowbrush tracking-widest text-sky-950 mb-1">ROL</label>
+              <select
+                {...register('rol')}
+                defaultValue={usuario.rol}
+                className="w-full p-2 rounded bg-[#1f2937] text-white border border-white/20 focus:outline-none focus:ring-2 focus:ring-sky-500"
+              >
+                {roles.map((r) => (
+                  <option key={r} value={r}>{r}</option>
+                ))}
+              </select>
+            </div>
+          ) : (
+            <>
+              <div>
+                <label className="block font-bold font-blowbrush tracking-widest text-sky-950 mb-1">NUEVA CONTRASEÑA</label>
+                <PasswordInput
+                  {...register('password')}
+                  placeholder="********"
+                  className={`w-full p-2 rounded bg-[#1f2937] text-white placeholder-gray-400 border border-white/20 focus:outline-none focus:ring-2 focus:ring-sky-500 ${errors.password ? 'border-red-500' : ''}`}
+                />
+                {errors.password && <p className="text-red-400 text-sm mt-1">{errors.password.message}</p>}
+              </div>
 
-          <div>
-            <label className="block font-bold font-blowbrush tracking-widest text-sky-950 mb-1">REPITE CONTRASEÑA</label>
-            <PasswordInput
-              {...register('confirmPassword')}
-              placeholder="********"
-              className={`w-full p-2 rounded bg-[#1f2937] text-white placeholder-gray-400 border border-white/20 focus:outline-none focus:ring-2 focus:ring-sky-500 ${errors.confirmPassword ? 'border-red-500' : ''}`}
-            />
-            {errors.confirmPassword && <p className="text-red-400 text-sm mt-1">{errors.confirmPassword.message}</p>}
-          </div>
+              <div>
+                <label className="block font-bold font-blowbrush tracking-widest text-sky-950 mb-1">REPITE CONTRASEÑA</label>
+                <PasswordInput
+                  {...register('confirmPassword')}
+                  placeholder="********"
+                  className={`w-full p-2 rounded bg-[#1f2937] text-white placeholder-gray-400 border border-white/20 focus:outline-none focus:ring-2 focus:ring-sky-500 ${errors.confirmPassword ? 'border-red-500' : ''}`}
+                />
+                {errors.confirmPassword && <p className="text-red-400 text-sm mt-1">{errors.confirmPassword.message}</p>}
+              </div>
+            </>
+          )}
 
           <div className="md:col-span-2 gap-6 flex flex-row justify-between items-center mt-2">
             {/* Botón guardar con espacio fijo a la izquierda */}

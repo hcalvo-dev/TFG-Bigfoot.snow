@@ -22,26 +22,50 @@ export const getCurrentUser = async (req, res) => {
 
   export const updateCurrentUser = async (req, res) => {
     try {
-      const userId = req.user.id;
-      const { nombre, email, password } = req.body;
-  
+      const { id, nombre, email, password, rol } = req.body;
+      const rolesPermitidos = ['admin', 'user'];
+
       const dataToUpdate = {};
   
       if (nombre) dataToUpdate.nombre = nombre;
       if (email) dataToUpdate.email = email;
       if (password) {
-        // Si usas hashing (bcrypt), hashea la password aquí
         const bcrypt = await import('bcryptjs');
         const hashed = await bcrypt.hash(password, 10);
         dataToUpdate.password = hashed;
       }
   
+      // Evita que el usuario se cambie a sí mismo el rol
+      if (rol) {
+        if (!req.user?.id || req.user.id === id) {
+          return res.status(403).json({
+            message: '❌ Solo otro administrador puede cambiar tu rol',
+          });
+        }
+  
+        // Añade la relación del nuevo rol
+        dataToUpdate.rol = {
+          connect: {
+            nombre: rol, 
+          },
+        };
+
+      }
+
+      if (rol && !rolesPermitidos.includes(rol)) {
+      return res.status(400).json({
+        message: '❌ Rol inválido. Solo se permiten admin o user ',
+      });
+    }
+  
       if (Object.keys(dataToUpdate).length === 0) {
-        return res.status(400).json({ message: 'No se envió ningún campo para actualizar' });
+        return res
+          .status(400)
+          .json({ message: 'No se envió ningún campo para actualizar' });
       }
   
       const updatedUser = await prisma.usuario.update({
-        where: { id: userId },
+        where: { id },
         data: dataToUpdate,
       });
   
@@ -51,23 +75,60 @@ export const getCurrentUser = async (req, res) => {
       res.status(500).json({ message: '❌ Error al actualizar el usuario' });
     }
   };
-
+  
   export const deleteCurrentUser = async (req, res) => {
     try {
-      const userId = req.user.id;
+      const { id } = req.body;
   
       const updatedUser = await prisma.usuario.update({
-        where: { id: userId },
+        where: { id: id },
         data: { estadoCuenta: false }, 
       });
 
       console.log('Usuario actualizado:', updatedUser);
 
-      await logoutUser(req, res); 
+       // Solo se cierra sesión si el usuario eliminado es el mismo que está logueado
+      if (req.user?.id === id) {
+        await logoutUser(req, res);
+      }
   
       res.json({ message: 'Cuenta desactivada correctamente', user: updatedUser });
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: 'Error al desactivar la cuenta' });
+    }
+  };
+
+  export const activateUser = async (req, res) => {
+    try {
+      const { id } = req.body;
+  
+      const updatedUser = await prisma.usuario.update({
+        where: { id: id, estadoCuenta: false },
+        data: { estadoCuenta: true }, 
+      });
+  
+      res.json({ message: 'Cuenta reactivada correctamente', user: updatedUser });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Error al reactivar la cuenta' });
+    }
+  }
+
+  export const allCurrentUser = async (req, res) => {
+    try {
+      const users = await prisma.usuario.findMany({
+        orderBy: {
+          id: 'asc',
+        },
+        include: {
+          rol: true,
+        },
+      });
+  
+      res.json(users);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Error al obtener los usuarios' });
     }
   };
