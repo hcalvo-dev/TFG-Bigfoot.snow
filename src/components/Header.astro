@@ -3,7 +3,8 @@ const navItems = [
   { label: 'INICIO', path: '/' },
   { label: 'EQUIPOS', path: 'equipos' },
   { label: 'CLASES', path: 'clases' },
-  { label: 'CONTACTO', path: 'contacto' },
+  { label: 'MONTAÑAS', path: 'montanas' },
+  { label: 'CONTACTO', path: 'contacto' }
 ];
 import MenuClient from './dropdown.tsx';
 import { ShoppingCart } from '@lucide/astro';
@@ -12,6 +13,8 @@ import {AccountLinkWrapper,AccountLinkWrapper_lateral} from '../components/Auth/
 import { checkSession } from '../../utils/checkSession';
 
 const session = checkSession(Astro.request);
+const currentPath = Astro.url.pathname;
+
 console.log('🔎 Sesión activa:', session);
 
 ---
@@ -44,7 +47,9 @@ console.log('🔎 Sesión activa:', session);
             <li>
               <a
                 href={path}
-                class="hover:text-blue-500 font-bold text-standard font-blowbrush tracking-widest"
+                class={`font-bold text-standard font-blowbrush tracking-widest transition-colors duration-300 ${
+                  currentPath === `/${path}` || (path === '/' && currentPath === '/') ? 'squiggly-underline text-blue-600' : 'hover:text-blue-500'
+                }`}
               >
                 {label}
               </a>
@@ -70,14 +75,16 @@ console.log('🔎 Sesión activa:', session);
           {navItems.map(({ label, path, }) => {
           
             return (
-              <li>
-                <a
-                  href={path}
-                  class="text-white text-xl pt-4 hover:text-blue-600 text-standard font-blowbrush tracking-widest"
-                >
-                  {label}
-                </a>
-              </li>
+            <li>
+              <a
+                href={path}
+                class={`text-white text-xl pt-4 hover:text-blue-600 text-standard font-blowbrush tracking-widest transition-colors duration-300 ${
+                  currentPath === `/${path}` || (path === '/' && currentPath === '/') ? 'squiggly-underline text-blue-600' : 'hover:text-blue-500'
+                }`}
+              >
+                {label}
+              </a>
+            </li>
             );
           })}
         </ul>

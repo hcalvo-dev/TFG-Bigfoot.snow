@@ -179,7 +179,6 @@ export default function UsuariosTable({ usuario, csrfToken,onUpdateSuccess }: Pr
           </table>
         </div>
 
-        // Paginación de usuarios
         <Pagination
         currentPage={paginaActual}
         totalPages={totalPaginas}

@@ -5,7 +5,9 @@
     "dev": "concurrently \"astro dev\" \"ts-node-dev server/index.ts\"",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "db:reset": "prisma migrate reset --force",
+    "db:seed": "ts-node prisma/seed.ts"
   },
   "dependencies": {
     "@astrojs/react": "4.2.4",
@@ -19,12 +21,14 @@
     "cookie-parser": "1.4.7",
     "cors": "2.8.5",
     "csurf": "1.11.0",
+    "date-fns": "^4.1.0",
     "dotenv": "16.5.0",
     "express": "5.1.0",
     "framer-motion": "12.7.4",
     "fuse.js": "7.1.0",
     "jsonwebtoken": "9.0.2",
     "lucide-react": "0.503.0",
+    "multer": "1.4.5-lts.2",
     "nodemailer": "6.10.1",
     "prisma": "6.6.0",
     "react": "19.1.0",

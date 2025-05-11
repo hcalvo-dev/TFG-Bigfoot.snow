@@ -33,7 +33,7 @@ export default function Pagination({ currentPage, totalPages, onPageChange }: Pr
   return (
     <AnimatePresence mode="wait">
   <motion.div
-    className="flex justify-center gap-2 flex-wrap"
+    className="flex mt-5 justify-center gap-2 flex-wrap"
     initial={{ opacity: 0, y: 10 }}
     animate={{ opacity: 1, y: 0 }}
     exit={{ opacity: 0, y: -10 }}

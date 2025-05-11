@@ -236,7 +236,7 @@ export default function FormularioEdicionUsuario({ usuario, csrfToken, onUpdateS
           )}
 
           <div className="md:col-span-2 gap-6 flex flex-row justify-between items-center mt-2">
-            {/* Botón guardar con espacio fijo a la izquierda */}
+            {/* Botón guardar con animación */}
             <div className="w-full flex justify-start">
               <motion.button
                 layout

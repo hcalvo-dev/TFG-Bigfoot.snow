@@ -17,6 +17,9 @@ module.exports = {
         ...Object.fromEntries(
           Array.from({ length: 30 }, (_, i) => [i + 1, `${(i + 1) * 0.25}rem`])
         )
+      },
+      clipPath: {
+        'wave-bottom': 'polygon(0 0, 100% 0, 100% 90%, 50% 100%, 0 90%)'
       }
     },
   },
