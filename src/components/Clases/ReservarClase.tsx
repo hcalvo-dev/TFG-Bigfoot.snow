@@ -220,7 +220,24 @@ export default function ReservarClase() {
                       <label htmlFor={`checkbox-${index}`} className="sr-only">Seleccionar hora</label>
                     </div>
                   </td>
-                  <td className="px-8 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{hora.hora}</td>
+                  <td className="px-8 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                    {hora.hora}
+                    {fechaSeleccionada && (
+                      <>
+                      {' '}
+                        -{' '}
+                        {(() => {
+                          const date = new Date(fechaSeleccionada);
+                          const dias = ['Dom', 'Lun', 'Mar', 'Mier', 'Jue', 'Vier', 'Sab'];
+                          const letraDia = dias[date.getDay()];
+                          const dia = String(date.getDate()).padStart(2, '0');
+                          const mes = String(date.getMonth() + 1).padStart(2, '0');
+                          const anio = date.getFullYear();
+                          return `${letraDia} - ${dia}-${mes}-${anio}`;
+                        })()}
+                      </>
+                    )}
+                  </td>
                   <td className="px-8 py-4">
                     {hora.disponible
                       ? <span className="text-green-600 font-semibold">Disponible</span>
