@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { User, School, ShoppingBag, LogOut, ClipboardList, UserRoundSearch  } from 'lucide-react';
+import { User, School, ShoppingBag, LogOut, ClipboardList, UserRoundSearch } from 'lucide-react';
 import FormularioEdicionUsuario from './FormEditUser';
 import UsuariosTable from './UsuariosTable';
 import AltaInstructorForm from './AltaInstructor';
@@ -11,11 +11,11 @@ type Props = {
 };
 
 type Usuario = {
-    id: number;
-    nombre: string;
-    email: string;
-    rol: string;
-  };
+  id: number;
+  nombre: string;
+  email: string;
+  rol: string;
+};
 
 export default function PerfilContent({ session }: Props) {
   const parsedSession = JSON.parse(session) as {
@@ -24,32 +24,34 @@ export default function PerfilContent({ session }: Props) {
     email?: string;
     rol?: string;
   };
-  
+
   const [usuario, setUsuario] = useState<Usuario | null>(null);
   const [reservasActivas, setReservasActivas] = useState({ total: 0, datos: [] });
   const [clasesProximas, setClasesProximas] = useState({ total: 0, datos: [] });
   const [productosReservados, setProductosReservados] = useState({ total: 0, datos: [] });
   const [reloadUser, setReloadUser] = useState(false);
-  const [view, setView] = useState<'perfil' | 'clases' | 'productos' | 'instructor' | 'usuarios'>('perfil');
+  const [view, setView] = useState<'perfil' | 'clases' | 'productos' | 'instructor' | 'usuarios'>(
+    'perfil'
+  );
   const [csrfToken, setCsrfToken] = useState('');
 
   // Obtenemos el token CSRF al cargar el componente
   useEffect(() => {
-      const fetchCsrfToken = async () => {
+    const fetchCsrfToken = async () => {
       try {
-          const res = await fetch('http://localhost:4000/api/csrf-token', {
+        const res = await fetch('http://localhost:4000/api/csrf-token', {
           credentials: 'include',
         });
         const data = await res.json();
         setCsrfToken(data.csrfToken);
-    } catch (error) {
+      } catch (error) {
         console.error('Error al obtener token CSRF:', error);
-    }
+      }
     };
 
     fetchCsrfToken();
-    }, []);
-  
+  }, []);
+
   // Obtenemos el usuario al cargar el componente
   const fetchUsuario = async () => {
     try {
@@ -76,7 +78,7 @@ export default function PerfilContent({ session }: Props) {
         { url: '/api/estadisticas/clases-proximas', setter: setClasesProximas },
         { url: '/api/estadisticas/productos-reservados', setter: setProductosReservados },
       ];
-  
+
       for (const { url, setter } of endpoints) {
         const res = await fetch(`http://localhost:4000${url}`, {
           method: 'GET',
@@ -93,11 +95,11 @@ export default function PerfilContent({ session }: Props) {
       console.error('Error al obtener estadísticas:', err);
     }
   };
-  
+
   // Actualizamos el usuario y las estadísticas al cargar el componente
   useEffect(() => {
     if (csrfToken) fetchUsuario();
-  }, [csrfToken, reloadUser]); 
+  }, [csrfToken, reloadUser]);
 
   // Actualizamos las estadísticas al cargar el componente
   useEffect(() => {
@@ -106,7 +108,7 @@ export default function PerfilContent({ session }: Props) {
     }
   }, [usuario, csrfToken]);
 
-    // Función para cerrar sesión
+  // Función para cerrar sesión
   const handleLogout = async () => {
     try {
       await fetch('http://localhost:4000/api/auth/logout', {
@@ -135,10 +137,13 @@ export default function PerfilContent({ session }: Props) {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.3 }}
-            className="bg-white/40 rounded-xl p-6 mb-8 md:mb-0 text-sm leading-loose shadow"
-          >
+            className="bg-white/40 rounded-xl p-6 mb-8 md:mb-0 text-sm leading-loose shadow">
             {usuario && csrfToken && (
-            <FormularioEdicionUsuario usuario={usuario} csrfToken={csrfToken} onUpdateSuccess={fetchUsuario}/>
+              <FormularioEdicionUsuario
+                usuario={usuario}
+                csrfToken={csrfToken}
+                onUpdateSuccess={fetchUsuario}
+              />
             )}
           </motion.div>
         );
@@ -150,8 +155,7 @@ export default function PerfilContent({ session }: Props) {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.3 }}
-            className="bg-white/10 rounded-xl p-6 mb-8 md:mb-0 text-sm leading-loose shadow"
-          >
+            className="bg-white/10 rounded-xl p-6 mb-8 md:mb-0 text-sm leading-loose shadow">
             <h3 className="text-xl mb-4 text-blue-300">Tus clases</h3>
             <p className="text-gray-300">Aquí se mostrarán las clases en las que estás inscrito.</p>
           </motion.div>
@@ -164,8 +168,7 @@ export default function PerfilContent({ session }: Props) {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.3 }}
-            className="bg-white/10 rounded-xl p-6 mb-8 md:mb-0 text-sm leading-loose shadow"
-          >
+            className="bg-white/10 rounded-xl p-6 mb-8 md:mb-0 text-sm leading-loose shadow">
             <h3 className="text-xl mb-4 text-blue-300">Tus productos comprados</h3>
             <p className="text-gray-300">Aquí verás el historial de tus productos.</p>
           </motion.div>
@@ -178,28 +181,30 @@ export default function PerfilContent({ session }: Props) {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.3 }}
-            className="bg-white/10 rounded-xl p-6 mb-8 text-sm leading-loose shadow"
-          >
+            className="bg-white/10 rounded-xl p-6 mb-8 text-sm leading-loose shadow">
             {usuario && csrfToken && (
-            <AltaInstructorForm csrfToken={csrfToken} onCreationSuccess={fetchUsuario}/>
+              <AltaInstructorForm csrfToken={csrfToken} onCreationSuccess={fetchUsuario} />
             )}
           </motion.div>
         );
-        case 'usuarios':
-          return (
-            <motion.div
-              key="usuarios"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.3 }}
-              className="bg-white/40 rounded-xl p-6 mb-8 md:mb-0 text-sm leading-loose shadow"
-            >
-              {usuario && csrfToken && (
-              <UsuariosTable usuario={usuario} csrfToken={csrfToken} onUpdateSuccess={fetchUsuario} />
-              )}
-            </motion.div>
-          );
+      case 'usuarios':
+        return (
+          <motion.div
+            key="usuarios"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.3 }}
+            className="bg-white/40 rounded-xl p-6 mb-8 md:mb-0 text-sm leading-loose shadow">
+            {usuario && csrfToken && (
+              <UsuariosTable
+                usuario={usuario}
+                csrfToken={csrfToken}
+                onUpdateSuccess={fetchUsuario}
+              />
+            )}
+          </motion.div>
+        );
     }
   };
 
@@ -212,7 +217,11 @@ export default function PerfilContent({ session }: Props) {
     <div className="grid grid-cols-1 md:grid-cols-[270px_1fr] gap-4 md:gap-8">
       {/* Sidebar */}
       <aside className="bg-sky-950 min-h-[82vh] font-extrabold font-blowbrush tracking-widest rounded-2xl p-6 flex flex-col items-center shadow-lg w-full">
-        <img src="/img/perfil/perfil.jpg" alt="avatar" className="w-30 h-30 my-3 rounded-full border-4 border-white" />
+        <img
+          src="/img/perfil/perfil.jpg"
+          alt="avatar"
+          className="w-30 h-30 my-3 rounded-full border-4 border-white"
+        />
         <span className="text-xs text-gray-200 text-16 uppercase">Rol: {usuario?.rol}</span>
 
         <hr className="border-t my-auto border-white/20 w-full" />
@@ -236,10 +245,12 @@ export default function PerfilContent({ session }: Props) {
               MIS PRODUCTOS
             </button>
           </li>
-            
+
           {parsedSession.rol === 'admin' && (
             <li>
-              <button onClick={() => setView('instructor')} className={getButtonStyle('instructor')}>
+              <button
+                onClick={() => setView('instructor')}
+                className={getButtonStyle('instructor')}>
                 <ClipboardList className="w-5 h-5" />
                 ALTA INSTRUCTOR
               </button>
@@ -254,16 +265,15 @@ export default function PerfilContent({ session }: Props) {
               </button>
             </li>
           )}
-          </ul>
-          
-          <hr className="border-t my-auto border-white/20 w-full" />
-          
-          <ul className="space-y-2 w-full text-center">
+        </ul>
+
+        <hr className="border-t my-auto border-white/20 w-full" />
+
+        <ul className="space-y-2 w-full text-center">
           <li>
             <button
               onClick={handleLogout}
-              className="text-red-300 hover:text-red-100 cursor-pointer transition flex items-center justify-start mx-auto md:ml-9 gap-2"
-            >
+              className="text-red-300 hover:text-red-100 cursor-pointer transition flex items-center justify-start mx-auto md:ml-9 gap-2">
               <LogOut className="w-5 h-5" />
               CERRAR SESIÓN
             </button>
@@ -275,19 +285,20 @@ export default function PerfilContent({ session }: Props) {
       <section className="flex flex-col gap-6">
         {/* Estadísticas */}
         <div className="bg-white/40 p-4 rounded-xl font-blowbrush tracking-widest text-center shadow">
-        <AnimatePresence mode="wait">
-          <motion.h3
-            key={usuario?.nombre} // forzar animación cuando cambie el nombre
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 10 }}
-            transition={{ duration: 0.4 }}
-            className="text-3xl text-sky-950 font-bold"
-          >
-            ¡BIENVENIDO {usuario?.nombre?.toUpperCase() || 'USUARIO'}!
-          </motion.h3>
-        </AnimatePresence>
-          <p className="text-gray-400 uppercase">Aquí puedes ver tus estadísticas y actividades recientes.</p>
+          <AnimatePresence mode="wait">
+            <motion.h3
+              key={usuario?.nombre} // forzar animación cuando cambie el nombre
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 10 }}
+              transition={{ duration: 0.4 }}
+              className="text-3xl text-sky-950 font-bold">
+              ¡BIENVENIDO {usuario?.nombre?.toUpperCase() || 'USUARIO'}!
+            </motion.h3>
+          </AnimatePresence>
+          <p className="text-gray-400 uppercase">
+            Aquí puedes ver tus estadísticas y actividades recientes.
+          </p>
         </div>
         {/* Resumen de actividad */}
         <div className="grid grid-cols-1 font-extrabold font-blowbrush tracking-widest sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -306,9 +317,7 @@ export default function PerfilContent({ session }: Props) {
         </div>
 
         {/* Vista dinámica con animación */}
-        <AnimatePresence mode="wait">
-          {renderContent()}
-        </AnimatePresence>
+        <AnimatePresence mode="wait">{renderContent()}</AnimatePresence>
       </section>
     </div>
   );

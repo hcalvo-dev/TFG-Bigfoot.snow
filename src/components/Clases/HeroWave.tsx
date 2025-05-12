@@ -9,8 +9,7 @@ export default function HeroWave() {
         style={{
           clipPath: 'ellipse(120% 90% at 50% 0%)',
           WebkitClipPath: 'ellipse(120% 90% at 50% 0%)',
-        }}
-      >
+        }}>
         <div className="absolute inset-0 z-0">
           <img
             src="/img/clases/portada.webp"
@@ -30,10 +29,9 @@ export default function HeroWave() {
         </div>
         {/* Botón justo encima de la curva */}
         <motion.a
-        href="#contenido"
-        className="absolute z-20 bottom-[80px] left-1/2 transform -translate-x-1/2 bg-sky-9500/50 hover:bg-sky-950 p-2 rounded-xl transition duration-700 ease-in-out"
-        >
-        <CircleChevronDown className="w-10 h-10 text-white" />
+          href="#contenido"
+          className="absolute z-20 bottom-[12%] left-1/2 transform -translate-x-1/2 bg-sky-9500/50 hover:bg-sky-950 p-2 rounded-xl transition duration-700 ease-in-out">
+          <CircleChevronDown className="w-10 h-10 text-white" />
         </motion.a>
       </section>
     </div>

@@ -13,7 +13,9 @@ export default function MobileContent({ firstOpacity, firstY, secondOpacity, sec
     <motion.div className="block md:hidden relative w-full min-h-[400vh]">
       {/* Snowboard block */}
       <div className="sticky top-0 h-screen  flex flex-col items-center justify-center">
-        <motion.div className="flex flex-col items-center gap-6 p-4" style={{ opacity: firstOpacity, y: firstY }}>
+        <motion.div
+          className="flex flex-col items-center gap-6 p-4"
+          style={{ opacity: firstOpacity, y: firstY }}>
           <TiltImageBlock text="" image="/img/index/snowboard.webp" />
           <div className="text-center">
             <h2 className="text-3xl font-bold text-black mb-4">SNOWBOARD</h2>
@@ -24,7 +26,9 @@ export default function MobileContent({ firstOpacity, firstY, secondOpacity, sec
 
       {/* Ski block */}
       <div className="sticky top-0 h-screen flex flex-col items-center justify-center">
-        <motion.div className="flex flex-col items-center gap-6 p-4" style={{ opacity: secondOpacity, y: secondY }}>
+        <motion.div
+          className="flex flex-col items-center gap-6 p-4"
+          style={{ opacity: secondOpacity, y: secondY }}>
           <TiltImageBlock text="" image="/img/index/skii.webp" />
           <div className="text-center">
             <h2 className="text-3xl font-bold text-black mb-4">ESQUÍ</h2>

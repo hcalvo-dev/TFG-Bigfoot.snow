@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import Swal from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
 import FormularioEdicionUsuario from './FormEditUser';
-import Pagination from '../Pagination/Pagination'; 
+import Pagination from '../Pagination/Pagination';
 
 type Usuario = { id: number; nombre: string; email: string; rol: string };
 
@@ -20,7 +20,7 @@ type Props = {
   onUpdateSuccess: () => void;
 };
 
-export default function UsuariosTable({ usuario, csrfToken,onUpdateSuccess }: Props) {
+export default function UsuariosTable({ usuario, csrfToken, onUpdateSuccess }: Props) {
   const [usuarios, setUsuarios] = useState<UsuarioConRol[]>([]);
   const [editando, setEditando] = useState<UsuarioConRol | null>(null);
   const [busqueda, setBusqueda] = useState('');
@@ -55,15 +55,15 @@ export default function UsuariosTable({ usuario, csrfToken,onUpdateSuccess }: Pr
     if (!confirm.isConfirmed) return;
 
     try {
-        const res = await fetch('http://localhost:4000/api/user/delete', {
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json',
-            'CSRF-Token': csrfToken,
-          },
-          credentials: 'include',
-          body: JSON.stringify({ id: id})
-        });
+      const res = await fetch('http://localhost:4000/api/user/delete', {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'CSRF-Token': csrfToken,
+        },
+        credentials: 'include',
+        body: JSON.stringify({ id: id }),
+      });
       if (!res.ok) throw new Error();
       fetchUsuarios();
     } catch {
@@ -95,10 +95,11 @@ export default function UsuariosTable({ usuario, csrfToken,onUpdateSuccess }: Pr
     }
   };
 
-  const usuariosFiltrados = usuarios.filter((u) =>
-    u.nombre.toLowerCase().includes(busqueda.toLowerCase()) ||
-    u.email.toLowerCase().includes(busqueda.toLowerCase()) ||
-    u.rol.nombre.toLowerCase().includes(busqueda.toLowerCase())
+  const usuariosFiltrados = usuarios.filter(
+    (u) =>
+      u.nombre.toLowerCase().includes(busqueda.toLowerCase()) ||
+      u.email.toLowerCase().includes(busqueda.toLowerCase()) ||
+      u.rol.nombre.toLowerCase().includes(busqueda.toLowerCase())
   );
 
   const totalPaginas = Math.ceil(usuariosFiltrados.length / filasPorPagina);
@@ -141,34 +142,36 @@ export default function UsuariosTable({ usuario, csrfToken,onUpdateSuccess }: Pr
               {usuariosPaginados.map((u) => (
                 <tr
                   key={u.id}
-                  className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600"
-                >
-                  <td className="py-2 px-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{u.id}</td>
-                  <td className="py-2 px-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{u.nombre}</td>
+                  className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600">
+                  <td className="py-2 px-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                    {u.id}
+                  </td>
+                  <td className="py-2 px-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                    {u.nombre}
+                  </td>
                   <td className="py-2 px-4 text-white/90">{u.email}</td>
-                  <td className="py-2 px-4 text-white/90">{u.estadoCuenta ? 'Activo' : 'Inactivo'}</td>
+                  <td className="py-2 px-4 text-white/90">
+                    {u.estadoCuenta ? 'Activo' : 'Inactivo'}
+                  </td>
                   <td className="py-2 px-4 text-white/90">{u.rol.nombre}</td>
                   <td className="py-2 px-4 space-x-2">
                     {u.estadoCuenta ? (
                       <>
                         <button
                           onClick={() => setEditando(u)}
-                          className="bg-blue-500 hover:bg-blue-600 px-3 py-1 rounded font-medium text-gray-900 whitespace-nowrap dark:text-white shadow shadow-black/40"
-                        >
+                          className="bg-blue-500 hover:bg-blue-600 px-3 py-1 rounded font-medium text-gray-900 whitespace-nowrap dark:text-white shadow shadow-black/40">
                           Editar
                         </button>
                         <button
                           onClick={() => handleDelete(u.id)}
-                          className="bg-red-500 hover:bg-red-600 px-3 py-1 rounded font-medium text-gray-900 whitespace-nowrap dark:text-white shadow shadow-black/40"
-                        >
+                          className="bg-red-500 hover:bg-red-600 px-3 py-1 rounded font-medium text-gray-900 whitespace-nowrap dark:text-white shadow shadow-black/40">
                           Eliminar
                         </button>
                       </>
                     ) : (
                       <button
                         onClick={() => handleActivate(u.id)}
-                        className="bg-green-600 hover:bg-green-700 px-3 py-1 rounded font-medium text-white shadow shadow-black/40"
-                      >
+                        className="bg-green-600 hover:bg-green-700 px-3 py-1 rounded font-medium text-white shadow shadow-black/40">
                         Activar
                       </button>
                     )}
@@ -180,38 +183,35 @@ export default function UsuariosTable({ usuario, csrfToken,onUpdateSuccess }: Pr
         </div>
 
         <Pagination
-        currentPage={paginaActual}
-        totalPages={totalPaginas}
-        onPageChange={setPaginaActual}
+          currentPage={paginaActual}
+          totalPages={totalPaginas}
+          onPageChange={setPaginaActual}
         />
 
         {editando && (
           <div
             className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4"
-            onClick={() => setEditando(null)}
-          >
+            onClick={() => setEditando(null)}>
             <div
               className="bg-white text-black p-6 rounded-2xl max-w-3xl w-full shadow-2xl relative"
-              onClick={(e) => e.stopPropagation()}
-            >
+              onClick={(e) => e.stopPropagation()}>
               <button
                 onClick={() => setEditando(null)}
-                className="absolute z-50 top-4 right-4 bg-red-500 text-white px-3 py-1 rounded-full hover:bg-red-600"
-              >
+                className="absolute z-50 top-4 right-4 bg-red-500 text-white px-3 py-1 rounded-full hover:bg-red-600">
                 ✕
               </button>
               <FormularioEdicionUsuario
                 usuario={{ ...editando, rol: editando.rol.nombre }}
                 csrfToken={csrfToken}
                 onUpdateSuccess={() => {
-                    setEditando(null);
-                    fetchUsuarios();
-                    if (editando?.id === usuario.id) {
-                        onUpdateSuccess?.(); 
-                      }
+                  setEditando(null);
+                  fetchUsuarios();
+                  if (editando?.id === usuario.id) {
+                    onUpdateSuccess?.();
+                  }
                 }}
                 permitirEditarRol
-                />
+              />
             </div>
           </div>
         )}

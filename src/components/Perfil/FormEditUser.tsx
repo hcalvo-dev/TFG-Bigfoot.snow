@@ -11,7 +11,7 @@ type Props = {
   usuario: { id: number; nombre: string; email: string; rol: string };
   csrfToken: string;
   onUpdateSuccess: () => void;
-  permitirEditarRol?: boolean; 
+  permitirEditarRol?: boolean;
 };
 
 const schema = z
@@ -31,26 +31,37 @@ const schema = z
     password: z
       .string()
       .optional()
-      .refine((val) => {
-        if (!val) return true;
-        return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[-_.:*;]).{6,}$/.test(val);
-      }, {
-        message: 'Debe incluir mayúscula, minúscula, número y símbolo (-_.:*;)',
-      }),
+      .refine(
+        (val) => {
+          if (!val) return true;
+          return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[-_.:*;]).{6,}$/.test(val);
+        },
+        {
+          message: 'Debe incluir mayúscula, minúscula, número y símbolo (-_.:*;)',
+        }
+      ),
     confirmPassword: z.string().optional(),
     rol: z.enum(['user', 'admin', 'instructor']).optional(),
   })
-  .refine((data) => {
-    if (data.password || data.confirmPassword) {
-      return data.password === data.confirmPassword;
+  .refine(
+    (data) => {
+      if (data.password || data.confirmPassword) {
+        return data.password === data.confirmPassword;
+      }
+      return true;
+    },
+    {
+      path: ['confirmPassword'],
+      message: 'Las contraseñas no coinciden',
     }
-    return true;
-  }, {
-    path: ['confirmPassword'],
-    message: 'Las contraseñas no coinciden',
-  });
+  );
 
-export default function FormularioEdicionUsuario({ usuario, csrfToken, onUpdateSuccess, permitirEditarRol  }: Props) {
+export default function FormularioEdicionUsuario({
+  usuario,
+  csrfToken,
+  onUpdateSuccess,
+  permitirEditarRol,
+}: Props) {
   const [mensaje, setMensaje] = useState('');
   const [success, setSuccess] = useState(false);
   const [deleting, setDeleting] = useState(false);
@@ -100,7 +111,7 @@ export default function FormularioEdicionUsuario({ usuario, csrfToken, onUpdateS
           'CSRF-Token': csrfToken,
         },
         credentials: 'include',
-        body: JSON.stringify({ id: usuario.id, ...camposActualizados })
+        body: JSON.stringify({ id: usuario.id, ...camposActualizados }),
       });
 
       const response = await res.json();
@@ -140,7 +151,7 @@ export default function FormularioEdicionUsuario({ usuario, csrfToken, onUpdateS
             'CSRF-Token': csrfToken,
           },
           credentials: 'include',
-          body: JSON.stringify({ id: usuario.id})
+          body: JSON.stringify({ id: usuario.id }),
         });
 
         const data = await res.json();
@@ -165,9 +176,13 @@ export default function FormularioEdicionUsuario({ usuario, csrfToken, onUpdateS
         credentials: 'include',
         headers: { 'CSRF-Token': csrfToken },
       })
-        .then(res => res.json())
-        .then(data => setRoles(data.map((r: any) => r.nombre).filter((nombre: string) => nombre !== 'instructor')))
-        .catch(err => console.error('Error cargando roles:', err));
+        .then((res) => res.json())
+        .then((data) =>
+          setRoles(
+            data.map((r: any) => r.nombre).filter((nombre: string) => nombre !== 'instructor')
+          )
+        )
+        .catch((err) => console.error('Error cargando roles:', err));
     }
   }, [usuario.rol]);
 
@@ -177,60 +192,85 @@ export default function FormularioEdicionUsuario({ usuario, csrfToken, onUpdateS
         <h2 className="text-xl mb-4 font-extrabold font-blowbrush tracking-widest text-sky-950 uppercase">
           Actualiza tus datos
         </h2>
-        <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm w-full">
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm w-full">
           <div>
-            <label className="block font-bold font-blowbrush tracking-widest text-sky-950 mb-1">NUEVO NOMBRE</label>
+            <label className="block font-bold font-blowbrush tracking-widest text-sky-950 mb-1">
+              NUEVO NOMBRE
+            </label>
             <input
               {...register('nombre')}
               placeholder={usuario.nombre}
-              className={`w-full p-2 rounded bg-[#1f2937] text-white placeholder-gray-400 border border-white/20 focus:outline-none focus:ring-2 focus:ring-sky-500 ${errors.nombre ? 'border-red-500' : ''}`}
+              className={`w-full p-2 rounded bg-[#1f2937] text-white placeholder-gray-400 border border-white/20 focus:outline-none focus:ring-2 focus:ring-sky-500 ${
+                errors.nombre ? 'border-red-500' : ''
+              }`}
             />
             {errors.nombre && <p className="text-red-400 text-sm mt-1">{errors.nombre.message}</p>}
           </div>
 
           <div>
-            <label className="block font-bold font-blowbrush tracking-widest text-sky-950 mb-1">NUEVO EMAIL</label>
+            <label className="block font-bold font-blowbrush tracking-widest text-sky-950 mb-1">
+              NUEVO EMAIL
+            </label>
             <input
               {...register('email')}
               placeholder={usuario.email}
-              className={`w-full p-2 rounded bg-[#1f2937] text-white placeholder-gray-400 border border-white/20 focus:outline-none focus:ring-2 focus:ring-sky-500 ${errors.email ? 'border-red-500' : ''}`}
+              className={`w-full p-2 rounded bg-[#1f2937] text-white placeholder-gray-400 border border-white/20 focus:outline-none focus:ring-2 focus:ring-sky-500 ${
+                errors.email ? 'border-red-500' : ''
+              }`}
             />
             {errors.email && <p className="text-red-400 text-sm mt-1">{errors.email.message}</p>}
           </div>
 
           {permitirEditarRol && roles.length > 0 ? (
             <div className="md:col-span-2">
-              <label className="block font-bold font-blowbrush tracking-widest text-sky-950 mb-1">ROL</label>
+              <label className="block font-bold font-blowbrush tracking-widest text-sky-950 mb-1">
+                ROL
+              </label>
               <select
                 {...register('rol')}
                 defaultValue={usuario.rol}
-                className="w-full p-2 rounded bg-[#1f2937] text-white border border-white/20 focus:outline-none focus:ring-2 focus:ring-sky-500"
-              >
+                className="w-full p-2 rounded bg-[#1f2937] text-white border border-white/20 focus:outline-none focus:ring-2 focus:ring-sky-500">
                 {roles.map((r) => (
-                  <option key={r} value={r}>{r}</option>
+                  <option key={r} value={r}>
+                    {r}
+                  </option>
                 ))}
               </select>
             </div>
           ) : (
             <>
               <div>
-                <label className="block font-bold font-blowbrush tracking-widest text-sky-950 mb-1">NUEVA CONTRASEÑA</label>
+                <label className="block font-bold font-blowbrush tracking-widest text-sky-950 mb-1">
+                  NUEVA CONTRASEÑA
+                </label>
                 <PasswordInput
                   {...register('password')}
                   placeholder="********"
-                  className={`w-full p-2 rounded bg-[#1f2937] text-white placeholder-gray-400 border border-white/20 focus:outline-none focus:ring-2 focus:ring-sky-500 ${errors.password ? 'border-red-500' : ''}`}
+                  className={`w-full p-2 rounded bg-[#1f2937] text-white placeholder-gray-400 border border-white/20 focus:outline-none focus:ring-2 focus:ring-sky-500 ${
+                    errors.password ? 'border-red-500' : ''
+                  }`}
                 />
-                {errors.password && <p className="text-red-400 text-sm mt-1">{errors.password.message}</p>}
+                {errors.password && (
+                  <p className="text-red-400 text-sm mt-1">{errors.password.message}</p>
+                )}
               </div>
 
               <div>
-                <label className="block font-bold font-blowbrush tracking-widest text-sky-950 mb-1">REPITE CONTRASEÑA</label>
+                <label className="block font-bold font-blowbrush tracking-widest text-sky-950 mb-1">
+                  REPITE CONTRASEÑA
+                </label>
                 <PasswordInput
                   {...register('confirmPassword')}
                   placeholder="********"
-                  className={`w-full p-2 rounded bg-[#1f2937] text-white placeholder-gray-400 border border-white/20 focus:outline-none focus:ring-2 focus:ring-sky-500 ${errors.confirmPassword ? 'border-red-500' : ''}`}
+                  className={`w-full p-2 rounded bg-[#1f2937] text-white placeholder-gray-400 border border-white/20 focus:outline-none focus:ring-2 focus:ring-sky-500 ${
+                    errors.confirmPassword ? 'border-red-500' : ''
+                  }`}
                 />
-                {errors.confirmPassword && <p className="text-red-400 text-sm mt-1">{errors.confirmPassword.message}</p>}
+                {errors.confirmPassword && (
+                  <p className="text-red-400 text-sm mt-1">{errors.confirmPassword.message}</p>
+                )}
               </div>
             </>
           )}
@@ -247,8 +287,7 @@ export default function FormularioEdicionUsuario({ usuario, csrfToken, onUpdateS
                     ? 'w-14 h-14 rounded-full bg-blue-500 flex justify-center items-center mx-auto'
                     : 'bg-blue-500 cursor-pointer hover:bg-blue-600 text-white font-bold py-2 px-4 rounded w-full shadow-md shadow-black/40'
                 }`}
-                 whileTap={{ scale: 0.95 }}
-              >
+                whileTap={{ scale: 0.95 }}>
                 {success ? (
                   <motion.svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -259,8 +298,7 @@ export default function FormularioEdicionUsuario({ usuario, csrfToken, onUpdateS
                     strokeWidth={2}
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
-                    transition={{ type: 'spring', stiffness: 300 }}
-                  >
+                    transition={{ type: 'spring', stiffness: 300 }}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                   </motion.svg>
                 ) : (
@@ -274,17 +312,14 @@ export default function FormularioEdicionUsuario({ usuario, csrfToken, onUpdateS
               <button
                 type="button"
                 onClick={handleDeleteAccount}
-                className="bg-red-500 hover:bg-red-600 cursor-pointer text-white font-bold py-2 px-4 rounded shadow-md shadow-black/40 w-full"
-              >
+                className="bg-red-500 hover:bg-red-600 cursor-pointer text-white font-bold py-2 px-4 rounded shadow-md shadow-black/40 w-full">
                 Eliminar cuenta
               </button>
             </div>
           </div>
 
           {typeof mensaje === 'string' && !success && mensaje.startsWith('❌') && (
-            <p className="text-center text-sm font-semibold text-red-400">
-              {mensaje}
-            </p>
+            <p className="text-center text-sm font-semibold text-red-400">{mensaje}</p>
           )}
         </form>
       </div>
@@ -295,22 +330,19 @@ export default function FormularioEdicionUsuario({ usuario, csrfToken, onUpdateS
             className="fixed inset-0 z-50 bg-sky-950/10 bg-opacity-80 flex items-center justify-center"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-          >
+            exit={{ opacity: 0 }}>
             <motion.div
               className="w-20 h-20 rounded-full bg-gradient-to-r from-red-700 to-red-400 flex items-center justify-center"
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
-              transition={{ type: 'spring', stiffness: 300 }}
-            >
+              transition={{ type: 'spring', stiffness: 300 }}>
               <motion.svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-10 w-10 text-white"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
-                strokeWidth={2}
-              >
+                strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
               </motion.svg>
             </motion.div>

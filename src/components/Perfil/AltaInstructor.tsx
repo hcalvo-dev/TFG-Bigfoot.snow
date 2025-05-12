@@ -14,17 +14,21 @@ const schema = z
   .object({
     nombre: z.string().min(3, 'Debe tener al menos 3 caracteres'),
     email: z.string().email('Correo inválido'),
-    password: z.string().refine((val) => /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[-_.:*;]).{6,}$/.test(val), {
-      message: 'Debe incluir mayúscula, minúscula, número y símbolo (-_.:*;)',
-    }),
+    password: z
+      .string()
+      .refine((val) => /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[-_.:*;]).{6,}$/.test(val), {
+        message: 'Debe incluir mayúscula, minúscula, número y símbolo (-_.:*;)',
+      }),
     confirmPassword: z.string(),
     especialidad: z.enum(['snowboard', 'skii'], { message: 'Selecciona una especialidad' }),
     nivel: z.string().nonempty('Selecciona un nivel'),
     montanaId: z.string().nonempty('Selecciona una montaña'),
     foto: z
       .any()
-      .refine((files) => files?.[0] instanceof File, { message:'Debes subir una imagen'})
-      .refine((files) => files?.[0]?.size <= 2 * 1024 * 1024, { message:'La imagen no puede superar los 2MB'}),
+      .refine((files) => files?.[0] instanceof File, { message: 'Debes subir una imagen' })
+      .refine((files) => files?.[0]?.size <= 2 * 1024 * 1024, {
+        message: 'La imagen no puede superar los 2MB',
+      }),
   })
   .refine((data) => data.password === data.confirmPassword, {
     path: ['confirmPassword'],
@@ -52,52 +56,52 @@ export default function AltaInstructorForm({ csrfToken, onCreationSuccess }: Pro
       credentials: 'include',
       headers: { 'CSRF-Token': csrfToken },
     })
-      .then(res => res.json())
-      .then(data => setMontanas(data))
-      .catch(err => console.error('Error al cargar montañas:', err));
+      .then((res) => res.json())
+      .then((data) => setMontanas(data))
+      .catch((err) => console.error('Error al cargar montañas:', err));
 
     fetch('http://localhost:4000/api/nivel/all', {
       credentials: 'include',
       headers: { 'CSRF-Token': csrfToken },
     })
-      .then(res => res.json())
-      .then(data => setNiveles(data))
-      .catch(err => console.error('Error al cargar niveles:', err));
+      .then((res) => res.json())
+      .then((data) => setNiveles(data))
+      .catch((err) => console.error('Error al cargar niveles:', err));
   }, [csrfToken]);
 
-    const onSubmit = async (data: any) => {
-  try {
-    const formData = new FormData();
-    formData.append('nombre', data.nombre);
-    formData.append('email', data.email);
-    formData.append('password', data.password);
-    formData.append('especialidad', data.especialidad);
-    formData.append('nivel', data.nivel);
-    formData.append('montanaId', data.montanaId);
-    formData.append('foto', data.foto[0]);
+  const onSubmit = async (data: any) => {
+    try {
+      const formData = new FormData();
+      formData.append('nombre', data.nombre);
+      formData.append('email', data.email);
+      formData.append('password', data.password);
+      formData.append('especialidad', data.especialidad);
+      formData.append('nivel', data.nivel);
+      formData.append('montanaId', data.montanaId);
+      formData.append('foto', data.foto[0]);
 
-    const res = await fetch('http://localhost:4000/api/instructor/create', {
-      method: 'POST',
-      credentials: 'include',
-      headers: {
-        'CSRF-Token': csrfToken,
-      },
-      body: formData,
-    });
+      const res = await fetch('http://localhost:4000/api/instructor/create', {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'CSRF-Token': csrfToken,
+        },
+        body: formData,
+      });
 
-    const response = await res.json();
-    if (!res.ok) throw new Error(response.message || 'Error desconocido');
+      const response = await res.json();
+      if (!res.ok) throw new Error(response.message || 'Error desconocido');
 
-    setMensaje('✅ Instructor creado correctamente');
-    setSuccess(true);
-    reset();
-    onCreationSuccess();
-    setTimeout(() => setSuccess(false), 2000);
-  } catch (err: any) {
-    setMensaje(err.message || '❌ Error al crear el instructor');
-    setSuccess(false);
-  }
-};
+      setMensaje('✅ Instructor creado correctamente');
+      setSuccess(true);
+      reset();
+      onCreationSuccess();
+      setTimeout(() => setSuccess(false), 2000);
+    } catch (err: any) {
+      setMensaje(err.message || '❌ Error al crear el instructor');
+      setSuccess(false);
+    }
+  };
 
   return (
     <div className="relative">
@@ -105,77 +109,110 @@ export default function AltaInstructorForm({ csrfToken, onCreationSuccess }: Pro
         <h2 className="text-xl mb-4 font-extrabold font-blowbrush tracking-widest text-sky-950 uppercase">
           ALTA INSTRUCTOR
         </h2>
-        <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm w-full">
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm w-full">
           <div>
-            <label className="block font-bold font-blowbrush tracking-widest text-sky-950 mb-1">NOMBRE</label>
+            <label className="block font-bold font-blowbrush tracking-widest text-sky-950 mb-1">
+              NOMBRE
+            </label>
             <input
               {...register('nombre')}
               placeholder="Nombre"
-              className={`w-full p-2 rounded bg-[#1f2937] text-white placeholder-gray-400 border border-white/20 focus:outline-none focus:ring-2 focus:ring-sky-500 ${errors.nombre ? 'border-red-500' : ''}`}
+              className={`w-full p-2 rounded bg-[#1f2937] text-white placeholder-gray-400 border border-white/20 focus:outline-none focus:ring-2 focus:ring-sky-500 ${
+                errors.nombre ? 'border-red-500' : ''
+              }`}
             />
             {errors.nombre && <p className="text-red-400 text-sm mt-1">{errors.nombre.message}</p>}
           </div>
 
           <div>
-            <label className="block font-bold font-blowbrush tracking-widest text-sky-950 mb-1">EMAIL</label>
+            <label className="block font-bold font-blowbrush tracking-widest text-sky-950 mb-1">
+              EMAIL
+            </label>
             <input
               {...register('email')}
               placeholder="Correo electrónico"
-              className={`w-full p-2 rounded bg-[#1f2937] text-white placeholder-gray-400 border border-white/20 focus:outline-none focus:ring-2 focus:ring-sky-500 ${errors.email ? 'border-red-500' : ''}`}
+              className={`w-full p-2 rounded bg-[#1f2937] text-white placeholder-gray-400 border border-white/20 focus:outline-none focus:ring-2 focus:ring-sky-500 ${
+                errors.email ? 'border-red-500' : ''
+              }`}
             />
             {errors.email && <p className="text-red-400 text-sm mt-1">{errors.email.message}</p>}
           </div>
 
           <div>
-            <label className="block font-bold font-blowbrush tracking-widest text-sky-950 mb-1">CONTRASEÑA</label>
+            <label className="block font-bold font-blowbrush tracking-widest text-sky-950 mb-1">
+              CONTRASEÑA
+            </label>
             <PasswordInput
               {...register('password')}
               placeholder="********"
-              className={`w-full p-2 rounded bg-[#1f2937] text-white placeholder-gray-400 border border-white/20 focus:outline-none focus:ring-2 focus:ring-sky-500 ${errors.password ? 'border-red-500' : ''}`}
+              className={`w-full p-2 rounded bg-[#1f2937] text-white placeholder-gray-400 border border-white/20 focus:outline-none focus:ring-2 focus:ring-sky-500 ${
+                errors.password ? 'border-red-500' : ''
+              }`}
             />
-            {errors.password && <p className="text-red-400 text-sm mt-1">{errors.password.message}</p>}
+            {errors.password && (
+              <p className="text-red-400 text-sm mt-1">{errors.password.message}</p>
+            )}
           </div>
 
           <div>
-            <label className="block font-bold font-blowbrush tracking-widest text-sky-950 mb-1">REPITE CONTRASEÑA</label>
+            <label className="block font-bold font-blowbrush tracking-widest text-sky-950 mb-1">
+              REPITE CONTRASEÑA
+            </label>
             <PasswordInput
               {...register('confirmPassword')}
               placeholder="********"
-              className={`w-full p-2 rounded bg-[#1f2937] text-white placeholder-gray-400 border border-white/20 focus:outline-none focus:ring-2 focus:ring-sky-500 ${errors.confirmPassword ? 'border-red-500' : ''}`}
+              className={`w-full p-2 rounded bg-[#1f2937] text-white placeholder-gray-400 border border-white/20 focus:outline-none focus:ring-2 focus:ring-sky-500 ${
+                errors.confirmPassword ? 'border-red-500' : ''
+              }`}
             />
-            {errors.confirmPassword && <p className="text-red-400 text-sm mt-1">{errors.confirmPassword.message}</p>}
+            {errors.confirmPassword && (
+              <p className="text-red-400 text-sm mt-1">{errors.confirmPassword.message}</p>
+            )}
           </div>
 
           <div>
-            <label className="block font-bold font-blowbrush tracking-widest text-sky-950 mb-1">ESPECIALIDAD</label>
+            <label className="block font-bold font-blowbrush tracking-widest text-sky-950 mb-1">
+              ESPECIALIDAD
+            </label>
             <select
               {...register('especialidad')}
-              className={`w-full p-2 rounded bg-[#1f2937] text-white border border-white/20 focus:outline-none focus:ring-2 focus:ring-sky-500 ${errors.especialidad ? 'border-red-500' : ''}`}
-            >
+              className={`w-full p-2 rounded bg-[#1f2937] text-white border border-white/20 focus:outline-none focus:ring-2 focus:ring-sky-500 ${
+                errors.especialidad ? 'border-red-500' : ''
+              }`}>
               <option value="">Selecciona una opción</option>
               <option value="snowboard">Snowboard</option>
               <option value="skii">Skii</option>
             </select>
-            {errors.especialidad && <p className="text-red-400 text-sm mt-1">{errors.especialidad.message}</p>}
+            {errors.especialidad && (
+              <p className="text-red-400 text-sm mt-1">{errors.especialidad.message}</p>
+            )}
           </div>
 
           <div>
-            <label className="block font-bold font-blowbrush tracking-widest text-sky-950 mb-1">NIVEL</label>
+            <label className="block font-bold font-blowbrush tracking-widest text-sky-950 mb-1">
+              NIVEL
+            </label>
             <select
               {...register('nivel')}
-              className={`w-full p-2 rounded bg-[#1f2937] text-white border border-white/20 focus:outline-none focus:ring-2 focus:ring-sky-500 ${errors.nivel ? 'border-red-500' : ''}`}
-            >
+              className={`w-full p-2 rounded bg-[#1f2937] text-white border border-white/20 focus:outline-none focus:ring-2 focus:ring-sky-500 ${
+                errors.nivel ? 'border-red-500' : ''
+              }`}>
               <option value="">Selecciona un nivel</option>
               {niveles.map((nivel) => (
-                <option key={nivel.id} value={nivel.id}>{nivel.nombre}</option>
+                <option key={nivel.id} value={nivel.id}>
+                  {nivel.nombre}
+                </option>
               ))}
             </select>
             {errors.nivel && <p className="text-red-400 text-sm mt-1">{errors.nivel.message}</p>}
           </div>
 
-
           <div>
-            <label className="block font-bold font-blowbrush tracking-widest text-sky-950 mb-1">FOTO</label>
+            <label className="block font-bold font-blowbrush tracking-widest text-sky-950 mb-1">
+              FOTO
+            </label>
             <input
               type="file"
               accept="image/*"
@@ -188,17 +225,24 @@ export default function AltaInstructorForm({ csrfToken, onCreationSuccess }: Pro
           </div>
 
           <div>
-            <label className="block font-bold font-blowbrush tracking-widest text-sky-950 mb-1">MONTAÑA</label>
+            <label className="block font-bold font-blowbrush tracking-widest text-sky-950 mb-1">
+              MONTAÑA
+            </label>
             <select
               {...register('montanaId')}
-              className={`w-full p-2 rounded bg-[#1f2937] text-white border border-white/20 focus:outline-none focus:ring-2 focus:ring-sky-500 ${errors.montanaId ? 'border-red-500' : ''}`}
-            >
+              className={`w-full p-2 rounded bg-[#1f2937] text-white border border-white/20 focus:outline-none focus:ring-2 focus:ring-sky-500 ${
+                errors.montanaId ? 'border-red-500' : ''
+              }`}>
               <option value="">Selecciona una montaña</option>
               {montanas.map((montana) => (
-                <option key={montana.id} value={montana.id}>{montana.nombre}</option>
+                <option key={montana.id} value={montana.id}>
+                  {montana.nombre}
+                </option>
               ))}
             </select>
-            {errors.montanaId && <p className="text-red-400 text-sm mt-1">{errors.montanaId.message}</p>}
+            {errors.montanaId && (
+              <p className="text-red-400 text-sm mt-1">{errors.montanaId.message}</p>
+            )}
           </div>
 
           <div className="w-full md:col-span-2 flex justify-center mt-2">
@@ -211,8 +255,7 @@ export default function AltaInstructorForm({ csrfToken, onCreationSuccess }: Pro
                   ? 'w-14 h-14 rounded-full bg-blue-500 flex justify-center items-center mx-auto'
                   : 'bg-blue-500 cursor-pointer hover:bg-blue-600 text-white font-bold py-2 px-4 rounded w-full shadow-md shadow-black/40'
               }`}
-                whileTap={{ scale: 0.95 }}
-            >
+              whileTap={{ scale: 0.95 }}>
               {success ? (
                 <motion.svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -223,8 +266,7 @@ export default function AltaInstructorForm({ csrfToken, onCreationSuccess }: Pro
                   strokeWidth={2}
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
-                  transition={{ type: 'spring', stiffness: 300 }}
-                >
+                  transition={{ type: 'spring', stiffness: 300 }}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                 </motion.svg>
               ) : (
@@ -234,7 +276,9 @@ export default function AltaInstructorForm({ csrfToken, onCreationSuccess }: Pro
           </div>
 
           {typeof mensaje === 'string' && !success && mensaje.startsWith('❌') && (
-            <p className="text-center text-sm font-semibold text-red-400 md:col-span-2">{mensaje}</p>
+            <p className="text-center text-sm font-semibold text-red-400 md:col-span-2">
+              {mensaje}
+            </p>
           )}
         </form>
       </div>

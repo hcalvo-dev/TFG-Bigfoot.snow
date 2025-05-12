@@ -20,7 +20,7 @@ export function dropdown() {
     overlay.classList.add('hidden');
     setTimeout(() => {
       toggleBtn.classList.remove('hidden');
-    }, 300); 
+    }, 300);
     overlay.classList.remove('opacity-100');
     sideMenu.classList.add('translate-x-full');
     document.body.classList.remove('menu-open');
