@@ -2,14 +2,17 @@
 export const prerender = false;
 import Layout from '../layouts/Layout.astro';
 import HeroWave from '../components/Clases/HeroWave';
-import ReservarClase from '../components/Clases/ReservarClase';
+import ReservarClase from '../components/Clases/ReservarClase.tsx';
+import { checkSession } from '../../utils/checkSession';
+
+const session = checkSession(Astro.request);
 ---
 
 <Layout title="BIGFOOT : Clases">
   <main>
     <HeroWave />
     <section id="contenido" class="relative w-full min-h-[88vh]">
-      <ReservarClase client:only="react" />
+      <ReservarClase client:only="react" session={JSON.stringify(session)} />
     </section>
   </main>
 </Layout>
