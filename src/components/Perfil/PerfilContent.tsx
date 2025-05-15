@@ -4,6 +4,7 @@ import { User, School, ShoppingBag, LogOut, ClipboardList, UserRoundSearch } fro
 import FormularioEdicionUsuario from './FormEditUser';
 import UsuariosTable from './UsuariosTable';
 import AltaInstructorForm from './AltaInstructor';
+import ClasesTable from './ClasesTable';
 
 // Definimos el tipo de las props y del usuario
 type Props = {
@@ -155,9 +156,10 @@ export default function PerfilContent({ session }: Props) {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.3 }}
-            className="bg-white/10 rounded-xl p-6 mb-8 md:mb-0 text-sm leading-loose shadow">
-            <h3 className="text-xl mb-4 text-blue-300">Tus clases</h3>
-            <p className="text-gray-300">Aquí se mostrarán las clases en las que estás inscrito.</p>
+            className="bg-white/40 rounded-xl p-6 mb-8 md:mb-0 text-sm leading-loose shadow">
+            {usuario && csrfToken && (
+              <ClasesTable csrfToken={csrfToken} onUpdateEstadisticas={fetchEstadisticas} />
+            )}
           </motion.div>
         );
       case 'productos':
@@ -168,7 +170,7 @@ export default function PerfilContent({ session }: Props) {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.3 }}
-            className="bg-white/10 rounded-xl p-6 mb-8 md:mb-0 text-sm leading-loose shadow">
+            className="bg-white/40 rounded-xl p-6 mb-8 md:mb-0 text-sm leading-loose shadow">
             <h3 className="text-xl mb-4 text-blue-300">Tus productos comprados</h3>
             <p className="text-gray-300">Aquí verás el historial de tus productos.</p>
           </motion.div>
@@ -181,7 +183,7 @@ export default function PerfilContent({ session }: Props) {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.3 }}
-            className="bg-white/10 rounded-xl p-6 mb-8 text-sm leading-loose shadow">
+            className="bg-white/40 rounded-xl p-6 mb-8 text-sm leading-loose shadow">
             {usuario && csrfToken && (
               <AltaInstructorForm csrfToken={csrfToken} onCreationSuccess={fetchUsuario} />
             )}

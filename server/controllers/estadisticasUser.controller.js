@@ -7,7 +7,8 @@ export const getReservasActivas = async (req, res) => {
       where: {
         usuarioId: user.id,
         fechaFin: { gt: new Date() },
-        estado: 'confirmada'
+        estado: 'confirmada',
+        pagado: true,
       },
       include: {
         clase: true,
@@ -24,22 +25,39 @@ export const getReservasActivas = async (req, res) => {
 export const getClasesProximas = async (req, res) => {
   try {
     const user = req.user;
+
+    const hoy = new Date();
+    const mañana = new Date(hoy);
+    mañana.setDate(hoy.getDate() + 1);
+    mañana.setHours(0, 0, 0, 0); // 00:00:00
+
+    const finMañana = new Date(mañana);
+    finMañana.setHours(23, 59, 59, 999); // 23:59:59.999
+
     const clases = await prisma.reserva.findMany({
       where: {
         usuarioId: user.id,
         claseId: { not: null },
-        fechaInicio: { gt: new Date() }
+        fechaInicio: {
+          gte: mañana,
+          lte: finMañana,
+        },
+        pagado: true, 
       },
       include: {
         clase: {
           include: {
-            instructor: { include: { usuario: true } }
+            instructor: {
+              include: { usuario: true }
+            }
           }
         }
       }
     });
+
     res.json({ total: clases.length, datos: clases });
   } catch (error) {
+    console.error('❌ Error al obtener clases próximas:', error);
     res.status(500).json({ error: 'Error al obtener clases próximas' });
   }
 };

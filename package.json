@@ -5,9 +5,11 @@
     "dev": "concurrently \"astro dev\" \"ts-node-dev server/index.ts\"",
     "build": "astro build",
     "preview": "astro preview",
+    "start": "node ./dist/server/entry.mjs",
     "astro": "astro",
     "db:reset": "prisma migrate reset --force",
-    "db:seed": "ts-node prisma/seed.ts"
+    "db:seed": "ts-node prisma/seed.ts",
+    "dev:server": "ts-node server/index.ts"
   },
   "dependencies": {
     "@astrojs/react": "4.2.4",
@@ -39,6 +41,7 @@
     "react-router-dom": "6.30.0",
     "sanitize-html": "2.16.0",
     "sweetalert2": "^11.21.0",
+    "uuid": "^11.1.0",
     "zod": "3.24.3"
   },
   "devDependencies": {

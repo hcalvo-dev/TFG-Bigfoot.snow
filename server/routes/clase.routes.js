@@ -1,13 +1,11 @@
 import { Router } from 'express';
-import { getCurrentUser, updateCurrentUser, deleteCurrentUser } from '../controllers/currentUser.controller';
+import { getClasesActivas,deleteReserva } from '../controllers/clases.controller';
 import { authenticateUser } from '../middlewares/authenticate.middleware';
-import { sanitizeInputs } from '../middlewares/sanitize.middleware';
 
 const router = Router();
 
+router.get('/clases-activas', authenticateUser, getClasesActivas);
 
-
-
-
+router.delete('/cancelar-reserva', authenticateUser, deleteReserva);
 
 export default router;

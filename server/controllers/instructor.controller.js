@@ -38,7 +38,7 @@ export const createInstructor = async (req, res) => {
             especialidad,
             fotoUrl,
             nivelRel: {
-              connect: { id: Number(nivel) }, // ✅ Conexión con nivel por ID
+              connect: { id: Number(nivel) },
             },
             montañas: {
               connect: { id: Number(montanaId) },
@@ -51,44 +51,10 @@ export const createInstructor = async (req, res) => {
       },
     });
 
-    const instructorId = user.instructor?.id;
-
-    if (!instructorId) {
-      console.error('❌ No se pudo obtener el ID del instructor');
-      return res.status(500).json({ message: 'No se pudo obtener el ID del instructor' });
-    }
-
-    const hoy = startOfDay(new Date());
-    const fin = addMonths(hoy, 6);
-    const disponibilidades = [];
-
-    for (let i = 0; i <= (fin - hoy) / (1000 * 60 * 60 * 24); i++) {
-      const fecha = addDays(hoy, i);
-      const horaInicio = setMinutes(setHours(fecha, 9), 0);
-      const horaFin = setMinutes(setHours(fecha, 14), 0);
-
-      disponibilidades.push({
-        instructorId,
-        fecha,
-        horaInicio,
-        horaFin,
-        disponible: true,
-      });
-    }
-
-    const chunkSize = 30;
-    for (let i = 0; i < disponibilidades.length; i += chunkSize) {
-      const chunk = disponibilidades.slice(i, i + chunkSize);
-      await prisma.instructorDisponibilidad.createMany({
-        data: chunk,
-        skipDuplicates: false,
-      });
-    }
-
-    console.log('✅ Instructor y disponibilidades creados correctamente');
-    res.status(201).json({ message: '✅ Instructor creado con disponibilidad', user });
+    console.log('✅ Instructor creado correctamente');
+    res.status(201).json({ message: '✅ Instructor creado', user });
   } catch (err) {
-    console.error('❌ Error al crear instructor con disponibilidad:', err?.meta ?? err);
+    console.error('❌ Error al crear instructor:', err?.meta ?? err);
     res.status(500).json({ message: '❌ Error al crear el instructor' });
   }
 };
@@ -133,24 +99,14 @@ export const getInstructoresDisponibles = async (req, res) => {
 
 export const getHorariosInstructor = async (req, res) => {
   try {
-    console.log('📥 Datos recibidos en la solicitud:', req.body);
-    const { montanaId, especialidad, fechaSeleccionada } = req.body;
+    const { montanaId, especialidad, fechaSeleccionada, instructorId } = req.body;
 
     if (!montanaId || !especialidad || !fechaSeleccionada) {
-      console.warn('⚠️ Faltan parámetros requeridos.');
       return res.status(400).json({ message: 'Faltan parámetros requeridos.' });
     }
 
-    const hoy = startOfDay(new Date());
-    const mañana = addDays(hoy, 1);
     const fechaConsulta = startOfDay(new Date(fechaSeleccionada));
 
-    if (fechaConsulta < mañana) {
-      console.warn('⚠️ Fecha inválida: debe ser posterior al día de hoy.');
-      return res.status(400).json({ message: 'La fecha debe ser a partir de mañana.' });
-    }
-
-    console.log('🔍 Buscando instructores con especialidad:', especialidad, 'y montaña ID:', montanaId);
     const instructores = await prisma.instructor.findMany({
       where: {
         especialidad,
@@ -160,97 +116,43 @@ export const getHorariosInstructor = async (req, res) => {
       },
     });
 
-    const instructorIds = instructores.map(i => i.id);
-    console.log('👨‍🏫 IDs de instructores encontrados:', instructorIds);
-
-    if (instructorIds.length === 0) {
-      console.warn('⚠️ No se encontraron instructores disponibles.');
+    const instructoresIds = instructores.map(i => i.id);
+    if (instructoresIds.length === 0) {
       return res.json([]);
     }
 
-    const fechaInicio = new Date(`${fechaSeleccionada}T00:00:00`);
-    const fechaFin = new Date(`${fechaSeleccionada}T23:59:59`);
-    console.log('📅 Rango de fecha seleccionado:', fechaInicio, fechaFin);
+    const idInstructor = instructorId || instructoresIds[0];
 
-    console.log('🔎 Consultando disponibilidades...');
-    const disponibilidades = await prisma.instructorDisponibilidad.findMany({
+    const clasesReservadas = await prisma.reserva.findMany({
       where: {
-        instructorId: { in: instructorIds },
-        fecha: {
-          gte: fechaInicio,
-          lte: fechaFin,
+        clase: {
+          instructorId: idInstructor,
         },
-        disponible: true,
-      },
-    });
-    console.log('✅ Disponibilidades encontradas:', disponibilidades.length);
-
-    console.log('🗓️ Consultando clases ya reservadas...');
-    const clasesReservadas = await prisma.clase.findMany({
-      where: {
-        instructorId: { in: instructorIds },
-        reservas: {
-          some: {
-            fechaInicio: {
-              gte: fechaInicio,
-              lte: fechaFin,
-            },
-          },
+        fechaInicio: {
+          gte: new Date(`${fechaSeleccionada}T00:00:00`),
+          lt: new Date(`${fechaSeleccionada}T23:59:59`),
         },
       },
       select: {
-        instructorId: true,
-        reservas: {
-          where: {
-            fechaInicio: {
-              gte: fechaInicio,
-              lte: fechaFin,
-            },
-          },
-          select: {
-            fechaInicio: true,
-          },
-        },
+        fechaInicio: true,
       },
     });
 
     const horasOcupadas = new Set(
-      clasesReservadas.flatMap(clase =>
-        clase.reservas.map(r =>
-          format(new Date(r.fechaInicio), 'HH:mm')
-        )
-      )
+      clasesReservadas.map(r => format(new Date(r.fechaInicio), 'HH:mm'))
     );
-    console.log('⛔ Horas ya ocupadas:', Array.from(horasOcupadas));
 
-    console.log('🛠️ Generando slots de disponibilidad por hora...');
-    const resultado = [];
-    for (const disponibilidad of disponibilidades) {
-      const start = new Date(disponibilidad.horaInicio);
-      const end = new Date(disponibilidad.horaFin);
-      console.log(`⏱️ Slot desde ${start} hasta ${end}`);
-
-      let current = new Date(start);
-      while (isBefore(current, end)) {
-        const horaStr = format(current, 'HH:mm');
-        resultado.push({
-          hora: horaStr,
-          disponible: !horasOcupadas.has(horaStr),
-        });
-        current = addHours(current, 1); // Clases de 1h
-      }
+    // Generamos franjas por defecto (de 9 a 14)
+    const slots = [];
+    for (let h = 9; h < 14; h++) {
+      const hora = format(setMinutes(setHours(fechaConsulta, h), 0), 'HH:mm');
+      slots.push({
+        hora,
+        disponible: !horasOcupadas.has(hora),
+      });
     }
 
-    console.log('📊 Total de slots generados:', resultado.length);
-
-    const horarioUnico = Array.from(
-      new Map(resultado.map(item => [item.hora, item])).values()
-    );
-
-    const ordenado = horarioUnico.sort((a, b) => a.hora.localeCompare(b.hora));
-    console.log('✅ Horario final (sin duplicados):', ordenado);
-
-    res.json(ordenado);
+    res.json(slots);
   } catch (error) {
     console.error('❌ Error al obtener horarios:', error);
     res.status(500).json({ message: 'Error interno del servidor' });

@@ -46,35 +46,37 @@ model Instructor {
   nivelId        Int
   clases         Clase[]
   disponibilidad InstructorDisponibilidad[]
-  montañas       Montaña[]                  @relation("InstructorMontaña")
+  montañas      Montaña[]                 @relation("InstructorMontaña")
   createdAt      DateTime                   @default(now())
   updatedAt      DateTime                   @updatedAt
 }
 
 model Nivel {
-  id         Int          @id @default(autoincrement())
-  nombre     String       @unique
-  precio     Int
+  id           Int          @id @default(autoincrement())
+  nombre       String       @unique
+  precio       Int
   instructores Instructor[]
 }
 
 model Montaña {
-  id           Int           @id @default(autoincrement())
+  id           Int          @id @default(autoincrement())
   nombre       String
   ubicacion    String
-  altura       Int           // en metros
+  altura       Int
   descripcion  String?
   rutas        Ruta[]
-  instructores Instructor[]  @relation("InstructorMontaña")
+  instructores Instructor[] @relation("InstructorMontaña")
+  reservas     Reserva[]
+  clases       Clase[]
 }
 
 model Ruta {
   id         Int      @id @default(autoincrement())
   nombre     String
   dificultad String
-  longitud   Float    // en km
-  montaña    Montaña  @relation(fields: [montañaId], references: [id])
-  montañaId  Int
+  longitud   Float // en km
+  montaña   Montaña @relation(fields: [montañaId], references: [id])
+  montañaId Int
 }
 
 model Clase {
@@ -89,6 +91,8 @@ model Clase {
   instructorId Int
   reservas     Reserva[]
   valoraciones Valoracion[]
+  montaña     Montaña     @relation(fields: [montanaId], references: [id])
+  montanaId    Int
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @updatedAt
 }
@@ -142,14 +146,18 @@ model Reserva {
   fechaFin     DateTime
   fechaReserva DateTime          @default(now())
   estado       String
+  tokenCarrito String?
   metodoPago   String
   total        Float
-  usuario      Usuario           @relation(fields: [usuarioId], references: [id])
-  usuarioId    Int
+  usuario      Usuario?          @relation(fields: [usuarioId], references: [id])
+  usuarioId    Int?
   clase        Clase?            @relation(fields: [claseId], references: [id])
   claseId      Int?
+  montaña     Montaña?         @relation(fields: [montanaId], references: [id])
+  montanaId    Int
   productos    ProductoReserva[]
-  factura      Factura?
+  pagado       Boolean           @default(false)
+  expiresAt    DateTime?
   createdAt    DateTime          @default(now())
   updatedAt    DateTime          @updatedAt
 }
@@ -162,16 +170,6 @@ model ProductoReserva {
   cantidad   Int      @default(1)
 
   @@id([reservaId, productoId])
-}
-
-model Factura {
-  id           Int      @id @default(autoincrement())
-  reserva      Reserva  @relation(fields: [reservaId], references: [id])
-  reservaId    Int      @unique
-  fechaEmision DateTime @default(now())
-  total        Float
-  iva          Float
-  pdfUrl       String
 }
 
 model Notificacion {

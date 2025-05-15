@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 import { PORT, ORIGIN } from './config';
 import csrf from 'csurf';
 import cookieParser from 'cookie-parser';
+import { limpiarReservasExpiradas } from '../utils/limpiarReservas';
 
 // Importa las rutas
 import authRoutes from './routes/auth.routes';
@@ -13,8 +14,10 @@ import estadisticasRoutes from './routes/estadisticas.routes';
 import rolesRoutes from './routes/roles.routes';
 import montanasRoutes from './routes/montanas.routes';
 import instructorRoutes from './routes/instructor.routes';
+import clasesRoutes from './routes/clase.routes';
 import nivelRoutes from './routes/nivel.routes';
-import reservationRoutes from './routes/reserva.routes'; 
+import reservaRoutes from './routes/reserva.routes'; 
+import carritoRoutes from './routes/carrito.routes'; 
 
 // Importa las variables de entorno desde .env
 dotenv.config();
@@ -43,6 +46,11 @@ app.use(csrfProtection);
 // Ruta para obtener las imagenes
 app.use('/uploads', express.static('public/uploads'));
 
+// Middleware para limpiar reservas expiradas cada minuto
+setInterval(() => {
+  limpiarReservasExpiradas();
+}, 60 * 1000); // cada minuto
+
 // Rutas
 app.use('/api/auth', authRoutes); 
 app.use('/api/user', userRoutes);
@@ -50,8 +58,10 @@ app.use('/api/estadisticas', estadisticasRoutes);
 app.use('/api/roles', rolesRoutes);
 app.use('/api/montanas', montanasRoutes);
 app.use('/api/instructor', instructorRoutes);
+app.use('/api/clases', clasesRoutes);
 app.use('/api/nivel', nivelRoutes);
-app.use('/api/reservations', reservationRoutes);
+app.use('/api/reserva', reservaRoutes);
+app.use('/api/carrito', carritoRoutes);
 app.get('/api/csrf-token', (req, res) => {
     res.json({ csrfToken: req.csrfToken() });
   });
