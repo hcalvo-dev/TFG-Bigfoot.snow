@@ -16,7 +16,9 @@ export default function MobileContent({ firstOpacity, firstY, secondOpacity, sec
         <motion.div
           className="flex flex-col items-center gap-6 p-4"
           style={{ opacity: firstOpacity, y: firstY }}>
-          <TiltImageBlock text="" image="/img/index/snowboard.webp" />
+          <motion.a className="cursor-pointer" href="/equipos?snowboard">
+            <TiltImageBlock text="SNOW" image="/img/index/snowboard.webp" />
+          </motion.a>
           <div className="text-center">
             <h2 className="text-3xl font-bold text-black mb-4">SNOWBOARD</h2>
             <p className="text-gray-700">Domina la nieve con el mejor equipo de snowboard.</p>
@@ -29,7 +31,9 @@ export default function MobileContent({ firstOpacity, firstY, secondOpacity, sec
         <motion.div
           className="flex flex-col items-center gap-6 p-4"
           style={{ opacity: secondOpacity, y: secondY }}>
-          <TiltImageBlock text="" image="/img/index/skii.webp" />
+          <motion.a className="cursor-pointer" href="/equipos?skii">
+            <TiltImageBlock text="SKI" image="/img/index/skii.webp" />
+          </motion.a>
           <div className="text-center">
             <h2 className="text-3xl font-bold text-black mb-4">ESQUÍ</h2>
             <p className="text-gray-700">Siente la velocidad en las mejores pistas de esquí.</p>

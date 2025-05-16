@@ -1,4 +1,4 @@
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useState, useEffect } from 'react';
@@ -23,6 +23,10 @@ const schema = z
     especialidad: z.enum(['snowboard', 'skii'], { message: 'Selecciona una especialidad' }),
     nivel: z.string().nonempty('Selecciona un nivel'),
     montanaId: z.string().nonempty('Selecciona una montaña'),
+    testimonio: z
+      .string()
+      .min(50, 'El testimonio debe tener al menos 50 caracteres')
+      .max(200, 'El testimonio no puede superar los 200 caracteres'),
     foto: z
       .any()
       .refine((files) => files?.[0] instanceof File, { message: 'Debes subir una imagen' })
@@ -47,9 +51,12 @@ export default function AltaInstructorForm({ csrfToken, onCreationSuccess }: Pro
     setValue,
     formState: { errors },
     reset,
+    control, 
   } = useForm({
     resolver: zodResolver(schema),
   });
+
+  const testimonioValue = useWatch({ name: 'testimonio', control });
 
   useEffect(() => {
     fetch('http://localhost:4000/api/montanas/all', {
@@ -79,6 +86,7 @@ export default function AltaInstructorForm({ csrfToken, onCreationSuccess }: Pro
       formData.append('nivel', data.nivel);
       formData.append('montanaId', data.montanaId);
       formData.append('foto', data.foto[0]);
+      formData.append('testimonio', data.testimonio);
 
       const res = await fetch('http://localhost:4000/api/instructor/create', {
         method: 'POST',
@@ -243,6 +251,27 @@ export default function AltaInstructorForm({ csrfToken, onCreationSuccess }: Pro
             {errors.montanaId && (
               <p className="text-red-400 text-sm mt-1">{errors.montanaId.message}</p>
             )}
+          </div>
+
+          <div className="md:col-span-2">
+            <label className="block font-bold font-blowbrush tracking-widest text-sky-950 mb-1">
+              TESTIMONIO
+            </label>
+            <textarea
+              {...register('testimonio')}
+              rows={4}
+              placeholder="Cuenta brevemente tu experiencia, enfoque o motivación..."
+              maxLength={200}
+              className={`w-full p-2 rounded bg-[#1f2937] text-white placeholder-gray-400 border border-white/20 focus:outline-none focus:ring-2 focus:ring-sky-500 ${
+                errors.testimonio ? 'border-red-500' : ''
+              }`}
+            />
+            <div className="flex justify-between mt-1 text-xs text-gray-400">
+              <span>{testimonioValue?.length || 0}/200 caracteres</span>
+              {errors.testimonio && (
+                <span className="text-red-400">{errors.testimonio.message}</span>
+              )}
+            </div>
           </div>
 
           <div className="w-full md:col-span-2 flex justify-center mt-2">

@@ -44,6 +44,7 @@ model Instructor {
   userId         Int                        @unique
   nivelRel       Nivel                      @relation(fields: [nivelId], references: [id])
   nivelId        Int
+  testimonio     String
   clases         Clase[]
   disponibilidad InstructorDisponibilidad[]
   montañas      Montaña[]                 @relation("InstructorMontaña")

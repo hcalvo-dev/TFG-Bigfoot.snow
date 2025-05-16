@@ -2,6 +2,11 @@
 export const prerender = false;
 import Layout from '../layouts/Layout.astro';
 import StickyImageEffect from '../components/Sticky_Image_Effect/StickyImageEffect.tsx';
+import ServicesContent from 'src/components/Sticky_Image_Effect/ServicesContent';
+import ServiceCards from '../components/Sticky_Image_Effect/ServiceCards';
+import InstructorCard from '../components/Sticky_Image_Effect/InstructorCards';
+import MontanasCarousel from '../components/Sticky_Image_Effect/MontanasCarousel';
+import ContactSection from '../components/Sticky_Image_Effect/ContactSection';
 ---
 
 <Layout title="BIGFOOT : Snowboard y Ski">
@@ -11,18 +16,29 @@ import StickyImageEffect from '../components/Sticky_Image_Effect/StickyImageEffe
       <StickyImageEffect client:only="react" />
     </section>
 
-    <!-- Sección de servicios -->
-    <section class="relative w-full min-h-screen">
-      <div class="container mx-auto px-4 py-16">
-        <h2 class="text-3xl font-bold mb-8">Servicios</h2>
-        <p class="mb-4">Ofrecemos una amplia gama de servicios para snowboard y ski, incluyendo:</p>
-        <ul class="list-disc list-inside">
-          <li>Alquiler de equipos</li>
-          <li>Clases para principiantes y avanzados</li>
-          <li>Excursiones guiadas</li>
-          <li>Mantenimiento y reparación de equipos</li>
-        </ul>
-      </div>
+    <!-- Sección de nombre de servicios -->
+    <section class="relative mt-7 w-full">
+      <ServicesContent client:only="react" />
+    </section>
+
+    <!-- Sección de cards de servicios -->
+    <section class="relative mt-5 w-full">
+      <ServiceCards client:only="react" />
+    </section>
+
+    <!-- Sección de instructores -->
+    <section class="relative mt-6 w-full">
+      <InstructorCard client:only="react" />
+    </section>
+
+    <!-- Sección de montañas -->
+    <section class="relative mt-6 w-full">
+      <MontanasCarousel client:only="react" />
+    </section>
+
+    <!-- Sección de contacto -->
+    <section class="relative mt-6 w-full min-h-screen">
+      <ContactSection client:only="react" />
     </section>
   </main>
 </Layout>

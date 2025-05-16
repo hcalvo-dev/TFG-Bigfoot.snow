@@ -218,7 +218,7 @@ export default function PerfilContent({ session }: Props) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-[270px_1fr] gap-4 md:gap-8">
       {/* Sidebar */}
-      <aside className="bg-sky-950 min-h-[82vh] font-extrabold font-blowbrush tracking-widest rounded-2xl p-6 flex flex-col items-center shadow-lg w-full">
+      <aside className="bg-sky-950 h-[85vh] font-extrabold font-blowbrush tracking-widest rounded-2xl p-6 flex flex-col items-center shadow-lg w-full">
         <img
           src="/img/perfil/perfil.jpg"
           alt="avatar"

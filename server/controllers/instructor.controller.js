@@ -1,11 +1,20 @@
 import prisma from '../../src/lib/prisma';
 import bcrypt from 'bcryptjs';
-import { addDays, addMonths, startOfDay, setHours, setMinutes, isBefore, format, addHours } from 'date-fns';
+import {
+  addDays,
+  addMonths,
+  startOfDay,
+  setHours,
+  setMinutes,
+  isBefore,
+  format,
+  addHours,
+} from 'date-fns';
 
 export const createInstructor = async (req, res) => {
   try {
     console.log('📥 Datos recibidos del body:', req.body);
-    const { nombre, email, password, especialidad, nivel, montanaId } = req.body;
+    const { nombre, email, password, especialidad, nivel, montanaId, testimonio } = req.body;
 
     if (!req.file) {
       console.warn('⚠️ No se subió ninguna imagen');
@@ -37,6 +46,7 @@ export const createInstructor = async (req, res) => {
           create: {
             especialidad,
             fotoUrl,
+            testimonio,
             nivelRel: {
               connect: { id: Number(nivel) },
             },
@@ -59,7 +69,6 @@ export const createInstructor = async (req, res) => {
   }
 };
 
-
 export const getInstructoresDisponibles = async (req, res) => {
   try {
     console.log('Body recibido:', req.body);
@@ -67,24 +76,38 @@ export const getInstructoresDisponibles = async (req, res) => {
 
     // Validación
     if (!montanaId || !especialidad) {
-      return res.status(400).json({ message: 'Faltan parámetros requeridos: montaña o especialidad.' });
+      return res
+        .status(400)
+        .json({ message: 'Faltan parámetros requeridos: montaña o especialidad.' });
     }
 
     const instructores = await prisma.instructor.findMany({
-  where: {
-    especialidad,
-    montañas: {
-      some: {
-        id: Number(montanaId),
+      where: {
+        especialidad,
+        montañas: {
+          some: {
+            id: Number(montanaId),
+          },
+        },
+        usuario: {
+          rol: {
+            nombre: 'instructor', 
+          },
+        },
       },
-    },
-  },
-  include: {
-    usuario: {
-      select: { nombre: true },
-    },
-  },
-});
+      include: {
+        usuario: {
+          select: {
+            nombre: true,
+            rol: {
+              select: {
+                nombre: true,
+              },
+            },
+          },
+        },
+      },
+    });
 
     if (instructores.length === 0) {
       return res.status(200).json([]);
@@ -116,7 +139,7 @@ export const getHorariosInstructor = async (req, res) => {
       },
     });
 
-    const instructoresIds = instructores.map(i => i.id);
+    const instructoresIds = instructores.map((i) => i.id);
     if (instructoresIds.length === 0) {
       return res.json([]);
     }
@@ -139,7 +162,7 @@ export const getHorariosInstructor = async (req, res) => {
     });
 
     const horasOcupadas = new Set(
-      clasesReservadas.map(r => format(new Date(r.fechaInicio), 'HH:mm'))
+      clasesReservadas.map((r) => format(new Date(r.fechaInicio), 'HH:mm'))
     );
 
     // Generamos franjas por defecto (de 9 a 14)
@@ -155,6 +178,35 @@ export const getHorariosInstructor = async (req, res) => {
     res.json(slots);
   } catch (error) {
     console.error('❌ Error al obtener horarios:', error);
+    res.status(500).json({ message: 'Error interno del servidor' });
+  }
+};
+
+export const getAllInstructors = async (req, res) => {
+  try {
+    const instructores = await prisma.instructor.findMany({
+      where: {
+        usuario: {
+          rol: {
+            nombre: 'instructor',
+          },
+        },
+      },
+      include: {
+        usuario: {
+          select: {
+            nombre: true,
+            email: true,
+          },
+        },
+        nivelRel: true,
+        montañas: true,
+      },
+    });
+
+    res.status(200).json(instructores);
+  } catch (error) {
+    console.error('❌ Error al obtener instructores:', error);
     res.status(500).json({ message: 'Error interno del servidor' });
   }
 };
