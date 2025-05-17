@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 const schema = z.object({
   name: z.string().min(3, 'Requerido').max(50, 'Máximo 50 caracteres'),
@@ -23,7 +23,20 @@ export default function ContactUs() {
     handleSubmit,
     formState: { errors },
     reset,
+    watch,
+    clearErrors,
   } = useForm<FormData>({ resolver: zodResolver(schema) });
+
+  const messageValue = watch('message', '');
+
+  useEffect(() => {
+    setCharCount(messageValue.length);
+
+    // Si ya había un error y el texto es válido, lo limpiamos
+    if (errors.message && messageValue.length >= 20 && messageValue.length <= 500) {
+      clearErrors('message');
+    }
+  }, [messageValue, errors.message, clearErrors]);
 
   const onSubmit = (data: FormData) => {
     console.log(data);
@@ -82,7 +95,6 @@ export default function ContactUs() {
               placeholder="Tu mensaje"
               {...register('message')}
               maxLength={500}
-              onChange={(e) => setCharCount(e.target.value.length)}
               className="p-3 rounded-lg border border-gray-300 w-full h-32 resize-none focus:outline-none focus:ring-2 focus:ring-blue-600"
             />
             <span className="absolute bottom-2 right-3 text-sm text-gray-500">{charCount}/500</span>
