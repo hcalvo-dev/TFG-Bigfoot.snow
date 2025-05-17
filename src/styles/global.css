@@ -3,40 +3,41 @@
 
 
 @font-face {
-    font-family: 'BlowBrush';
-    src: url('/fonts/blowbrush.ttf') format('truetype');
-    font-weight: normal;
-    font-style: normal;
-  }
-  
+  font-family: 'BlowBrush';
+  src: url('/fonts/blowbrush.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
 .font-blowbrush {
-    font-family: 'BlowBrush', sans-serif;
+  font-family: 'BlowBrush', sans-serif;
 }
 
-.text-standard{
-    font-size: 20px;
+.text-standard {
+  font-size: 20px;
 }
 
-.text-18{
-    font-size: 18px;
+.text-18 {
+  font-size: 18px;
 }
-.text-16{
+
+.text-16 {
   font-size: 16px;
 }
 
 .text-transparent {
-    color: transparent;
-  }
-  
-  .stroke-2 {
-    -webkit-text-stroke-width: 2px;
-    -webkit-text-stroke-color: black;
-  }
-  
-  .stroke-black {
-    -webkit-text-stroke-color: black;
-  }
-  
+  color: transparent;
+}
+
+.stroke-2 {
+  -webkit-text-stroke-width: 2px;
+  -webkit-text-stroke-color: black;
+}
+
+.stroke-black {
+  -webkit-text-stroke-color: black;
+}
+
 .squiggly-underline {
   position: relative;
 }
@@ -48,5 +49,5 @@
   bottom: -2px;
   width: 100%;
   height: 6px;
-  border-bottom: 2px solid #125cfd; 
+  border-bottom: 2px solid #125cfd;
 }

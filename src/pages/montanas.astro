@@ -1,0 +1,22 @@
+---
+export const prerender = false;
+import Layout from '../layouts/Layout.astro';
+import HeroWave from '../components/HeroWave';
+import MontanasPage from '../components/Montanas/MontanasPage';
+
+---
+
+<Layout title="BIGFOOT : Montañas">
+  <main >
+    <HeroWave
+      imagen="/img/contacto/portada.webp"
+      alt="Interacción con las montañas"
+      lineas={['MONTAÑAS BIGFOOT']}
+      subtitulo="CONOCE NUESTRAS MONTAÑAS"
+      href="#contenido"
+    />
+    <!-- Secciones de montañas -->
+    <MontanasPage client:only="react" />
+
+  </main>
+</Layout>
