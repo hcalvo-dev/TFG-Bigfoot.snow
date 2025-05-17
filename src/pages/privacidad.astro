@@ -1,0 +1,23 @@
+---
+export const prerender = false;
+import Layout from '../layouts/Layout.astro';
+import HeroWave from '../components/HeroWave';
+import PoliticPrivacidad from '../components/Politica/pol_privacidad.tsx';
+---
+
+<Layout title="BIGFOOT : Privacidad">
+  <main>
+    <!-- Sección Hero Wave -->
+    <HeroWave
+      imagen="/img/contacto/portada.webp"
+      alt="Política de Privacidad de Bigfoot"
+      lineas={['POLÍTICA DE PRIVACIDAD']}
+      subtitulo="ENCUENTRA AQUÍ NUESTRA POLÍTICA DE PRIVACIDAD"
+      href="#contenido"
+    />
+    <!-- Sección Form de contacto -->
+    <section id="contenido" class="relative w-full">
+      <PoliticPrivacidad client:only="react" />
+    </section>
+  </main>
+</Layout>

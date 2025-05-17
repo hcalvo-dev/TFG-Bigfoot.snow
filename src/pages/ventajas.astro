@@ -1,0 +1,24 @@
+---
+export const prerender = false;
+import Layout from '../layouts/Layout.astro';
+import HeroWave from '../components/HeroWave';
+import VentajasComponent from '../components/Ventajas/Ventajas';
+
+---
+
+<Layout title="BIGFOOT : Ventajas">
+  <main>
+    <HeroWave
+      imagen="/img/contacto/portada.webp"
+      alt="Ventajas del equipo Bigfoot"
+      lineas={['VENTAJAS BIGFOOT']}
+      subtitulo="CONOCE LAS VENTAJAS DE BIGFOOT"
+      href="#contenido"
+    />
+
+    <!-- Sección de ventajas -->
+    <section id="contenido" class="relative w-full">
+      <VentajasComponent client:only="react" />
+    </section>
+  </main>
+</Layout>

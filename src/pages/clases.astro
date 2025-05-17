@@ -1,7 +1,7 @@
 ---
 export const prerender = false;
 import Layout from '../layouts/Layout.astro';
-import HeroWave from '../components/Clases/HeroWave';
+import HeroWave from '../components/HeroWave.tsx';
 import ReservarClase from '../components/Clases/ReservarClase.tsx';
 import { checkSession } from '../../utils/checkSession';
 
@@ -10,7 +10,13 @@ const session = checkSession(Astro.request);
 
 <Layout title="BIGFOOT : Clases">
   <main>
-    <HeroWave />
+    <HeroWave
+      imagen="/img/clases/portada.webp"
+      alt="Montaña nevada"
+      lineas={['ESCUELA DE', 'SKII Y SNOWBOARD']}
+      subtitulo="APRENDE, MEJORA Y... ¡DISFRUTA!"
+      href="#contenido"
+    />
     <section id="contenido" class="relative w-full min-h-[88vh]">
       <ReservarClase client:only="react" session={JSON.stringify(session)} />
     </section>

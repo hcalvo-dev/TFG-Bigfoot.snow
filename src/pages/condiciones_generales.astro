@@ -1,0 +1,23 @@
+---
+export const prerender = false;
+import Layout from '../layouts/Layout.astro';
+import HeroWave from '../components/HeroWave';
+import CondicionesGeneralesComponent from '../components/CondicionesGenerales/Cond_general';
+---
+
+<Layout title="BIGFOOT : Condiciones Generales">
+  <main>
+    <!-- Sección Hero Wave -->
+    <HeroWave
+      imagen="/img/contacto/portada.webp"
+      alt="Condiciones Generales de Bigfoot"
+      lineas={['CONDICIONES GENERALES']}
+      subtitulo="ENCUENTRA AQUÍ NUESTROS TÉRMINOS Y CONDICIONES"
+      href="#contenido"
+    />
+    <!-- Sección de condiciones -->
+    <section id="contenido" class="relative w-full">
+      <CondicionesGeneralesComponent client:only="react" />
+    </section>
+  </main>
+</Layout>

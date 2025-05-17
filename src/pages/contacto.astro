@@ -1,0 +1,29 @@
+---
+export const prerender = false;
+import Layout from '../layouts/Layout.astro';
+import HeroWave from '../components/HeroWave';
+import ContactUs from '../components/Contact/ContactUs';
+import AboutUs from '../components/Contact/AboutUs';
+---
+
+<Layout title="BIGFOOT : Contacto">
+  <main>
+    <!-- Sección Hero Wave -->
+    <HeroWave
+      imagen="/img/contacto/portada.webp"
+      alt="Equipo Bigfoot en la montaña"
+      lineas={['SOMOS BIGFOOT']}
+      subtitulo="ESTAMOS DETRAS DE TU PRÓXIMA AVENTURA"
+      href="#contenido"
+    />
+    <!-- Sección Form de contacto -->
+    <section id="contenido" class="relative w-full">
+      <ContactUs client:only="react" />
+    </section>
+
+    <!-- Sección Sobre Nosotros -->
+    <section id="contenido" class="relative w-full">
+      <AboutUs client:only="react" />
+    </section>
+  </main>
+</Layout>

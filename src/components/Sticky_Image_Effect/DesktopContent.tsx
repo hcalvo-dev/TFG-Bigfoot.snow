@@ -1,11 +1,11 @@
 import { motion, MotionValue } from 'framer-motion';
-import { CableCar, Snowflake, SunSnow } from 'lucide-react';
+import { CableCar, Backpack , SunSnow } from 'lucide-react';
 import TiltImageBlock from './TiltImageBlock';
 import { useState } from 'react';
 
 const navLinks = [
   { id: 'forfait', label: 'Forfait', href: '/equipos?forfait', Icon: CableCar },
-  { id: 'equipos', label: 'Equipos', href: '/equipos?equipos', Icon: Snowflake },
+  { id: 'equipos', label: 'Equipos', href: '/equipos?equipos', Icon: Backpack  },
   { id: 'weather', label: 'Montañas', href: '/montanas', Icon: SunSnow },
 ];
 

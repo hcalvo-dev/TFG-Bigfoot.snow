@@ -1,0 +1,24 @@
+---
+export const prerender = false;
+import Layout from '../layouts/Layout.astro';
+import HeroWave from '../components/HeroWave';
+import PoliticCookies from '../components/Politica/pol_cookies.tsx';
+
+---
+
+<Layout title="BIGFOOT : Política de Cookies">
+  <main>
+    <!-- Sección Hero Wave -->
+    <HeroWave
+      imagen="/img/contacto/portada.webp"
+      alt="Política de Cookies de Bigfoot"
+      lineas={['POLÍTICA DE COOKIES']}
+      subtitulo="ENCUENTRA AQUÍ NUESTRA POLÍTICA DE COOKIES"
+      href="#contenido"
+    />
+    <!-- Sección Form de contacto -->
+    <section id="contenido" class="relative w-full">
+      <PoliticCookies client:only="react" />
+    </section>
+  </main>
+</Layout>
