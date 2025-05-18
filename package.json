@@ -9,7 +9,8 @@
     "astro": "astro",
     "db:reset": "prisma migrate reset --force",
     "db:seed": "ts-node prisma/seed.ts",
-    "dev:server": "ts-node server/index.ts"
+    "dev:server": "ts-node server/index.ts",
+    "clima": "ts-node scripts/actualizarClima.ts"
   },
   "dependencies": {
     "@astrojs/react": "4.2.4",
@@ -33,6 +34,7 @@
     "lucide-react": "0.503.0",
     "motion": "^12.11.4",
     "multer": "1.4.5-lts.2",
+    "node-cron": "^4.0.5",
     "nodemailer": "6.10.1",
     "prisma": "6.6.0",
     "react": "19.1.0",

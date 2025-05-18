@@ -11,7 +11,7 @@ export default function StickyHero({ imageOpacity, textOpacity, marqueeOpacity }
     <div className="sticky top-0 h-screen flex items-center justify-center overflow-hidden">
       <motion.div className="absolute w-full h-full" style={{ opacity: imageOpacity }}>
         <img
-          src="/img/index/prueba.webp"
+          src="/img/index/portada.webp"
           alt="Imagen principal"
           className="w-full h-full object-cover"
         />

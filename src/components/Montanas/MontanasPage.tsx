@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import MontanasInteractive from './MontanasImgPortada';
 import RutasMontanas from './RutasMontanas';
+import WeatherMontanas from './WeatherMontanas';
 
 type Montania = {
   id: number;
@@ -21,8 +22,12 @@ export default function MontanasPage() {
         <MontanasInteractive onSeleccion={setSeleccionada} />
       </section>
 
-      <section id="contenido" className="relative w-full min-h-screen">
+      <section id="contenido" className="relative w-full ">
         <RutasMontanas montana={seleccionada} />
+      </section>
+
+       <section id="contenido" className="relative w-full min-h-screen">
+        <WeatherMontanas montana={seleccionada} />
       </section>
     </>
   );

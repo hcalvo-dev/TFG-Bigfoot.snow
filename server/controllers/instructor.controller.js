@@ -120,15 +120,24 @@ export const getInstructoresDisponibles = async (req, res) => {
   }
 };
 
+import { startOfDay, setHours, setMinutes, format } from 'date-fns';
+import prisma from '../../src/lib/prisma';
+
+import { startOfDay, setHours, setMinutes, format } from 'date-fns';
+import prisma from '../../src/lib/prisma';
+
 export const getHorariosInstructor = async (req, res) => {
   try {
     const { montanaId, especialidad, fechaSeleccionada, instructorId } = req.body;
+
+    console.log('📩 Body recibido:', { montanaId, especialidad, fechaSeleccionada, instructorId });
 
     if (!montanaId || !especialidad || !fechaSeleccionada) {
       return res.status(400).json({ message: 'Faltan parámetros requeridos.' });
     }
 
     const fechaConsulta = startOfDay(new Date(fechaSeleccionada));
+    console.log('📅 Fecha consulta (startOfDay):', fechaConsulta.toISOString());
 
     const instructores = await prisma.instructor.findMany({
       where: {
@@ -145,42 +154,46 @@ export const getHorariosInstructor = async (req, res) => {
     }
 
     const idInstructor = instructorId || instructoresIds[0];
+    console.log('👨‍🏫 Instructor utilizado:', idInstructor);
 
-    const clasesReservadas = await prisma.reserva.findMany({
+    // 🛠️ Cambio aquí: usar rango de fecha
+    const disponibilidad = await prisma.instructorDisponibilidad.findMany({
       where: {
-        clase: {
-          instructorId: idInstructor,
-        },
-        fechaInicio: {
+        instructorId: idInstructor,
+        fecha: {
           gte: new Date(`${fechaSeleccionada}T00:00:00`),
           lt: new Date(`${fechaSeleccionada}T23:59:59`),
         },
+        disponible: false,
       },
       select: {
-        fechaInicio: true,
+        horaInicio: true,
       },
     });
 
     const horasOcupadas = new Set(
-      clasesReservadas.map((r) => format(new Date(r.fechaInicio), 'HH:mm'))
+      disponibilidad.map((d) => format(new Date(d.horaInicio), 'HH:mm'))
     );
 
-    // Generamos franjas por defecto (de 9 a 14)
+    console.log('⛔ Horas ocupadas (por disponibilidad):', [...horasOcupadas]);
+
     const slots = [];
     for (let h = 9; h < 14; h++) {
       const hora = format(setMinutes(setHours(fechaConsulta, h), 0), 'HH:mm');
-      slots.push({
-        hora,
-        disponible: !horasOcupadas.has(hora),
-      });
+      const disponible = !horasOcupadas.has(hora);
+      console.log(`🕘 Slot ${hora}: ${disponible ? 'Disponible' : 'Ocupada'}`);
+      slots.push({ hora, disponible });
     }
 
+    console.log('✅ Slots generados:', slots);
     res.json(slots);
   } catch (error) {
     console.error('❌ Error al obtener horarios:', error);
     res.status(500).json({ message: 'Error interno del servidor' });
   }
 };
+
+
 
 export const getAllInstructors = async (req, res) => {
   try {

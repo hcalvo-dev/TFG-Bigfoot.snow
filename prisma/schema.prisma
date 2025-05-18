@@ -65,8 +65,11 @@ model Montaña {
   ubicacion    String
   altura       Int
   descripcion  String?
+  lat          Float
+  lon          Float
   rutas        Ruta[]
   instructores Instructor[] @relation("InstructorMontaña")
+  climas       Clima[]
   reservas     Reserva[]
   clases       Clase[]
 }
@@ -78,6 +81,19 @@ model Ruta {
   longitud   Float // en km
   montaña   Montaña @relation(fields: [montañaId], references: [id])
   montañaId Int
+}
+
+model Clima {
+  id             Int      @id @default(autoincrement())
+  fecha          DateTime
+  temperaturaMax Float
+  temperaturaMin Float
+  descripcion    String
+  icono          String
+  montaña       Montaña @relation(fields: [montañaId], references: [id])
+  montañaId     Int
+
+  @@unique([fecha, montañaId])
 }
 
 model Clase {

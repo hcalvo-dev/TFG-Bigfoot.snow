@@ -5,7 +5,9 @@ import dotenv from 'dotenv';
 import { PORT, ORIGIN } from './config';
 import csrf from 'csurf';
 import cookieParser from 'cookie-parser';
+import cron from 'node-cron';
 import { limpiarReservasExpiradas } from '../utils/limpiarReservas';
+import { actualizarClimaMontanas } from '../utils/actualizarClimaMontaña';
 
 // Importa las rutas
 import authRoutes from './routes/auth.routes';
@@ -51,6 +53,12 @@ app.use('/uploads', express.static('public/uploads'));
 setInterval(() => {
   limpiarReservasExpiradas();
 }, 60 * 1000); // cada minuto
+
+// Tarea programada para actualizar el clima de las montañas a las 06:00 AM todos los días
+cron.schedule('0 6 * * *', async () => {
+  console.log('Actualizando clima de montañas...');
+  await actualizarClimaMontanas();
+});
 
 // Rutas
 app.use('/api/auth', authRoutes); 

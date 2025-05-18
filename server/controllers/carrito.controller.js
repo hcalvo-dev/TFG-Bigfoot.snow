@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken';
 
 export const reservarClase = async (req, res) => {
   try {
-    const { instructorId, montanaId, fecha, horas } = req.body;
+    const { instructorId, montanaId, fecha, horas, nivelId } = req.body;
     console.log('📩 Body recibido:', req.body);
 
     const usuarioId = req.user?.id;
@@ -23,6 +23,16 @@ export const reservarClase = async (req, res) => {
       console.log('🔐 Token generado:', token);
     }
 
+    const nivel = await prisma.nivel.findUnique({
+      where: { id: Number(nivelId) },
+    });
+
+    if (!nivel) {
+      return res.status(404).json({ error: 'Nivel no encontrado' });
+    }
+
+    const precioNivel = nivel.precio;
+
     for (const horaStr of horas) {
       const [h, m] = horaStr.split(':').map(Number);
       const inicio = new Date(fechaBase);
@@ -35,7 +45,6 @@ export const reservarClase = async (req, res) => {
         `⏰ Procesando hora: ${horaStr} → ${inicio.toISOString()} - ${fin.toISOString()}`
       );
 
-      // Verificamos si ya existe una reserva para esta hora
       const yaOcupada = await prisma.instructorDisponibilidad.findFirst({
         where: {
           instructorId: Number(instructorId),
@@ -51,37 +60,56 @@ export const reservarClase = async (req, res) => {
         continue;
       }
 
-      // Si se te olvidó añadir esto:
-      const clase = await prisma.clase.findFirst({
-        where: {
-          instructorId: Number(instructorId),
-          montanaId: Number(montanaId),
-        },
-      });
-
-      if (!clase) {
-        console.log(`⚠️ No se encontró una clase existente para instructor ${instructorId}.`);
-        return res.status(404).json({ error: 'Clase no encontrada' });
-      }
-
       const reserva = await prisma.reserva.create({
         data: {
           fechaInicio: inicio,
           fechaFin: fin,
           estado: 'pendiente',
           metodoPago: '',
-          total: clase.precio,
+          total: precioNivel,
           pagado: false,
           ...(usuarioId && { usuarioId }),
           tokenCarrito: token,
-          claseId: clase.id,
-          expiresAt: new Date(Date.now() + 10 * 60 * 1000),
+          claseId: null,
           montanaId: Number(montanaId),
+          expiresAt: new Date(Date.now() + 10 * 60 * 1000),
         },
       });
 
       console.log('✅ Reserva creada:', reserva.id);
       horasReservadas.push(horaStr);
+
+      const disponibilidad = await prisma.instructorDisponibilidad.findFirst({
+        where: {
+          instructorId: Number(instructorId),
+          fecha: fechaBase,
+          horaInicio: inicio,
+          horaFin: fin,
+        },
+      });
+
+      if (disponibilidad) {
+        if (disponibilidad.disponible) {
+          await prisma.instructorDisponibilidad.update({
+            where: { id: disponibilidad.id },
+            data: { disponible: false },
+          });
+          console.log(`🔄 Disponibilidad actualizada a false para ${horaStr}`);
+        } else {
+          console.log(`⚠️ Ya estaba marcada como no disponible: ${horaStr}`);
+        }
+      } else {
+        await prisma.instructorDisponibilidad.create({
+          data: {
+            instructorId: Number(instructorId),
+            fecha: fechaBase,
+            horaInicio: inicio,
+            horaFin: fin,
+            disponible: false,
+          },
+        });
+        console.log(`🆕 Nueva disponibilidad creada como no disponible para ${horaStr}`);
+      }
     }
 
     if (horasReservadas.length === 0) {

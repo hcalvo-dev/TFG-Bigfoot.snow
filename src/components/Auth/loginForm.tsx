@@ -119,7 +119,7 @@ export default function AuthForm() {
               : 'polygon(0 0, 70% 0, 100% 100%, 0% 100%)',
           paddingRight: mode === 'register' ? '70px' : undefined,
           paddingLeft: mode === 'login' ? '60px' : undefined,
-          backgroundImage: `url(${mode === 'login' ? '/img/login/4.jpg' : '/img/login/2.jpg'})`,
+          backgroundImage: `url(${mode === 'login' ? '/img/login/login.jpg' : '/img/login/register.jpg'})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
         }}

@@ -18,7 +18,7 @@ export const ReservaClase = async (req, res) => {
       const fin = new Date(inicio);
       fin.setHours(fin.getHours() + 1);
 
-      // Verificamos si ya existe una reserva para esta hora
+      // Verificar si ya está ocupada
       const yaOcupada = await prisma.instructorDisponibilidad.findFirst({
         where: {
           instructorId: Number(instructorId),
@@ -31,18 +31,38 @@ export const ReservaClase = async (req, res) => {
 
       if (yaOcupada) continue;
 
-      // Marcar como ocupada
-      await prisma.instructorDisponibilidad.create({
-        data: {
+      // Revisar si ya existe con disponible: true y actualizar
+      const disponibilidad = await prisma.instructorDisponibilidad.findFirst({
+        where: {
           instructorId: Number(instructorId),
           fecha: fechaBase,
           horaInicio: inicio,
           horaFin: fin,
-          disponible: false,
         },
       });
 
-      // Verificamos si ya hay una clase exactamente igual 
+      if (disponibilidad) {
+        if (disponibilidad.disponible) {
+          await prisma.instructorDisponibilidad.update({
+            where: { id: disponibilidad.id },
+            data: { disponible: false },
+          });
+        } else {
+          continue; // ya estaba no disponible
+        }
+      } else {
+        await prisma.instructorDisponibilidad.create({
+          data: {
+            instructorId: Number(instructorId),
+            fecha: fechaBase,
+            horaInicio: inicio,
+            horaFin: fin,
+            disponible: false,
+          },
+        });
+      }
+
+      // Buscar clase existente
       const claseExistente = await prisma.clase.findFirst({
         where: {
           titulo: `Clase de ${especialidad}`,
@@ -60,7 +80,7 @@ export const ReservaClase = async (req, res) => {
           precio: 25,
           tipo: 'individual',
           instructorId: Number(instructorId),
-          montanaId: Number(montanaId), 
+          montanaId: Number(montanaId),
         },
       });
 
@@ -74,7 +94,7 @@ export const ReservaClase = async (req, res) => {
           pagado: true,
           usuarioId,
           claseId: clase.id,
-          montanaId: Number(montanaId), 
+          montanaId: Number(montanaId),
         },
       });
 
@@ -85,9 +105,7 @@ export const ReservaClase = async (req, res) => {
       return res.status(409).json({ message: 'Ninguna de las horas está disponible' });
     }
 
-    return res.status(200).json({
-      horasReservadas,
-    });
+    return res.status(200).json({ horasReservadas });
   } catch (error) {
     console.error('❌ Error al reservar clase:', error);
     return res.status(500).json({ error: 'Error al procesar la reserva' });
