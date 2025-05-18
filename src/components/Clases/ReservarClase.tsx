@@ -248,7 +248,7 @@ export default function ReservarClase({ session }: Props) {
       }
 
       if (data?.horasReservadas?.length > 0) {
-        setMensaje(data.message || 'Clase reservada correctamente.');
+        setMensaje(data.message);
         setHorasSeleccionadas([]);
 
         await fetch('http://localhost:4000/api/instructor/horarios', {

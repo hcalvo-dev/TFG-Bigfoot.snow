@@ -91,7 +91,7 @@ export default function WeatherMontanas({ montana }: { montana: Montania | null 
       observer.disconnect();
       window.removeEventListener('resize', calculateWidth);
     };
-  }, [montana]);
+  }, [clima]);
 
   if (!montana) {
     return (
