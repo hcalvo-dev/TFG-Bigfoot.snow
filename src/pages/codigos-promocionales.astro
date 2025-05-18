@@ -1,0 +1,24 @@
+---
+export const prerender = false;
+import Layout from '../layouts/Layout.astro';
+import HeroWave from '../components/HeroWave';
+import DescuentosComponent from '../components/Codigos_Promocionales/DescuentosComponent';
+
+---
+
+<Layout title="BIGFOOT : Ventajas">
+  <main>
+    <HeroWave
+      imagen="/img/contacto/portada.webp"
+      alt="Descuentos de Bigfoot"
+      lineas={['DESCUENTOS BIGFOOT']}
+      subtitulo="APROVECHA LOS DESCUENTOS QUE TENEMOS PARA TI"
+      href="#contenido"
+    />
+
+    <!-- Sección de ventajas -->
+    <section id="contenido" class="relative w-full">
+      <DescuentosComponent client:only="react" />
+    </section>
+  </main>
+</Layout>
