@@ -21,22 +21,35 @@ export default function MontanasInteractive({
   const carouselRef = useRef<HTMLDivElement>(null);
   const [width, setWidth] = useState(0);
 
+  const slugify = (str: string) =>
+    str
+      .normalize('NFD') // descompone tildes y diéresis
+      .replace(/[\u0300-\u036f]/g, '') // elimina acentos y marcas diacríticas
+      .toLowerCase()
+      .replaceAll(' ', '-')
+      .replace(/[^a-z0-9-]/g, ''); // elimina cualquier caracter extraño
+
   useEffect(() => {
     const calculateWidth = () => {
       if (carouselRef.current) {
         const scrollWidth = carouselRef.current.scrollWidth;
         const offsetWidth = carouselRef.current.offsetWidth;
-        setWidth(-scrollWidth + offsetWidth); // framer-motion usa negativo
+        setWidth(-scrollWidth + offsetWidth);
       }
     };
 
     calculateWidth();
-    window.addEventListener('resize', calculateWidth);
-    return () => window.removeEventListener('resize', calculateWidth);
-  }, [montanas]);
 
-  const normalizarNombre = (nombre: string) =>
-    nombre.toLowerCase().replaceAll(' ', '-').replaceAll('í', 'i');
+    const observer = new ResizeObserver(() => calculateWidth());
+    if (carouselRef.current) observer.observe(carouselRef.current);
+
+    window.addEventListener('resize', calculateWidth);
+
+    return () => {
+      observer.disconnect();
+      window.removeEventListener('resize', calculateWidth);
+    };
+  }, [montanas]);
 
   useEffect(() => {
     const fetchMontanas = async () => {
@@ -46,24 +59,25 @@ export default function MontanasInteractive({
 
         const montanasConImagen = data.map((montana: Montania) => ({
           ...montana,
-          imagen: `/img/montanas/${normalizarNombre(montana.nombre)}.webp`,
+          imagen: `/img/montanas/${slugify(montana.nombre)}.webp`,
         }));
 
         setMontanas(montanasConImagen);
 
         const params = new URLSearchParams(window.location.search);
-        const slug = params.get('montana');
-        const slugNormalizado = slug ? normalizarNombre(slug) : '';
+        const rawSlug = params.get('montana') || '';
+        const slug = slugify(rawSlug);
 
-        const seleccionada = montanasConImagen.find(
-          (m: Montania) => normalizarNombre(m.nombre) === slugNormalizado
-        );
+        const slugsValidos = montanasConImagen.map((m: Montania) => slugify(m.nombre));
+        const slugEsValido = slugsValidos.includes(slug);
+
+        const seleccionada = slugEsValido
+          ? montanasConImagen.find((m: Montania) => slugify(m.nombre) === slug)
+          : null;
 
         const seleccion =
           seleccionada ||
-          montanasConImagen.find((m: Montania) =>
-            normalizarNombre(m.nombre).includes('sierra-nevada')
-          ) ||
+          montanasConImagen.find((m: Montania) => slugify(m.nombre).includes('sierra-nevada')) ||
           montanasConImagen[0];
 
         setPrincipal(seleccion);
@@ -78,14 +92,13 @@ export default function MontanasInteractive({
 
   const handleSeleccion = (montana: Montania) => {
     setPrincipal(montana);
-    onSeleccion(montana); // pasa la montaña al padre
+    onSeleccion(montana);
   };
 
   const montanasRestantes = montanas.filter((m) => m.id !== principal?.id);
 
   return (
     <section className="w-full  min-h-screen px-6 py-12">
-      {/* Título y descripción */}
       <div className="text-center mt-8 max-w-3xl mx-auto mb-10">
         <h2 className="text-5xl font-blowbrush font-extrabold uppercase tracking-widest text-sky-950 mb-4">
           Selecciona nuestras montañas
@@ -95,9 +108,7 @@ export default function MontanasInteractive({
         </p>
       </div>
 
-      {/* Contenedor principal: imagen + info */}
       <div className="flex gap-8 mb-6 mx-auto max-w-6xl px-4 items-center justify-center">
-        {/* Imagen izquierda */}
         <div className="w-[50%] relative rounded-3xl overflow-hidden shadow-xl h-[45vh] md:h-[56vh]">
           <AnimatePresence mode="wait">
             {principal && (
@@ -115,7 +126,6 @@ export default function MontanasInteractive({
           </AnimatePresence>
         </div>
 
-        {/* Texto derecha */}
         <div className="flex flex-col justify-center w-[40%] text-sky-900 px-2">
           {principal && (
             <motion.div
@@ -138,7 +148,6 @@ export default function MontanasInteractive({
         </div>
       </div>
 
-      {/* Cards montañas - DESKTOP */}
       <div className="w-full hidden md:flex mt-8 gap-2 flex-wrap" style={{ height: '40vh' }}>
         {montanasRestantes.slice(0, 8).map((montana, idx) => (
           <div
@@ -166,7 +175,6 @@ export default function MontanasInteractive({
                 alt={montana.nombre}
                 className="w-full h-full object-cover object-bottom transition-all duration-300 grayscale group-hover:grayscale-0 group-hover:scale-105"
               />
-              {/* Nombre superpuesto en hover */}
               <div className="absolute bottom-0 left-0 w-full bg-black/50 text-white text-center py-1  font-semibold opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-30">
                 {montana.nombre}
               </div>
@@ -175,7 +183,6 @@ export default function MontanasInteractive({
         ))}
       </div>
 
-      {/* Carousel montañas - MOBILE */}
       <div className="w-full md:hidden overflow-hidden mt-8">
         <motion.div
           ref={carouselRef}
@@ -193,7 +200,7 @@ export default function MontanasInteractive({
                 className="w-full h-full object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent p-4 flex flex-col justify-end text-white">
-                <div className="absolute bottom-0 left-0 w-full bg-black/50 text-white text-center py-1  font-semibold z-30">
+                <div className="absolute bottom-0 left-0 w-full bg-black/50 text-white text-center py-1 font-semibold z-30">
                   {montana.nombre}
                 </div>
               </div>

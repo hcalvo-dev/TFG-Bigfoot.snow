@@ -20,7 +20,8 @@ import clasesRoutes from './routes/clase.routes';
 import nivelRoutes from './routes/nivel.routes';
 import reservaRoutes from './routes/reserva.routes'; 
 import carritoRoutes from './routes/carrito.routes'; 
-import rutasMontañasRoutes from './routes/rutasMontañas.routes'; 
+import rutasMontañasRoutes from './routes/rutasMontañas.routes';
+import climaRoutes from './routes/clima.routes'; 
 
 // Importa las variables de entorno desde .env
 dotenv.config();
@@ -67,6 +68,7 @@ app.use('/api/estadisticas', estadisticasRoutes);
 app.use('/api/roles', rolesRoutes);
 app.use('/api/montanas', montanasRoutes);
 app.use('/api/rutas', rutasMontañasRoutes);
+app.use('/api/clima', climaRoutes);
 app.use('/api/instructor', instructorRoutes);
 app.use('/api/clases', clasesRoutes);
 app.use('/api/nivel', nivelRoutes);

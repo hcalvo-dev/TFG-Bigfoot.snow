@@ -26,7 +26,8 @@ export default function MontanasCarousel() {
           imagen: `/img/montanas/${montana.nombre
             .toLowerCase()
             .replaceAll(' ', '-')
-            .replaceAll('í', 'i')}.webp`,
+            .replaceAll('í', 'i').
+            replaceAll('ü', 'u')}.webp`,
         }));
 
         setMontanas(montanasConImagen);

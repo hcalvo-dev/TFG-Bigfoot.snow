@@ -26,7 +26,7 @@ export default function MontanasPage() {
         <RutasMontanas montana={seleccionada} />
       </section>
 
-       <section id="contenido" className="relative w-full min-h-screen">
+       <section id="contenido" className="relative w-full">
         <WeatherMontanas montana={seleccionada} />
       </section>
     </>
