@@ -147,7 +147,7 @@ export default function MontanasInteractive({
           )}
         </div>
       </div>
-
+      {/* Versión Desktop */}
       <div className="w-full hidden md:flex mt-8 gap-2 flex-wrap" style={{ height: '40vh' }}>
         {montanasRestantes.slice(0, 8).map((montana, idx) => (
           <div
@@ -183,6 +183,7 @@ export default function MontanasInteractive({
         ))}
       </div>
 
+      {/* Versión móvil */}
       <div className="w-full md:hidden overflow-hidden mt-8">
         <motion.div
           ref={carouselRef}

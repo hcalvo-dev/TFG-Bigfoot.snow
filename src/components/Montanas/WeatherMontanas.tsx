@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 type Montania = {
@@ -23,6 +23,8 @@ type Clima = {
 export default function WeatherMontanas({ montana }: { montana: Montania | null }) {
   const [csrfToken, setCsrfToken] = useState('');
   const [clima, setClima] = useState<Clima[]>([]);
+  const carouselRef = useRef<HTMLDivElement>(null);
+  const [width, setWidth] = useState(0);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -69,8 +71,32 @@ export default function WeatherMontanas({ montana }: { montana: Montania | null 
     fetchClima();
   }, [csrfToken, montana]);
 
+  useEffect(() => {
+    const calculateWidth = () => {
+      if (carouselRef.current) {
+        const scrollWidth = carouselRef.current.scrollWidth;
+        const offsetWidth = carouselRef.current.offsetWidth;
+        setWidth(-scrollWidth + offsetWidth);
+      }
+    };
+
+    calculateWidth();
+
+    const observer = new ResizeObserver(() => calculateWidth());
+    if (carouselRef.current) observer.observe(carouselRef.current);
+
+    window.addEventListener('resize', calculateWidth);
+
+    return () => {
+      observer.disconnect();
+      window.removeEventListener('resize', calculateWidth);
+    };
+  }, [montana]);
+
   if (!montana) {
-    return <p className="text-center text-gray-500 py-10">Selecciona una montaña para ver el clima.</p>;
+    return (
+      <p className="text-center text-gray-500 py-10">Selecciona una montaña para ver el clima.</p>
+    );
   }
 
   return (
@@ -84,47 +110,54 @@ export default function WeatherMontanas({ montana }: { montana: Montania | null 
         </div>
 
         {loading ? (
-          <p className="text-center text-gray-500">Cargando clima...</p>
+          ''
         ) : (
           <AnimatePresence mode="wait">
-            <motion.div
-              key={montana.nombre}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.5 }}
-              className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-7 gap-4"
-            >
-              {clima.map((dia, i) => {
-                const fecha = new Date(dia.fecha).toLocaleDateString('es-ES', {
-                  weekday: 'short',
-                  day: '2-digit',
-                  month: '2-digit',
-                });
+            {!loading && (
+              <div className="w-full overflow-x-hidden mt-8">
+                <motion.div
+                  key={montana.nombre}
+                  ref={carouselRef}
+                  className="flex gap-4 cursor-grab active:cursor-grabbing px-1 pb-4"
+                  drag="x"
+                  dragConstraints={{ left: width, right: 0 }}>
+                  {clima.map((dia, i) => {
+                    const fecha = new Date(dia.fecha).toLocaleDateString('es-ES', {
+                      weekday: 'long',
+                      day: '2-digit',
+                      month: 'short',
+                    });
 
-                return (
-                  <motion.div
-                    key={i}
-                    className="bg-white rounded-2xl shadow-md p-4 text-center flex flex-col items-center"
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: i * 0.1 }}
-                  >
-                    <p className="text-sm font-semibold text-gray-600">{fecha}</p>
-                    <img
-                      src={`https://openweathermap.org/img/wn/${dia.icono}@2x.png`}
-                      alt={dia.descripcion}
-                      className="w-16 h-16"
-                    />
-                    <p className="capitalize text-sm text-gray-700">{dia.descripcion}</p>
-                    <div className="mt-2 text-sm">
-                      <span className="text-blue-700 font-semibold">{dia.temperaturaMin}°C</span>{' '}
-                      / <span className="text-red-700 font-semibold">{dia.temperaturaMax}°C</span>
-                    </div>
-                  </motion.div>
-                );
-              })}
-            </motion.div>
+                    return (
+                      <motion.div
+                        key={i}
+                        className="min-w-[220px] bg-gradient-to-br from-sky-100 to-white rounded-3xl shadow-md p-6 text-center flex-shrink-0 border border-sky-200"
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: i * 0.1 }}>
+                        <p className="text-md font-bold uppercase text-sky-800 tracking-wide mb-2">
+                          {fecha}
+                        </p>
+                        <img
+                          src={`https://openweathermap.org/img/wn/${dia.icono}@2x.png`}
+                          alt={dia.descripcion}
+                          className="w-20 h-20 flex justify-self-center drop-shadow-lg"
+                          draggable={false}
+                        />
+                        <p className="capitalize text-base mt-2 text-sky-700 font-medium">
+                          {dia.descripcion}
+                        </p>
+                        <div className="mt-3 text-md font-semibold">
+                          <span className="text-blue-600">{dia.temperaturaMin}°C</span>{' '}
+                          <span className="text-gray-400">/</span>{' '}
+                          <span className="text-red-600">{dia.temperaturaMax}°C</span>
+                        </div>
+                      </motion.div>
+                    );
+                  })}
+                </motion.div>
+              </div>
+            )}
           </AnimatePresence>
         )}
       </div>

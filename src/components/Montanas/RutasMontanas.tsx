@@ -96,7 +96,7 @@ export default function RutasMontanas({ montana }: { montana: Montania | null })
   };
 
   return (
-    <section className="w-full px-6 py-10">
+    <section className="w-full min-h-[75vh] px-6 py-10">
       <div className="max-w-5xl mx-auto space-y-10">
         <div className="text-center">
           <h3 className="text-5xl font-blowbrush font-extrabold uppercase text-sky-950 tracking-widest mb-2">
