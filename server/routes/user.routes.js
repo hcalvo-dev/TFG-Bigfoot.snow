@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { getCurrentUser, updateCurrentUser, deleteCurrentUser, allCurrentUser, activateUser } from '../controllers/currentUser.controller';
 import { authenticateUser } from '../middlewares/authenticate.middleware';
 import { sanitizeInputs } from '../middlewares/sanitize.middleware';
+import { capitalizeNombre } from '../middlewares/capitalizeFields';
 
 const router = Router();
 
@@ -9,7 +10,7 @@ const router = Router();
 router.get('/me', authenticateUser, getCurrentUser);
 
 // Ruta para actualizar el usuario actual
-router.patch('/update',sanitizeInputs, authenticateUser, updateCurrentUser);
+router.patch('/update',sanitizeInputs, capitalizeNombre, authenticateUser, updateCurrentUser);
 
 // Ruta para eliminar el usuario actual
 router.patch('/delete',sanitizeInputs, authenticateUser, deleteCurrentUser);

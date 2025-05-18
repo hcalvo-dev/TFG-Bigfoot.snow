@@ -3,7 +3,6 @@ import jwt from 'jsonwebtoken';
 import prisma from '../../src/lib/prisma';
 import { JWT_SECRET } from '../config';
 
-
 export const registerUser = async (req, res) => {
   const { email, password, name, confirmPassword } = req.body;
 
@@ -30,13 +29,13 @@ export const registerUser = async (req, res) => {
   }
 
   const hashedPassword = await bcrypt.hash(password, 10);
-  
+
   const rol = await prisma.rol.findUnique({
     where: { nombre: 'user' },
   });
 
   const existUser = await prisma.usuario.findFirst({
-    where: { email },
+    where: { email: { equals: email, mode: 'insensitive' } },
   });
 
   if (existUser) {
@@ -81,11 +80,9 @@ export const registerUser = async (req, res) => {
     },
   });
 
-  const token = jwt.sign(
-    { userId: user.id, email: user.email, rol: rol.nombre },
-    JWT_SECRET,
-    { expiresIn: '3h' }
-  );
+  const token = jwt.sign({ userId: user.id, email: user.email, rol: rol.nombre }, JWT_SECRET, {
+    expiresIn: '3h',
+  });
 
   res
     .cookie('token', token, { httpOnly: true, secure: true, sameSite: 'strict' })
@@ -93,24 +90,25 @@ export const registerUser = async (req, res) => {
     .json({ message: 'Usuario registrado correctamente', token });
 };
 
-
 export const loginUser = async (req, res) => {
   const { email, password } = req.body;
 
-  const user = await prisma.usuario.findUnique({
-    where: {  
-      email,
+  const user = await prisma.usuario.findFirst({
+    where: {
+      email: {
+        equals: email,
+        mode: 'insensitive',
+      },
       estadoCuenta: true,
-    }
+    },
   });
 
-  
   if (!user) {
     return res.status(400).json({ message: 'Usuario no encontrado' });
   }
-  
+
   const rol = await prisma.rol.findUnique({
-    where: { id: user.rolId }
+    where: { id: user.rolId },
   });
 
   const isValid = await bcrypt.compare(password, user.password);
@@ -125,13 +123,10 @@ export const loginUser = async (req, res) => {
     throw new Error('Falta la variable de entorno JWT_SECRET');
   }
 
-   // Crear el token con un secreto y duración
-   const token = jwt.sign(
-    { userId: user.id, email: user.email , rol: rol.nombre },
-    secret,
-    { expiresIn: '12h' }
-  );
-  
+  // Crear el token con un secreto y duración
+  const token = jwt.sign({ userId: user.id, email: user.email, rol: rol.nombre }, secret, {
+    expiresIn: '12h',
+  });
 
   // Enviar el token como cookie httpOnly
   res
