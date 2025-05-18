@@ -1,41 +1,42 @@
 import { useEffect, useState } from 'react';
-import Swal from 'sweetalert2';
-import 'sweetalert2/dist/sweetalert2.min.css';
 import Pagination from '../Pagination/Pagination';
-import { error } from 'console';
 
-type ClaseActiva = {
+type ClaseAgendada = {
   id: number;
   fechaInicio: string;
   fechaFin: string;
   fechaReserva: string;
-  estado: string;
   metodoPago: string;
   total: number;
   clase?: {
     titulo: string;
-    instructor?: {
-      usuario?: {
-        nombre: string;
-      };
+    nivelNombre?: string; // <-- Aquí el nuevo campo que añadimos manualmente en el backend
+    montaña?: {
+      nombre: string;
     };
+  };
+  usuario?: {
+    nombre: string;
   };
 };
 
+
+type Usuario = { id: number; nombre: string; email: string; rol: string };
+
 type Props = {
+  usuario: Usuario;
   csrfToken: string;
-  onUpdateEstadisticas: () => void;
 };
 
-export default function ClasesActivasTable({ csrfToken, onUpdateEstadisticas }: Props) {
-  const [clases, setClases] = useState<ClaseActiva[]>([]);
+export default function AgendaClases({ usuario, csrfToken }: Props) {
+  const [clases, setClases] = useState<ClaseAgendada[]>([]);
   const [busqueda, setBusqueda] = useState('');
   const [paginaActual, setPaginaActual] = useState(1);
   const filasPorPagina = 4;
 
   const fetchClases = async () => {
     try {
-      const res = await fetch('http://localhost:4000/api/clases/clases-activas', {
+      const res = await fetch('http://localhost:4000/api/clases/clases-agendadas', {
         credentials: 'include',
         headers: { 'CSRF-Token': csrfToken },
       });
@@ -43,10 +44,9 @@ export default function ClasesActivasTable({ csrfToken, onUpdateEstadisticas }: 
       const ordenadas = [...data.datos].sort(
         (a, b) => new Date(a.fechaInicio).getTime() - new Date(b.fechaInicio).getTime()
       );
-
       setClases(ordenadas);
     } catch (err) {
-      console.error('Error al cargar clases activas', err);
+      console.error('Error al cargar clases agendadas', err);
     }
   };
 
@@ -54,43 +54,14 @@ export default function ClasesActivasTable({ csrfToken, onUpdateEstadisticas }: 
     if (csrfToken) fetchClases();
   }, [csrfToken]);
 
-  const handleCancelar = async (id: number) => {
-    const confirm = await Swal.fire({
-      title: '¿Cancelar reserva?',
-      text: 'Esta acción no se puede deshacer.',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Sí, cancelar',
-    });
-    if (!confirm.isConfirmed) return;
-
-    try {
-      const res = await fetch('http://localhost:4000/api/clases/cancelar-reserva', {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-          'CSRF-Token': csrfToken,
-        },
-        credentials: 'include',
-        body: JSON.stringify({ id }),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error);
-      fetchClases();
-      onUpdateEstadisticas();
-      Swal.fire('Cancelado', 'La reserva ha sido cancelada', 'success');
-    } catch(err) {
-      const error = err as Error;
-      Swal.fire('Cancelación no permitida', error.message  , 'error');
-    }
-  };
-
   const clasesFiltradas = clases.filter((clase) => {
     const tituloClase = clase.clase?.titulo ?? '';
-    const nombreInstructor = clase.clase?.instructor?.usuario?.nombre ?? '';
+    const nombreAlumno = clase.usuario?.nombre ?? '';
+    const nivel = clase.clase?.nivelNombre ?? '';
     return (
       tituloClase.toLowerCase().includes(busqueda.toLowerCase()) ||
-      nombreInstructor.toLowerCase().includes(busqueda.toLowerCase())
+      nombreAlumno.toLowerCase().includes(busqueda.toLowerCase()) ||
+        nivel.toLowerCase().includes(busqueda.toLowerCase())
     );
   });
 
@@ -105,11 +76,11 @@ export default function ClasesActivasTable({ csrfToken, onUpdateEstadisticas }: 
       <div className="rounded-xl text-white">
         <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-4">
           <h2 className="text-xl font-extrabold font-blowbrush tracking-widest text-sky-950 uppercase">
-            Clases activas
+            Agenda de clases
           </h2>
           <input
             type="text"
-            placeholder="Buscar por especialidad o instructor..."
+            placeholder="Buscar por alumno o título..."
             value={busqueda}
             onChange={(e) => {
               setBusqueda(e.target.value);
@@ -123,13 +94,13 @@ export default function ClasesActivasTable({ csrfToken, onUpdateEstadisticas }: 
           <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
             <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
               <tr>
-                <th className="py-3 px-4">ID</th>
-                <th className="py-3 px-4">Titulo</th>
-                <th className="py-3 px-4">Instructor</th>
+                <th className="py-3 px-4">#</th>
+                <th className="py-3 px-4">Título</th>
+                <th className="py-3 px-4">Alumno/a</th>
                 <th className="py-3 px-4">Fecha</th>
                 <th className="py-3 px-4">Hora</th>
-                <th className="py-3 px-4">Estado</th>
-                <th className="py-3 px-4">Acciones</th>
+                <th className="py-3 px-4">Montaña</th>
+                <th className="py-3 px-4">Nivel</th>
               </tr>
             </thead>
             <tbody>
@@ -144,24 +115,19 @@ export default function ClasesActivasTable({ csrfToken, onUpdateEstadisticas }: 
                     {clase.clase?.titulo ?? 'Clase eliminada'}
                   </td>
                   <td className="py-2 px-4 text-white/90">
-                    {' '}
-                    {clase.clase?.instructor?.usuario?.nombre ?? 'Sin instructor'}
+                    {clase.usuario?.nombre ?? 'Alumno desconocido'}
                   </td>
-                  <td className="py-2 px-4 text-white/90">{new Date(clase.fechaInicio).toLocaleDateString()}</td>
+                  <td className="py-2 px-4 text-white/90">
+                    {new Date(clase.fechaInicio).toLocaleDateString()}
+                  </td>
                   <td className="py-2 px-4 text-white/90">
                     {new Date(clase.fechaInicio).toLocaleTimeString([], {
                       hour: '2-digit',
                       minute: '2-digit',
                     })}
                   </td>
-                  <td className="py-2 px-4 text-white/90 capitalize">{clase.estado}</td>
-                  <td className="py-2 px-4 text-white/90">
-                    <button
-                      onClick={() => handleCancelar(clase.id)}
-                      className="bg-red-500 hover:bg-red-600 px-3 py-1 rounded font-medium text-white shadow shadow-black/40">
-                      Cancelar
-                    </button>
-                  </td>
+                  <td className="py-2 px-4 text-white/90">{clase.clase?.montaña?.nombre ?? '-'}</td>
+                  <td className="py-2 px-4 text-white/90">{clase.clase?.nivelNombre ?? '-'}</td>
                 </tr>
               ))}
             </tbody>

@@ -10,6 +10,19 @@ export const ReservaClase = async (req, res) => {
     const fechaBase = new Date(fecha);
     const horasReservadas = [];
 
+    const instructor = await prisma.instructor.findUnique({
+      where: { id: Number(instructorId) },
+      select: { userId: true },
+    });
+  
+    if (!instructor) {
+      return res.status(404).json({ error: 'Instructor no encontrado' });
+    }
+
+    if (instructor.userId === usuarioId) {
+      return res.status(400).json({ error: 'No puedes reservar una clase contigo mismo' });
+    }
+
     for (const horaStr of horas) {
       const [h, m] = horaStr.split(':').map(Number);
       const inicio = new Date(fechaBase);
@@ -71,18 +84,28 @@ export const ReservaClase = async (req, res) => {
         },
       });
 
-      const clase = claseExistente ?? await prisma.clase.create({
-        data: {
-          titulo: `Clase de ${especialidad}`,
-          descripcion: `Clase personalizada de ${especialidad} nivel ${nivelId}`,
-          nivel: nivelId.toString(),
-          duracion: 1,
-          precio: 25,
-          tipo: 'individual',
-          instructorId: Number(instructorId),
-          montanaId: Number(montanaId),
-        },
+      const nivel = await prisma.nivel.findUnique({
+        where: { id: Number(nivelId) },
       });
+
+      if (!nivel) {
+        return res.status(404).json({ error: 'Nivel no encontrado' });
+      }
+
+      const clase =
+        claseExistente ??
+        (await prisma.clase.create({
+          data: {
+            titulo: `Clase de ${especialidad}`,
+            descripcion: `Clase personalizada de ${especialidad} nivel ${nivelId}`,
+            nivel: nivelId.toString(),
+            duracion: 1,
+            precio: nivel.precio,
+            tipo: 'individual',
+            instructorId: Number(instructorId),
+            montanaId: Number(montanaId),
+          },
+        }));
 
       await prisma.reserva.create({
         data: {
@@ -90,7 +113,7 @@ export const ReservaClase = async (req, res) => {
           fechaFin: fin,
           estado: 'confirmada',
           metodoPago: 'tarjeta',
-          total: clase.precio,
+          total: nivel.precio,
           pagado: true,
           usuarioId,
           claseId: clase.id,

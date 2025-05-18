@@ -1,10 +1,21 @@
 import { useState, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { User, School, ShoppingBag, LogOut, ClipboardList, UserRoundSearch } from 'lucide-react';
+import {
+  User,
+  School,
+  ShoppingBag,
+  LogOut,
+  ClipboardList,
+  UserRoundSearch,
+  ShieldUser,
+  CalendarSearch,
+} from 'lucide-react';
 import FormularioEdicionUsuario from './FormEditUser';
 import UsuariosTable from './UsuariosTable';
 import AltaInstructorForm from './AltaInstructor';
 import ClasesTable from './ClasesTable';
+import PanelAdmin from './PanelAdmin';
+import AgendaClases from './AgendaClases';
 
 // Definimos el tipo de las props y del usuario
 type Props = {
@@ -31,9 +42,9 @@ export default function PerfilContent({ session }: Props) {
   const [clasesProximas, setClasesProximas] = useState({ total: 0, datos: [] });
   const [productosReservados, setProductosReservados] = useState({ total: 0, datos: [] });
   const [reloadUser, setReloadUser] = useState(false);
-  const [view, setView] = useState<'perfil' | 'clases' | 'productos' | 'instructor' | 'usuarios'>(
-    'perfil'
-  );
+  const [view, setView] = useState<
+    'perfil' | 'clases' | 'productos' | 'instructor' | 'usuarios' | 'admin' | 'agenda-clases'
+  >('perfil');
   const [csrfToken, setCsrfToken] = useState('');
 
   // Obtenemos el token CSRF al cargar el componente
@@ -207,6 +218,34 @@ export default function PerfilContent({ session }: Props) {
             )}
           </motion.div>
         );
+      case 'admin':
+        return (
+          <motion.div
+            key="admin"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.3 }}
+            className="bg-white/40 rounded-xl p-6 mb-8 md:mb-0 text-sm leading-loose shadow">
+            {usuario && csrfToken && (
+              <PanelAdmin usuario={usuario} csrfToken={csrfToken} onUpdateSuccess={fetchUsuario} />
+            )}
+          </motion.div>
+        );
+      case 'agenda-clases':
+        return (
+          <motion.div
+            key="agenda-clases"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.3 }}
+            className="bg-white/40 rounded-xl p-6 mb-8 md:mb-0 text-sm leading-loose shadow">
+            {usuario && csrfToken && (
+              <AgendaClases usuario={usuario} csrfToken={csrfToken}/>
+            )}
+          </motion.div>
+        );
     }
   };
 
@@ -248,6 +287,17 @@ export default function PerfilContent({ session }: Props) {
             </button>
           </li>
 
+          {parsedSession.rol === 'instructor' && (
+            <li>
+              <button
+                onClick={() => setView('agenda-clases')}
+                className={getButtonStyle('agenda-clases')}>
+                <CalendarSearch className="w-5 h-5" />
+                AGENDA INSTRUCTOR
+              </button>
+            </li>
+          )}
+
           {parsedSession.rol === 'admin' && (
             <li>
               <button
@@ -255,6 +305,15 @@ export default function PerfilContent({ session }: Props) {
                 className={getButtonStyle('instructor')}>
                 <ClipboardList className="w-5 h-5" />
                 ALTA INSTRUCTOR
+              </button>
+            </li>
+          )}
+
+          {parsedSession.rol === 'admin' && (
+            <li>
+              <button onClick={() => setView('admin')} className={getButtonStyle('admin')}>
+                <ShieldUser className="w-5 h-5" />
+                PANEL ADMIN
               </button>
             </li>
           )}

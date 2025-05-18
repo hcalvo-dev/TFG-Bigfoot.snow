@@ -5,9 +5,9 @@ Aplicación web para la gestión de alquiler de equipos de nieve y reservas de c
 
 ---
 
-## 🚀 Project Structure
+## 🚀 Estructora de Proyecto
 
-Inside of your Astro project, you'll see the following folders and files:
+Dentro del proyecto de Astro, encontraremos los siguientes directorios y ficheros:
 
 ```text
 /
@@ -23,7 +23,7 @@ Inside of your Astro project, you'll see the following folders and files:
 
 ## 🧞 Commands
 
-All commands are run from the root of the project, from a terminal:
+Todos los comandos necesarios para arrancar el proyecto, desde la términal:
 
 | Command                   | Action                                           |
 | :------------------------ | :----------------------------------------------- |
@@ -52,11 +52,11 @@ All commands are run from the root of the project, from a terminal:
 - [x] Definir el modelo `Usuario` en Prisma
 - [x] Sincronizar con `npx prisma db push`
 - [x] Probar consulta desde endpoint `/api/usuarios`
-- [ ] Crear formulario básico para insertar nuevos usuarios
-- [ ] Implementar endpoint `POST` para insertar datos desde formulario
-- [ ] Añadir más modelos: `Reserva`, `Instructor`, `Producto`, `Categoría`, etc.
-- [ ] Crear relaciones entre tablas en `schema.prisma`
-- [ ] Añadir validaciones a los datos recibidos
+- [X] Crear formulario básico para insertar nuevos usuarios
+- [X] Implementar endpoint `POST` para insertar datos desde formulario
+- [X] Añadir más modelos: `Reserva`, `Instructor`, `Producto`, `Categoría`, etc.
+- [X] Crear relaciones entre tablas en `schema.prisma`
+- [X] Añadir validaciones a los datos recibidos
 
 ---
 
@@ -64,10 +64,10 @@ All commands are run from the root of the project, from a terminal:
 
 - [x] Estructura inicial de componentes (layouts, páginas)
 - [x] Carga de estilos globales con Tailwind
-- [ ] Crear navegación principal (Home, Reservas, Alquiler, Contacto)
+- [X] Crear navegación principal (Home, Reservas, Alquiler, Contacto)
 - [ ] Diseñar vista de productos con tarjetas
-- [ ] Implementar vista de reservas disponibles
-- [ ] Adaptar diseño a dispositivos móviles (responsive)
+- [X] Implementar vista de reservas disponibles
+- [X] Adaptar diseño a dispositivos móviles (responsive)
 
 ---
 
@@ -84,11 +84,11 @@ All commands are run from the root of the project, from a terminal:
 
 ### 🔌 Funcionalidades adicionales
 
-- [ ] Integración con API meteorológica para mostrar estado de la nieve
-- [ ] Sistema de reservas con control de fechas y disponibilidad
+- [X] Integración con API meteorológica para mostrar estado de la nieve
+- [X] Sistema de reservas con control de fechas y disponibilidad
 - [ ] Envío de correos de confirmación al reservar
-- [ ] Añadir sistema de autenticación de usuarios (login/registro)
-- [ ] Panel de administración para gestionar instructores, productos y reservas
+- [X] Añadir sistema de autenticación de usuarios (login/registro)
+- [X] Panel de administración para gestionar instructores, productos y reservas
 
 ---
 

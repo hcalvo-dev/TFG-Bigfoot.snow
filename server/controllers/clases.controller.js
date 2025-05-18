@@ -41,7 +41,6 @@ export const deleteReserva = async (req, res) => {
       return res.status(401).json({ error: 'No autenticado' });
     }
 
-
     const reserva = await prisma.reserva.findUnique({
       where: { id: Number(id) },
       include: {
@@ -61,8 +60,15 @@ export const deleteReserva = async (req, res) => {
       return res.status(403).json({ error: 'No autorizado' });
     }
 
+    const ahora = new Date();
+    const diferenciaHoras = (new Date(reserva.fechaInicio).getTime() - ahora.getTime()) / (1000 * 60 * 60);
+
+    if (diferenciaHoras < 24) {
+      return res.status(400).json({ error: 'Quedan menos de 24 horas para la clase' });
+    }
+
     // Eliminar la disponibilidad reservada
-    const deletedDisponibilidad = await prisma.instructorDisponibilidad.deleteMany({
+    await prisma.instructorDisponibilidad.deleteMany({
       where: {
         instructorId: reserva.clase?.instructorId,
         horaInicio: reserva.fechaInicio,
@@ -81,17 +87,82 @@ export const deleteReserva = async (req, res) => {
       where: { claseId: reserva.claseId },
     });
 
-    // Si no quedan reservas, eliminar la clase
     if (reservasRestantes === 0 && reserva.claseId) {
       await prisma.clase.delete({
         where: { id: reserva.claseId },
       });
-    } else {
-      console.log('Clase no eliminada porque aún tiene reservas');
     }
 
     return res.json({ ok: true, message: 'Reserva eliminada correctamente' });
   } catch (error) {
     return res.status(500).json({ error: 'Error al eliminar reserva' });
+  }
+};
+
+export const clases_agendadas = async (req, res) => {
+  try {
+    const usuarioId = req.user?.id;
+
+    const instructor = await prisma.instructor.findUnique({
+      where: { userId: usuarioId },
+    });
+
+    if (!instructor) {
+      return res.status(403).json({ error: 'Este usuario no es un instructor' });
+    }
+
+    const reservas = await prisma.reserva.findMany({
+      where: {
+        clase: {
+          instructorId: instructor.id,
+        },
+        fechaFin: {
+          gt: new Date(),
+        },
+        estado: 'confirmada',
+        pagado: true,
+      },
+      include: {
+        clase: {
+          include: {
+            montaña: {
+              select: { nombre: true },
+            },
+          },
+        },
+        usuario: true,
+      },
+      orderBy: {
+        fechaInicio: 'asc',
+      },
+    });
+
+    // Obtener nombre del nivel desde el ID que se guarda como string en clase.nivel
+    const reservasConNivelNombre = await Promise.all(
+      reservas.map(async (reserva) => {
+        let nivelNombre = '-';
+        const nivelId = parseInt(reserva.clase?.nivel || '', 10);
+        if (!isNaN(nivelId)) {
+          const nivel = await prisma.nivel.findUnique({
+            where: { id: nivelId },
+            select: { nombre: true },
+          });
+          nivelNombre = nivel?.nombre || '-';
+        }
+
+        return {
+          ...reserva,
+          clase: {
+            ...reserva.clase,
+            nivelNombre,
+          },
+        };
+      })
+    );
+
+    return res.json({ total: reservas.length, datos: reservasConNivelNombre });
+  } catch (error) {
+    console.error('❌ Error al obtener clases agendadas:', error);
+    return res.status(500).json({ error: 'Error al obtener clases agendadas' });
   }
 };
