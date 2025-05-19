@@ -64,10 +64,12 @@ export default function UsuariosTable({ usuario, csrfToken, onUpdateSuccess }: P
         credentials: 'include',
         body: JSON.stringify({ id: id }),
       });
-      if (!res.ok) throw new Error();
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message);
       fetchUsuarios();
-    } catch {
-      Swal.fire('Error', 'No se pudo eliminar', 'error');
+    } catch(err) {
+      const error = err as Error;
+      Swal.fire('Error al eliminar',  error.message, 'error');
     }
   };
 

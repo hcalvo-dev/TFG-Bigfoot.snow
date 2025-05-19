@@ -20,19 +20,18 @@ model Rol {
 }
 
 model Usuario {
-  id             Int            @id @default(autoincrement())
-  nombre         String
-  email          String         @unique
-  password       String
-  rol            Rol            @relation(fields: [rolId], references: [id])
-  rolId          Int
-  estadoCuenta   Boolean        @default(true)
-  reservas       Reserva[]
-  notificaciones Notificacion[]
-  valoraciones   Valoracion[]
-  instructor     Instructor?
-  createdAt      DateTime       @default(now())
-  updatedAt      DateTime       @updatedAt
+  id           Int          @id @default(autoincrement())
+  nombre       String
+  email        String       @unique
+  password     String
+  rol          Rol          @relation(fields: [rolId], references: [id])
+  rolId        Int
+  estadoCuenta Boolean      @default(true)
+  reservas     Reserva[]
+  valoraciones Valoracion[]
+  instructor   Instructor?
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
 }
 
 model Instructor {
@@ -97,21 +96,20 @@ model Clima {
 }
 
 model Clase {
-  id           Int          @id @default(autoincrement())
+  id           Int        @id @default(autoincrement())
   titulo       String
   descripcion  String
   nivel        String
   duracion     Int
   precio       Float
   tipo         String
-  instructor   Instructor   @relation(fields: [instructorId], references: [id])
+  instructor   Instructor @relation(fields: [instructorId], references: [id])
   instructorId Int
   reservas     Reserva[]
-  valoraciones Valoracion[]
-  montaña     Montaña     @relation(fields: [montanaId], references: [id])
+  montaña     Montaña   @relation(fields: [montanaId], references: [id])
   montanaId    Int
-  createdAt    DateTime     @default(now())
-  updatedAt    DateTime     @updatedAt
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
 }
 
 model InstructorDisponibilidad {
@@ -122,39 +120,6 @@ model InstructorDisponibilidad {
   horaInicio   DateTime
   horaFin      DateTime
   disponible   Boolean
-}
-
-model Categoria {
-  id        Int        @id @default(autoincrement())
-  nombre    String     @unique
-  productos Producto[]
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
-}
-
-model Producto {
-  id             Int                      @id @default(autoincrement())
-  nombre         String
-  descripcion    String?
-  precioDia      Float
-  estado         String
-  imagenUrl      String
-  stockTotal     Int
-  categoria      Categoria                @relation(fields: [categoriaId], references: [id])
-  categoriaId    Int
-  reservas       ProductoReserva[]
-  disponibilidad ProductoDisponibilidad[]
-  valoraciones   Valoracion[]
-  createdAt      DateTime                 @default(now())
-  updatedAt      DateTime                 @updatedAt
-}
-
-model ProductoDisponibilidad {
-  id                 Int      @id @default(autoincrement())
-  producto           Producto @relation(fields: [productoId], references: [id])
-  productoId         Int
-  fecha              DateTime
-  cantidadDisponible Int
 }
 
 model Reserva {
@@ -179,6 +144,53 @@ model Reserva {
   updatedAt    DateTime          @updatedAt
 }
 
+model Producto {
+  id             Int                      @id @default(autoincrement())
+  nombre         String
+  descripcion    String?
+  precioDia      Float
+  estado         String
+  imagenUrl      String
+  stockTotal     Int
+  categorias     Categoria[]              @relation("ProductoCategorias")
+  tienda         Tienda                   @relation(fields: [tiendaId], references: [id])
+  tiendaId       Int
+  ubicacion      String
+  tallas         String[]
+  medidas        String[]
+  reservas       ProductoReserva[]
+  disponibilidad ProductoDisponibilidad[]
+  valoraciones   Valoracion[]
+  createdAt      DateTime                 @default(now())
+  updatedAt      DateTime                 @updatedAt
+}
+
+model ProductoDisponibilidad {
+  id                 Int      @id @default(autoincrement())
+  producto           Producto @relation(fields: [productoId], references: [id])
+  productoId         Int
+  fecha              DateTime
+  cantidadDisponible Int
+}
+
+model Categoria {
+  id         Int         @id @default(autoincrement())
+  nombre     String      @unique
+  productos  Producto[]  @relation("ProductoCategorias")
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+}
+
+model Tienda {
+  id        Int        @id @default(autoincrement())
+  nombre    String     @unique
+  direccion String
+  telefono  String
+  productos Producto[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
 model ProductoReserva {
   reserva    Reserva  @relation(fields: [reservaId], references: [id])
   reservaId  Int
@@ -189,17 +201,6 @@ model ProductoReserva {
   @@id([reservaId, productoId])
 }
 
-model Notificacion {
-  id         Int      @id @default(autoincrement())
-  usuario    Usuario  @relation(fields: [usuarioId], references: [id])
-  usuarioId  Int
-  tipo       String
-  mensaje    String
-  fechaEnvio DateTime @default(now())
-  leido      Boolean  @default(false)
-  canal      String   @default("email")
-}
-
 model Valoracion {
   id         Int       @id @default(autoincrement())
   usuario    Usuario   @relation(fields: [usuarioId], references: [id])
@@ -208,20 +209,18 @@ model Valoracion {
   puntuacion Int       @default(5)
   comentario String
   fecha      DateTime  @default(now())
-  clase      Clase?    @relation(fields: [claseId], references: [id])
-  claseId    Int?
   producto   Producto? @relation(fields: [productoId], references: [id])
   productoId Int?
 }
 
 model Descuento {
-  id             Int       @id @default(autoincrement())
-  codigo         String    @unique
-  descripcion    String
-  porcentaje     Int       
-  aplicaEn       String    
-  fechaValidez   DateTime
-  activo         Boolean   @default(true)
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @updatedAt
+  id           Int      @id @default(autoincrement())
+  codigo       String   @unique
+  descripcion  String
+  porcentaje   Int
+  aplicaEn     String
+  fechaValidez DateTime
+  activo       Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 }

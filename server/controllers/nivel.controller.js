@@ -5,6 +5,10 @@ export const getAllNivel = async (req, res) => {
       
     const niveles = await prisma.nivel.findMany();
 
+    if (!niveles) {
+      return res.status(404).json({ message: 'No se encontraron niveles' });
+    }
+
       res.json(niveles);
 
     } catch (error) {

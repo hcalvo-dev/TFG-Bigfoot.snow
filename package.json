@@ -10,7 +10,9 @@
     "db:reset": "prisma migrate reset --force",
     "db:seed": "ts-node prisma/seed.ts",
     "dev:server": "ts-node server/index.ts",
-    "clima": "ts-node scripts/actualizarClima.ts"
+    "db:clima": "ts-node scripts/actualizarClima.ts",
+    "db:tienda": "ts-node prisma/Seed/tienda.ts", 
+    "db:categoria": "ts-node prisma/Seed/categoria.ts"
   },
   "dependencies": {
     "@astrojs/react": "4.2.4",

@@ -33,7 +33,7 @@ export async function seedDescuentos() {
     },
     {
       codigo: 'SNOWFREAK15',
-      descripcion: '15% off si reservas más de 2 productos',
+      descripcion: '15% de descuento si reservas más de 2 productos',
       porcentaje: 15,
       aplicaEn: 'productos',
       fechaValidez: fechaLimite,

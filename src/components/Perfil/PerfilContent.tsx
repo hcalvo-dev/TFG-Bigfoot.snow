@@ -7,15 +7,17 @@ import {
   LogOut,
   ClipboardList,
   UserRoundSearch,
-  ShieldUser,
+  Landmark ,
   CalendarSearch,
+  Layers 
 } from 'lucide-react';
 import FormularioEdicionUsuario from './FormEditUser';
 import UsuariosTable from './UsuariosTable';
 import AltaInstructorForm from './AltaInstructor';
 import ClasesTable from './ClasesTable';
-import PanelAdmin from './PanelAdmin';
+import ProductosTable from './GestionStock';
 import AgendaClases from './AgendaClases';
+import Tarifas from './Tarifas';
 
 // Definimos el tipo de las props y del usuario
 type Props = {
@@ -43,7 +45,7 @@ export default function PerfilContent({ session }: Props) {
   const [productosReservados, setProductosReservados] = useState({ total: 0, datos: [] });
   const [reloadUser, setReloadUser] = useState(false);
   const [view, setView] = useState<
-    'perfil' | 'clases' | 'productos' | 'instructor' | 'usuarios' | 'admin' | 'agenda-clases'
+    'perfil' | 'clases' | 'productos' | 'instructor' | 'usuarios' | 'admin' | 'agenda-clases' | 'tarifas'
   >('perfil');
   const [csrfToken, setCsrfToken] = useState('');
 
@@ -228,7 +230,7 @@ export default function PerfilContent({ session }: Props) {
             transition={{ duration: 0.3 }}
             className="bg-white/40 rounded-xl p-6 mb-8 md:mb-0 text-sm leading-loose shadow">
             {usuario && csrfToken && (
-              <PanelAdmin usuario={usuario} csrfToken={csrfToken} onUpdateSuccess={fetchUsuario} />
+              <ProductosTable csrfToken={csrfToken}/>
             )}
           </motion.div>
         );
@@ -243,6 +245,20 @@ export default function PerfilContent({ session }: Props) {
             className="bg-white/40 rounded-xl p-6 mb-8 md:mb-0 text-sm leading-loose shadow">
             {usuario && csrfToken && (
               <AgendaClases usuario={usuario} csrfToken={csrfToken}/>
+            )}
+          </motion.div>
+        );
+        case 'tarifas':
+        return (
+          <motion.div
+            key="tarifas"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.3 }}
+            className="bg-white/40 rounded-xl p-6 mb-8 md:mb-0 text-sm leading-loose shadow">
+            {usuario && csrfToken && (
+              <Tarifas csrfToken={csrfToken}/>
             )}
           </motion.div>
         );
@@ -312,8 +328,17 @@ export default function PerfilContent({ session }: Props) {
           {parsedSession.rol === 'admin' && (
             <li>
               <button onClick={() => setView('admin')} className={getButtonStyle('admin')}>
-                <ShieldUser className="w-5 h-5" />
-                PANEL ADMIN
+                <Layers  className="w-5 h-5" />
+                GESTIÓN STOCK
+              </button>
+            </li>
+          )}
+
+          {parsedSession.rol === 'admin' && (
+            <li>
+              <button onClick={() => setView('tarifas')} className={getButtonStyle('tarifas')}>
+                <Landmark   className="w-5 h-5" />
+                TARIFAS
               </button>
             </li>
           )}

@@ -20,9 +20,12 @@ import clasesRoutes from './routes/clase.routes';
 import nivelRoutes from './routes/nivel.routes';
 import reservaRoutes from './routes/reserva.routes'; 
 import carritoRoutes from './routes/carrito.routes'; 
+import categoriasRoutes from './routes/categorias.routes'; 
+import tiendasRoutes from './routes/tiendas.routes'; 
 import rutasMontañasRoutes from './routes/rutasMontañas.routes';
 import climaRoutes from './routes/clima.routes'; 
 import descuentosRoutes from './routes/descuentos.routes';
+import productoRoutes from './routes/producto.routes';
 
 // Importa las variables de entorno desde .env
 dotenv.config();
@@ -73,8 +76,11 @@ app.use('/api/clima', climaRoutes);
 app.use('/api/instructor', instructorRoutes);
 app.use('/api/clases', clasesRoutes);
 app.use('/api/nivel', nivelRoutes);
+app.use('/api/tiendas', tiendasRoutes);
+app.use('/api/categorias', categoriasRoutes);
 app.use('/api/reserva', reservaRoutes);
 app.use('/api/descuentos', descuentosRoutes);
+app.use('/api/productos', productoRoutes);
 app.use('/api/carrito', carritoRoutes);
 app.get('/api/csrf-token', (req, res) => {
     res.json({ csrfToken: req.csrfToken() });

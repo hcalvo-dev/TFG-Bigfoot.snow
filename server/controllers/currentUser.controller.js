@@ -1,5 +1,4 @@
 import prisma from '../../src/lib/prisma';
-import { logoutUser } from './logoutUser.controller';
 
 export const getCurrentUser = async (req, res) => {
     try {
@@ -80,6 +79,13 @@ export const getCurrentUser = async (req, res) => {
     try {
       const { id } = req.body;
   
+      // No permitir que el usuario elimine su propia cuenta
+     if (req.user?.id === id) {
+       return res.status(403).json({
+           message: '❌ No puedes eliminar tu propia cuenta.',
+         });
+     }
+     
       const updatedUser = await prisma.usuario.update({
         where: { id: id },
         data: { estadoCuenta: false }, 
@@ -87,10 +93,6 @@ export const getCurrentUser = async (req, res) => {
 
       console.log('Usuario actualizado:', updatedUser);
 
-       // Solo se cierra sesión si el usuario eliminado es el mismo que está logueado
-      if (req.user?.id === id) {
-        await logoutUser(req, res);
-      }
   
       res.json({ message: 'Cuenta desactivada correctamente', user: updatedUser });
     } catch (error) {
