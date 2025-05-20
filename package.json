@@ -12,7 +12,8 @@
     "dev:server": "ts-node server/index.ts",
     "db:clima": "ts-node scripts/actualizarClima.ts",
     "db:tienda": "ts-node prisma/Seed/tienda.ts", 
-    "db:categoria": "ts-node prisma/Seed/categoria.ts"
+    "db:categoria": "ts-node prisma/Seed/categoria.ts",
+    "db:productos": "ts-node prisma/Seed/productos.ts"
   },
   "dependencies": {
     "@astrojs/react": "4.2.4",

@@ -153,7 +153,15 @@ export default function UsuariosTable({ usuario, csrfToken, onUpdateSuccess }: P
                   </td>
                   <td className="py-2 px-4 text-white/90">{u.email}</td>
                   <td className="py-2 px-4 text-white/90">
+                  <span
+                    className={`inline-block px-5 py-2 text-xs rounded-full ${
+                      u.estadoCuenta
+                        ? 'bg-green-200 text-green-800'
+                        : 'bg-red-200 text-red-800'
+                    }`}>
                     {u.estadoCuenta ? 'Activo' : 'Inactivo'}
+                  </span>
+                    
                   </td>
                   <td className="py-2 px-4 text-white/90">{u.rol.nombre}</td>
                   <td className="py-2 px-4 space-x-2">

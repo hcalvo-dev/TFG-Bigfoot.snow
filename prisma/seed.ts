@@ -5,6 +5,7 @@ import { seedNiveles } from './Seed/nivel';
 import { seedDescuentos } from './Seed/descuentos';
 import { seedTiendas } from './Seed/tiendas';
 import { seedCategorias } from './Seed/categorias';
+import { seedProductos } from './Seed/productos';
 
 import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
@@ -18,6 +19,7 @@ async function main() {
   await seedDescuentos();
   await seedTiendas();
   await seedCategorias();
+  await seedProductos();
 
 }
 
