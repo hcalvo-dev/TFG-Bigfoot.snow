@@ -99,6 +99,8 @@ export default function WeatherMontanas({ montana }: { montana: Montania | null 
     );
   }
 
+  if (clima.length === 0) return null;
+
   return (
     <section className="w-full px-6 py-10">
       <div className="max-w-6xl mx-auto space-y-10">

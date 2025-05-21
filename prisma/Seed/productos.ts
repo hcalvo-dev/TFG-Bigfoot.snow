@@ -2,47 +2,82 @@
 import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
-function generarDescripcion(nombre: string, categoria: string): string {
+function generarDescripcion(nombre: string, categoria: string, index: number): string {
   const base: Record<string, string[]> = {
-    Cascos: [
-      'Diseño aerodinámico que se adapta a cualquier estilo.',
-      'Máxima protección sin renunciar a la comodidad.',
-      'Tu aliado esencial para descensos seguros y con estilo.',
+   Cascos: [
+      'Este casco combina protección avanzada con ventilación optimizada, ideal para largas jornadas en la nieve manteniendo seguridad y confort durante todo el día.',
+      'Diseñado para esquiadores exigentes, este casco ofrece un ajuste ergonómico que distribuye uniformemente la presión, reduciendo la fatiga.',
+      'Incluye forro desmontable, compatible con sistemas de audio, y materiales resistentes a impactos para un rendimiento superior.',
+      'Perfecto para condiciones extremas, con visera integrada que mejora la visibilidad y sistema de cierre rápido.',
+      'Ligero pero robusto, este casco incorpora tecnología que absorbe impactos sin comprometer la movilidad del usuario.',
+      'Construido con materiales de alta gama, ofrece una experiencia cómoda y segura en descensos rápidos.',
+      'Ideal tanto para freestyle como para pistas convencionales, brinda equilibrio entre estilo y seguridad.',
+      'Acabados de alta calidad y diseño moderno con múltiples canales de ventilación para mantener la cabeza fresca.',
+      'Sistema de ajuste micrométrico y certificación de seguridad que garantiza fiabilidad en cualquier situación.',
     ],
     Chaquetas: [
-      'Chaqueta técnica para los días más fríos en la montaña.',
-      'Conquista la nieve con abrigo, confort y diseño moderno.',
-      'Preparada para las condiciones más exigentes, con estilo urbano.',
+      'Una chaqueta pensada para quienes enfrentan los climas más fríos, con aislamiento térmico de última generación que mantiene el calor corporal.',
+      'Fabricada con materiales impermeables y transpirables, asegura protección contra viento, lluvia y nieve durante horas.',
+      'Diseño funcional con múltiples bolsillos, capucha ajustable y detalles reflectantes para condiciones de baja visibilidad.',
+      'Ofrece libertad de movimiento gracias a su corte ergonómico y a las costuras flexibles que se adaptan al cuerpo.',
+      'Interior con forro polar y tejido técnico que optimiza el confort sin sacrificar rendimiento de la chaqueta.',
+      'Apta para actividades intensas, su tecnología de evacuación de humedad mantiene la piel seca y ventilada.',
+      'Combinación perfecta de estilo urbano y funcionalidad alpina, con cierres resistentes y ajuste entallado.',
+      'Diseñada para riders que no se detienen por el clima, incorpora zonas reforzadas en hombros y codos.',
+      'Disponible en múltiples tallas y colores, es una opción versátil tanto para esquí como para snowboard.',
     ],
     Pantalones: [
-      'Pantalones impermeables y transpirables para máxima movilidad.',
-      'Comodidad, resistencia y ajuste perfecto en cada pista.',
-      'Diseñados para rendir en los descensos más extremos.',
+      'Pantalones técnicos diseñados para soportar condiciones extremas en montaña, con tejidos impermeables y costuras selladas.',
+      'Su corte preformado en rodillas y caderas permite movimientos naturales al esquiar o practicar snowboard.',
+      'Cuenta con bolsillos de fácil acceso, cremalleras impermeables y sistema de ventilación en la entrepierna.',
+      'Incorpora polainas internas para evitar la entrada de nieve, manteniendo el calor en el interior durante largas sesiones.',
+      'Refuerzos en zonas de mayor desgaste prolongan la vida útil incluso en uso intensivo y condiciones extremas.',
+      'Tejido elástico que se adapta al cuerpo sin limitar la movilidad, ideal para sesiones prolongadas en pista.',
+      'Incluye sistema de ajuste en cintura y trabillas para mayor compatibilidad con chaquetas técnicas y cascos.',
+      'Perfecto para freeride y all-mountain, con diseño ergonómico que prioriza la comodidad en cada giro y descenso.',
+      'Disponible en varios colores y tallas, ofreciendo versatilidad sin comprometer el rendimiento técnico de las pantalones.',
     ],
     Botas: [
-      'Firmeza y comodidad para largas jornadas en la nieve.',
-      'Botas ergonómicas con sujeción profesional.',
-      'Ideales para mantener el calor y controlar cada movimiento.',
+      'Botas diseñadas para ofrecer una sujeción óptima y confort durante largas sesiones en la nieve, con interior térmico de ajuste anatómico.',
+      'El sistema de cierre rápido permite un ajuste preciso en segundos, garantizando estabilidad y comodidad.',
+      'Fabricadas con materiales resistentes al agua y al frío, protegen los pies en las condiciones más duras.',
+      'Suela antideslizante con agarre optimizado para caminar sobre hielo o nieve compacta con total seguridad.',
+      'Compatibles con la mayoría de fijaciones, estas botas combinan funcionalidad con un diseño atractivo y comodido.',
+      'Refuerzos adicionales en el talón y tobillo aumentan la protección en caso de impactos o torsiones fuertes.',
+      'Ideales tanto para principiantes como para expertos, proporcionan equilibrio entre control y flexibilidad.',
+      'Revestimiento interior extraíble y lavable, lo que mejora la higiene y prolonga la vida útil de las botas.',
+      'Tecnología de absorción de vibraciones que reduce el cansancio en jornadas prolongadas en la nieve y pista.',
     ],
     Snowboard: [
-      'Tabla de snowboard con flex intermedio ideal para freestyle.',
-      'Potencia tu estilo en la nieve con esta tabla versátil.',
-      'Perfecta para riders que buscan equilibrio y velocidad.',
+      'Tabla de snowboard construida con núcleo de madera ligera, combina durabilidad y flex para maniobras precisas en park o pista.',
+      'Diseño twin tip simétrico ideal para riders que buscan versatilidad en todos los terrenos de montaña.',
+      'Su sistema híbrido rocker-camber facilita el deslizamiento y mejora el control en nieve polvo y hielo.',
+      'La base sinterizada asegura una excelente velocidad y resistencia a la abrasión en todo tipo de nieve.',
+      'Perfil de flexión medio que equilibra respuesta y suavidad, ideal para principiantes avanzados y riders exigentes.',
+      'Compatible con la mayoría de fijaciones, ofrece inserciones múltiples para personalizar tu postura y equilibrio.',
+      'Acabado gráfico moderno y tratamiento superficial antiarañazos que mantiene la tabla como nueva durante largas sesiones.',
+      'Cantos reforzados para mayor durabilidad en bordes y mejor tracción en condiciones difíciles como nieve húmeda.',
+      'Diseñada para freestyle, all-mountain y riders que buscan progresar sin límites de velocidad o flexibilidad.',
     ],
     Esquí: [
-      'Esquís para riders que exigen precisión y fluidez.',
-      'Domina cada pista con esta tabla ágil y resistente.',
-      'Versátiles, rápidos y estables para todo tipo de nieve.',
+      'Esquís de alto rendimiento para esquiadores que buscan control y agilidad en pista y fuera de pista.',
+      'Diseño rocker en la espátula que mejora la flotación en nieve polvo y facilita los giros suaves en pista.',
+      'Núcleo de madera con capas de fibra de vidrio para un equilibrio perfecto entre ligereza y resistencia.',
+      'Su construcción tipo sándwich mejora la transmisión de energía en cada giro para un deslizamiento suave.',
+      'Perfil sidecut progresivo que permite entradas y salidas suaves en curvas cerradas y abiertas en pista.',
+      'Espátula y cola reforzadas con materiales que reducen las vibraciones a alta velocidad en pista compacta.',
+      'Ideal para carving, freestyle o all-mountain, adaptándose a diferentes estilos y terrenos de montaña.',
+      'Base duradera con alto deslizamiento para mantener velocidad incluso en nieve húmeda o polvo dificil.',
+      'Diseñados para ofrecer estabilidad, precisión y fluidez en cualquier condición de nieve y pista compacta.',
     ],
-  };
+};
 
   const opciones = base[categoria];
-  if (!opciones) {
-    return `${nombre}: Producto de alta calidad para la nieve.`;
+  if (!opciones || index >= opciones.length) {
+    return `Producto de alta calidad para la nieve.`;
   }
 
-  const random = Math.floor(Math.random() * opciones.length);
-  return `${nombre}: ${opciones[random]}`;
+  return `${opciones[index]}`;
 }
 
 const nombresChulos = {
@@ -119,7 +154,7 @@ export async function seedProductos() {
       }
 
       if (!descripcionesMap.has(nombreBase)) {
-        descripcionesMap.set(nombreBase, generarDescripcion(nombreBase, categoriaPrincipal));
+        descripcionesMap.set(nombreBase, generarDescripcion(nombreBase, categoriaPrincipal, i));
       }
 
       const precio = preciosMap.get(nombreBase)!;

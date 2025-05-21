@@ -24,6 +24,7 @@ export default function UsuariosTable({ usuario, csrfToken, onUpdateSuccess }: P
   const [usuarios, setUsuarios] = useState<UsuarioConRol[]>([]);
   const [editando, setEditando] = useState<UsuarioConRol | null>(null);
   const [busqueda, setBusqueda] = useState('');
+  const [success, setSuccess] = useState(false);
   const [paginaActual, setPaginaActual] = useState(1);
   const filasPorPagina = 4;
 
@@ -67,9 +68,9 @@ export default function UsuariosTable({ usuario, csrfToken, onUpdateSuccess }: P
       const data = await res.json();
       if (!res.ok) throw new Error(data.message);
       fetchUsuarios();
-    } catch(err) {
+    } catch (err) {
       const error = err as Error;
-      Swal.fire('Error al eliminar',  error.message, 'error');
+      Swal.fire('Error al eliminar', error.message, 'error');
     }
   };
 
@@ -135,8 +136,8 @@ export default function UsuariosTable({ usuario, csrfToken, onUpdateSuccess }: P
                 <th className="py-3 px-4">ID</th>
                 <th className="py-3 px-4">Nombre</th>
                 <th className="py-3 px-4">Email</th>
-                <th className="py-3 px-4">Estado</th>
                 <th className="py-3 px-4">Rol</th>
+                <th className="py-3 px-4">Estado</th>
                 <th className="py-3 px-4">Acciones</th>
               </tr>
             </thead>
@@ -152,18 +153,15 @@ export default function UsuariosTable({ usuario, csrfToken, onUpdateSuccess }: P
                     {u.nombre}
                   </td>
                   <td className="py-2 px-4 text-white/90">{u.email}</td>
-                  <td className="py-2 px-4 text-white/90">
-                  <span
-                    className={`inline-block px-5 py-2 text-xs rounded-full ${
-                      u.estadoCuenta
-                        ? 'bg-green-200 text-green-800'
-                        : 'bg-red-200 text-red-800'
-                    }`}>
-                    {u.estadoCuenta ? 'Activo' : 'Inactivo'}
-                  </span>
-                    
-                  </td>
                   <td className="py-2 px-4 text-white/90">{u.rol.nombre}</td>
+                  <td className="py-2 px-4 text-white/90">
+                    <span
+                      className={`inline-block px-5 py-2 text-xs rounded-full ${
+                        u.estadoCuenta ? 'bg-green-200 text-green-800' : 'bg-red-200 text-red-800'
+                      }`}>
+                      {u.estadoCuenta ? 'Activo' : 'Inactivo'}
+                    </span>
+                  </td>
                   <td className="py-2 px-4 space-x-2">
                     {u.estadoCuenta ? (
                       <>

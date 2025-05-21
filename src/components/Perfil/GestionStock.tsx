@@ -393,7 +393,7 @@ export default function ProductosTable({ csrfToken }: Props) {
                 modalProducto.id
                   ? {
                       ...modalProducto,
-                      categoria: modalProducto.categorias[0], // <- conversión necesaria
+                      categoria: modalProducto.categorias[0],
                     }
                   : undefined
               }
@@ -401,8 +401,10 @@ export default function ProductosTable({ csrfToken }: Props) {
               tiendas={tiendas}
               csrfToken={csrfToken}
               onSuccess={() => {
-                fetchProductos();
-                setModalProducto(null);
+                fetchProductos(); 
+                setTimeout(() => {
+                  setModalProducto(null); 
+                }, 2000);
               }}
             />
           </div>
