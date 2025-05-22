@@ -300,7 +300,7 @@ export default function ProductosTable({ csrfToken }: Props) {
           <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
             <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
               <tr>
-                <th className="p-3">Nombre</th>
+                <th className="p-3 w-max">Nombre</th>
                 <th className="p-3">Precio/Día</th>
                 <th className="p-3">Stock</th>
                 <th className="p-3">Categoría</th>
@@ -314,14 +314,16 @@ export default function ProductosTable({ csrfToken }: Props) {
                 <tr
                   key={p.id}
                   className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600">
-                  <td className="p-3">
-                    <div className="flex items-center">
+                  <td className="p-3 min-w-[200px] max-w-[250px]">
+                    <div className="flex items-center gap-3">
                       <img
                         src={p.imagenUrl}
                         alt={p.nombre}
-                        className="w-12 h-12 object-cover rounded-md mr-3 border border-gray-300"
+                        className="w-12 h-12 object-cover rounded-md border border-gray-300 shrink-0"
                       />
-                      <span className="font-medium text-gray-900 dark:text-white">{p.nombre}</span>
+                      <span className="font-medium text-gray-900 dark:text-white break-words line-clamp-2">
+                        {p.nombre}
+                      </span>
                     </div>
                   </td>
                   <td className="p-3 text-white/90">€{p.precioDia.toFixed(2)}</td>
@@ -340,7 +342,7 @@ export default function ProductosTable({ csrfToken }: Props) {
                       {p.estado}
                     </span>
                   </td>
-                  <td className="p-3 space-x-2">
+                  <td className="p-3 space-x-2 flex items-center">
                     {p.estado === 'activo' ? (
                       <>
                         <button
@@ -401,9 +403,9 @@ export default function ProductosTable({ csrfToken }: Props) {
               tiendas={tiendas}
               csrfToken={csrfToken}
               onSuccess={() => {
-                fetchProductos(); 
+                fetchProductos();
                 setTimeout(() => {
-                  setModalProducto(null); 
+                  setModalProducto(null);
                 }, 2000);
               }}
             />

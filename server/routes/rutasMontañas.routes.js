@@ -4,7 +4,7 @@ import { sanitizeInputs } from '../middlewares/sanitize.middleware';
 
 const router = Router();
 
-// Ruta para obtener todos los usuarios
+// Ruta para obtener todas las rutas por nombre
 router.post('/all',sanitizeInputs, getRutasByNombre);
 
 export default router;

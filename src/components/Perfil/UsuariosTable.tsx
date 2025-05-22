@@ -129,7 +129,7 @@ export default function UsuariosTable({ usuario, csrfToken, onUpdateSuccess }: P
             className="p-2 rounded-md border border-gray-300 text-black placeholder-gray-400 w-full max-w-xs"
           />
         </div>
-        <div className="rounded-xl overflow-hidden">
+        <div className="rounded-xl overflow-x-auto shadow">
           <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
             <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
               <tr>
@@ -162,7 +162,7 @@ export default function UsuariosTable({ usuario, csrfToken, onUpdateSuccess }: P
                       {u.estadoCuenta ? 'Activo' : 'Inactivo'}
                     </span>
                   </td>
-                  <td className="py-2 px-4 space-x-2">
+                  <td className="py-2 px-4 space-x-2 flex items-center">
                     {u.estadoCuenta ? (
                       <>
                         <button

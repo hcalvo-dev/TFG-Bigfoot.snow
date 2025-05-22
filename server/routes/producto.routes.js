@@ -3,6 +3,7 @@ import { getAllProductos,createProductos, editProductos, desactivarProductos, ac
 import { authenticateUser } from '../middlewares/authenticate.middleware';
 import { sanitizeInputs } from '../middlewares/sanitize.middleware';
 import { uploadProductos } from '../middlewares/uploadProductos.middleware.js';
+import { requireAdmin } from '../middlewares/requireAdmin';
 import { create } from 'domain';
 
 const router = Router();
@@ -11,16 +12,16 @@ const router = Router();
 router.get('/all', authenticateUser, getAllProductos);
 
 // Ruta para crear un producto
-router.post('/create', uploadProductos.single('imagen'),sanitizeInputs, authenticateUser, createProductos);
+router.post('/create',sanitizeInputs, authenticateUser,requireAdmin, uploadProductos.single('imagen'), createProductos);
 
 // Ruta para editar un producto
-router.patch('/edit',uploadProductos.single('imagen') , sanitizeInputs, authenticateUser, editProductos);
+router.patch('/edit',sanitizeInputs,authenticateUser,requireAdmin, uploadProductos.single('imagen') , editProductos);
 
 // Ruta para eliminar un producto
-router.patch('/delete', sanitizeInputs, authenticateUser, desactivarProductos);
+router.patch('/delete',sanitizeInputs,authenticateUser,requireAdmin, desactivarProductos);
 
 // Ruta para activar un producto
-router.patch('/activate', sanitizeInputs, authenticateUser, activarProductos);
+router.patch('/activate',sanitizeInputs,authenticateUser,requireAdmin, activarProductos);
 
 
 export default router;

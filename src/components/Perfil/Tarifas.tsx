@@ -142,6 +142,9 @@ export default function Tarifas({ csrfToken }: Props) {
           <h2 className="text-xl font-extrabold font-blowbrush tracking-widest text-sky-950 uppercase">
             Gestión de Tarifas
           </h2>
+        </div>
+        <div className="flex flex-wrap justify-between items-center gap-4">
+          {/* Botones de vista */}
           <div className="flex gap-2">
             <button
               onClick={() => setVista('niveles')}
@@ -162,11 +165,27 @@ export default function Tarifas({ csrfToken }: Props) {
               Descuentos
             </button>
           </div>
+
+          {/* Botón de añadir descuento */}
+          {vista === 'descuentos' && (
+            <button
+              onClick={() => setModalDescuento({} as Descuento)}
+              className="flex items-center gap-2 bg-sky-800 hover:bg-sky-950 text-white px-4 py-2 rounded-md shadow">
+              <Plus size={18} />
+              Nuevo Descuento
+            </button>
+          )}
         </div>
 
         {vista === 'niveles' && (
           <>
-            <div className="overflow-auto rounded-xl shadow">
+            <motion.div
+              key="tabla-niveles"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.4 }}
+              className="overflow-auto rounded-xl shadow">
               <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                 <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                   <tr>
@@ -193,7 +212,7 @@ export default function Tarifas({ csrfToken }: Props) {
                   ))}
                 </tbody>
               </table>
-            </div>
+            </motion.div>
             <Pagination
               currentPage={paginaActual}
               totalPages={Math.ceil(niveles.length / filasPorPagina)}
@@ -204,16 +223,13 @@ export default function Tarifas({ csrfToken }: Props) {
 
         {vista === 'descuentos' && (
           <>
-            <div className="flex justify-end">
-              <button
-                onClick={() => setModalDescuento({} as Descuento)}
-                className="flex items-center gap-2 bg-sky-800 hover:bg-sky-950 text-white px-4 py-2 rounded-md shadow">
-                <Plus size={18} />
-                Nuevo Descuento
-              </button>
-            </div>
-
-            <div className="overflow-auto rounded-xl shadow">
+            <motion.div
+              key="tabla-descuentos"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.4 }}
+              className="overflow-auto rounded-xl shadow">
               <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                 <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                   <tr>
@@ -252,7 +268,7 @@ export default function Tarifas({ csrfToken }: Props) {
                           {d.activo ? 'Activo' : 'Inactivo'}
                         </span>
                       </td>
-                      <td className="p-3 space-x-2">
+                      <td className="p-3 space-x-2 flex items-center">
                         {d.activo ? (
                           <>
                             <button
@@ -283,7 +299,7 @@ export default function Tarifas({ csrfToken }: Props) {
                   ))}
                 </tbody>
               </table>
-            </div>
+            </motion.div>
             <Pagination
               currentPage={paginaActual}
               totalPages={Math.ceil(descuentos.length / filasPorPagina)}
@@ -311,7 +327,7 @@ export default function Tarifas({ csrfToken }: Props) {
               csrfToken={csrfToken}
               onSuccess={async () => {
                 setModalNivel(null);
-                await fetchNiveles(); 
+                await fetchNiveles();
               }}
             />
           </div>

@@ -65,6 +65,12 @@ cron.schedule('0 6 * * *', async () => {
   await actualizarClimaMontanas();
 });
 
+// Tarea programada para actualizar el clima de las montañas a las 16:00 PM todos los días
+cron.schedule('0 15 * * *', async () => {
+  console.log('Actualizando clima de montañas...');
+  await actualizarClimaMontanas();
+});
+
 // Rutas
 app.use('/api/auth', authRoutes); 
 app.use('/api/user', userRoutes);

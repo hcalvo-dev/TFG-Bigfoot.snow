@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { getAllDescuentos, getAllDescuentosEstados , deleteDescuentos, activarDescuentos, editDescuentos, createDescuentos } from '../controllers/descuentos.controller';
 import { authenticateUser } from '../middlewares/authenticate.middleware';
 import { sanitizeInputs } from '../middlewares/sanitize.middleware';
+import { requireAdmin } from '../middlewares/requireAdmin';
 
 const router = Router();
 
@@ -12,15 +13,15 @@ router.get('/all', getAllDescuentos);
 router.get('/allDescuentos',authenticateUser, getAllDescuentosEstados);
 
 // Ruta para eliminar un descuento
-router.patch('/delete',sanitizeInputs, authenticateUser, deleteDescuentos);
+router.patch('/delete',authenticateUser,requireAdmin, sanitizeInputs,  deleteDescuentos);
 
 // Ruta para activar un descuento
-router.patch('/activate', sanitizeInputs, authenticateUser, activarDescuentos);
+router.patch('/activate',authenticateUser,requireAdmin, sanitizeInputs, activarDescuentos);
 
 // Ruta para editar un descuento
-router.patch('/edit', sanitizeInputs, authenticateUser, editDescuentos);
+router.patch('/edit',authenticateUser,requireAdmin, sanitizeInputs, editDescuentos);
 
 // Ruta para crear un descuento
-router.post('/create', sanitizeInputs, authenticateUser, createDescuentos);
+router.post('/create',authenticateUser,requireAdmin, sanitizeInputs, createDescuentos);
 
 export default router;

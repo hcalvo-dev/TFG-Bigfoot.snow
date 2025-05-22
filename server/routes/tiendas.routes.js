@@ -5,7 +5,7 @@ import { authenticateUser } from '../middlewares/authenticate.middleware';
 const router = Router();
 
 
-// Ruta para obtener todos los usuarios
+// Ruta para obtener todos las tiendas
 router.get('/all', authenticateUser, getAllTiendas);
 
 
