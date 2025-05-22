@@ -1,4 +1,5 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, AplicaEn } from '@prisma/client';
+
 const prisma = new PrismaClient();
 
 export async function seedDescuentos() {
@@ -11,7 +12,7 @@ export async function seedDescuentos() {
       codigo: 'BIGFOOT10',
       descripcion: '10% de descuento en alquiler de material',
       porcentaje: 10,
-      aplicaEn: 'productos',
+      aplicaEn: AplicaEn.PRODUCTOS,
       fechaValidez: fechaLimite,
       activo: true,
     },
@@ -19,7 +20,7 @@ export async function seedDescuentos() {
       codigo: 'CLASE20',
       descripcion: '20% de descuento en cualquier clase de esquí o snowboard',
       porcentaje: 20,
-      aplicaEn: 'clases',
+      aplicaEn: AplicaEn.CLASES,
       fechaValidez: fechaLimite,
       activo: true,
     },
@@ -27,7 +28,7 @@ export async function seedDescuentos() {
       codigo: 'WELCOME5',
       descripcion: '5% de descuento en tu primera reserva',
       porcentaje: 5,
-      aplicaEn: 'ambos',
+      aplicaEn: AplicaEn.AMBOS,
       fechaValidez: fechaLimite,
       activo: true,
     },
@@ -35,7 +36,7 @@ export async function seedDescuentos() {
       codigo: 'SNOWFREAK15',
       descripcion: '15% de descuento si reservas más de 2 productos',
       porcentaje: 15,
-      aplicaEn: 'productos',
+      aplicaEn: AplicaEn.PRODUCTOS,
       fechaValidez: fechaLimite,
       activo: true,
     }

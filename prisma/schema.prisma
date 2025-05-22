@@ -213,12 +213,18 @@ model Valoracion {
   productoId Int?
 }
 
+enum AplicaEn {
+  PRODUCTOS
+  CLASES
+  AMBOS
+}
+
 model Descuento {
   id           Int      @id @default(autoincrement())
   codigo       String   @unique
   descripcion  String
   porcentaje   Int
-  aplicaEn     String
+  aplicaEn     AplicaEn
   fechaValidez DateTime
   activo       Boolean  @default(true)
   createdAt    DateTime @default(now())

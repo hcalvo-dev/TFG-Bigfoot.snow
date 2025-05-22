@@ -228,7 +228,7 @@ export default function PerfilContent({ session }: Props) {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.3 }}
-            className="bg-white/40 rounded-xl p-6 mb-8 md:mb-0 text-sm leading-loose shadow">
+            className="bg-white/40 rounded-xl p-6 mb-8 md:mb-8 text-sm leading-loose shadow">
             {usuario && csrfToken && (
               <ProductosTable csrfToken={csrfToken}/>
             )}
@@ -256,7 +256,7 @@ export default function PerfilContent({ session }: Props) {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.3 }}
-            className="bg-white/40 rounded-xl p-6 mb-8 md:mb-0 text-sm leading-loose shadow">
+            className="bg-white/40 rounded-xl p-6 mb-8 md:mb-8 text-sm leading-loose shadow">
             {usuario && csrfToken && (
               <Tarifas csrfToken={csrfToken}/>
             )}

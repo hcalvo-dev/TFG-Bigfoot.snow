@@ -1,9 +1,26 @@
 import { Router } from 'express';
-import { getAllDescuentos } from '../controllers/descuentos.controller';
+import { getAllDescuentos, getAllDescuentosEstados , deleteDescuentos, activarDescuentos, editDescuentos, createDescuentos } from '../controllers/descuentos.controller';
+import { authenticateUser } from '../middlewares/authenticate.middleware';
+import { sanitizeInputs } from '../middlewares/sanitize.middleware';
 
 const router = Router();
 
 // Ruta para obtener todos los descuentos
 router.get('/all', getAllDescuentos);
+
+// Ruta para obetener todos los descuentos independientemente de su estado
+router.get('/allDescuentos',authenticateUser, getAllDescuentosEstados);
+
+// Ruta para eliminar un descuento
+router.patch('/delete',sanitizeInputs, authenticateUser, deleteDescuentos);
+
+// Ruta para activar un descuento
+router.patch('/activate', sanitizeInputs, authenticateUser, activarDescuentos);
+
+// Ruta para editar un descuento
+router.patch('/edit', sanitizeInputs, authenticateUser, editDescuentos);
+
+// Ruta para crear un descuento
+router.post('/create', sanitizeInputs, authenticateUser, createDescuentos);
 
 export default router;
