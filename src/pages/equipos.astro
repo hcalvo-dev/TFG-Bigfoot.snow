@@ -1,19 +1,20 @@
 ---
 export const prerender = false;
 import Layout from '../layouts/Layout.astro';
+import HeroWaveDynamic from '../components/HeroWaveDynamic';
+import TiendaComponent from '../components/Tienda/ReservarProductos';
+import { checkSession } from '../../utils/checkSession';
+
+const session = checkSession(Astro.request);
 ---
 
-<Layout title="BIGFOOT : Equipos">
+<Layout title="BIGFOOT : Productos">
   <main>
-    <!-- NUEVA sección para controlar scroll y animación -->
-    <section class="relative w-full min-h-[300vh]">
-      <div
-        class="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-blue-500 to-blue-900 opacity-50">
-      </div>
-      <div class="relative z-10 flex flex-col items-center justify-center w-full h-full">
-        <h1 class="text-white text-5xl font-bold">Equipos</h1>
-        <p class="text-white text-lg mt-4">Descubre nuestros equipos de última generación.</p>
-      </div>
+    <HeroWaveDynamic client:only="react" />
+
+    <!-- Sección de ventajas -->
+    <section id="contenido" class="relative w-full min-h-[81vh]">
+      <TiendaComponent client:only="react" session={JSON.stringify(session)} />
     </section>
   </main>
 </Layout>

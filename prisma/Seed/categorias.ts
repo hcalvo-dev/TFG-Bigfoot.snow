@@ -9,6 +9,7 @@ export async function seedCategorias() {
     'Botas',
     'Snowboard',
     'Esquí',
+    'Forfait',
   ];
 
   for (const nombre of categorias) {

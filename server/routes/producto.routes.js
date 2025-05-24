@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getAllProductos,createProductos, editProductos, desactivarProductos, activarProductos } from '../controllers/productos.controller';
+import { getAllProductos,createProductos, editProductos, desactivarProductos, activarProductos, productosDisponibles } from '../controllers/productos.controller';
 import { authenticateUser } from '../middlewares/authenticate.middleware';
 import { sanitizeInputs } from '../middlewares/sanitize.middleware';
 import { uploadProductos } from '../middlewares/uploadProductos.middleware.js';
@@ -22,6 +22,9 @@ router.patch('/delete',sanitizeInputs,authenticateUser,requireAdmin, desactivarP
 
 // Ruta para activar un producto
 router.patch('/activate',sanitizeInputs,authenticateUser,requireAdmin, activarProductos);
+
+// Ruta para comprobar la disponibilidad de un producto
+router.post('/disponibles',sanitizeInputs, productosDisponibles);
 
 
 export default router;

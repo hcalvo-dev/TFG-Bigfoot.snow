@@ -362,7 +362,7 @@ export default function ReservarClase({ session }: Props) {
       {pantallaCongelada && <div className="fixed top-0 left-0 w-screen h-screen z-[999] " />}
       <section className="min-h-[50vh] px-6 py-16 ">
         <div className="max-w-3xl mt-4 mx-auto text-center mb-12">
-          <h1 className="text-4xl font-bold text-sky-950 mb-4">
+          <h1 className="text-4xl font-blowbrush tracking-widest font-bold uppercase text-sky-950 mb-4">
             ¿Quieres iniciarte en la práctica del <br></br> Skii o Snowboard?
           </h1>
           <p className="text-gray-600 leading-relaxed">

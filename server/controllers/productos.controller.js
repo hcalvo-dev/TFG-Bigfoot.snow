@@ -1,5 +1,5 @@
 import prisma from '../../src/lib/prisma';
-
+const { parseISO, eachDayOfInterval } = require('date-fns');
 export const getAllProductos = async (req, res) => {
   try {
     const productos = await prisma.producto.findMany({
@@ -192,3 +192,74 @@ export const activarProductos = async (req, res) => {
     res.status(500).json({ error: 'Error al activar producto' });
   }
 };
+
+export const productosDisponibles = async (req, res) => {
+  const { fechaInicio, fechaFin } = req.body;
+
+  console.log('Fechas recibidas:', fechaInicio, fechaFin);
+  if (!fechaInicio || !fechaFin ) {
+    return res.status(400).json({ error: 'Faltan parámetros' });
+  }
+
+  const inicio = parseISO(fechaInicio);
+  const fin = parseISO(fechaFin);
+
+  if (inicio > fin) {
+    return res.status(400).json({ error: 'Fechas no válidas' });
+  }
+
+  const dias = eachDayOfInterval({ start: inicio, end: fin });
+
+  try {
+
+    const productos = await prisma.producto.findMany({
+      where: {
+        estado: 'activo',
+      },
+      include: {
+        categorias: true,
+        tienda: true,
+        disponibilidad: true,
+        reservas: {
+          include: {
+            reserva: true,
+          },
+        },
+      },
+    });
+
+    const disponibles = productos.filter((producto) => {
+      return dias.every((dia) => {
+        const fechaActual = dia.toISOString().split('T')[0];
+
+        const disponibilidadDia = producto.disponibilidad.find(
+          (d) => d.fecha.toISOString().split('T')[0] === fechaActual
+        );
+
+        const stockDisponible = disponibilidadDia
+          ? disponibilidadDia.cantidadDisponible
+          : producto.stockTotal;
+
+        const reservasEseDia = producto.reservas.filter((r) => {
+          const inicioRes = new Date(r.reserva.fechaInicio);
+          const finRes = new Date(r.reserva.fechaFin);
+
+          return (
+            new Date(fechaActual) >= new Date(inicioRes.toDateString()) &&
+            new Date(fechaActual) <= new Date(finRes.toDateString())
+          );
+        });
+
+        const totalReservado = reservasEseDia.reduce((acc, r) => acc + r.cantidad, 0);
+
+        return totalReservado < stockDisponible;
+      });
+    });
+
+    return res.json(disponibles);
+  } catch (err) {
+    console.error('Error al obtener disponibilidad de productos:', err);
+    return res.status(500).json({ error: 'Error interno del servidor' });
+  }
+};
+

@@ -4,7 +4,7 @@ import TiltImageBlock from './TiltImageBlock';
 import { useState } from 'react';
 
 const navLinks = [
-  { id: 'forfait', label: 'Forfait', href: '/equipos?forfait', Icon: CableCar },
+  { id: 'forfait', label: 'Forfait', href: '/equipos?categoria=forfait', Icon: CableCar },
   { id: 'equipos', label: 'Equipos', href: '/equipos?equipos', Icon: Backpack  },
   { id: 'weather', label: 'Montañas', href: '/montanas', Icon: SunSnow },
 ];
@@ -89,14 +89,14 @@ export default function DesktopContent({
         {/* Tilt blocks → enlaces directos */}
         <motion.a
           className="absolute rotate-[-12deg] top-1/2 left-[12.5%] -translate-y-1/2 cursor-pointer"
-          href="/equipos?snowboard"
+          href="/equipos?categoria=snowboard"
           style={{ opacity: rombosOpacity }}>
           <TiltImageBlock text="SNOW" image="/img/index/snowboard.webp" />
         </motion.a>
 
         <motion.a
           className="absolute rotate-[12deg] top-1/2 right-[12.5%] -translate-y-1/2 cursor-pointer"
-          href="/equipos?skii"
+          href="/equipos?categoria=esquí"
           style={{ opacity: rombosOpacity }}>
           <TiltImageBlock text="SKI" image="/img/index/skii.webp" />
         </motion.a>
