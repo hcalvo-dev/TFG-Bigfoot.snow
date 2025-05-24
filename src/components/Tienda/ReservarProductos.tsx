@@ -99,32 +99,31 @@ export default function TiendaComponent({ session }: Props) {
     fetchCsrfToken();
   }, []);
 
+  const refrescarDisponibles = async () => {
+    try {
+      const res = await fetch('http://localhost:4000/api/productos/disponibles', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'CSRF-Token': csrfToken,
+        },
+        credentials: 'include',
+        body: JSON.stringify({ fechaInicio, fechaFin }),
+      });
+      const data = await res.json();
+      setProductosDisponibles(data);
+      setMostrarAside(true);
+    } catch (err) {
+      console.error('Error al obtener productos disponibles:', err);
+    }
+  };
+
   useEffect(() => {
     if (!fechaInicio || !fechaFin) return;
     try {
       const result = fechaSchema.parse({ fechaInicio, fechaFin });
       setErrorFechas('');
-
-      const fetchDisponibles = async () => {
-        try {
-          const res = await fetch('http://localhost:4000/api/productos/disponibles', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'CSRF-Token': csrfToken,
-            },
-            credentials: 'include',
-            body: JSON.stringify({ fechaInicio, fechaFin }),
-          });
-          const data = await res.json();
-          setProductosDisponibles(data);
-          setMostrarAside(true);
-        } catch (err) {
-          console.error('Error al obtener productos disponibles:', err);
-        }
-      };
-
-      fetchDisponibles();
+      refrescarDisponibles();
     } catch (e: any) {
       setErrorFechas(e.errors?.[0]?.message || 'Error en las fechas');
     }
@@ -283,7 +282,14 @@ export default function TiendaComponent({ session }: Props) {
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.95 }}
                   transition={{ duration: 0.3, ease: 'easeOut' }}>
-                  <ProductoCard producto={producto} dias={dias+1} />
+                  <ProductoCard
+                    csrfToken={csrfToken}
+                    producto={producto}
+                    fechaInicio={fechaInicio}
+                    fechaFin={fechaFin}
+                    dias={dias + 1}
+                    onReservado={refrescarDisponibles}
+                  />
                 </motion.div>
               ))}
             </AnimatePresence>

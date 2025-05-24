@@ -18,6 +18,8 @@ export async function limpiarReservasExpiradas() {
 
   if (reservasExpiradas.length === 0) return;
 
+  const idsReservasExpiradas = reservasExpiradas.map((r) => r.id);
+
   for (const reserva of reservasExpiradas) {
     console.log(`🧾 Procesando reserva ID ${reserva.id}:`);
     console.log(`  • Fecha inicio: ${reserva.fechaInicio.toISOString()}`);
@@ -26,9 +28,10 @@ export async function limpiarReservasExpiradas() {
     const instructorId = reserva.clase?.instructorId || null;
 
     if (!instructorId) {
-      console.warn('  ⚠️ No hay clase/instructor asociado a esta reserva. Intentando recuperar por horario manual...');
+      console.warn(
+        '  ⚠️ No hay clase/instructor asociado a esta reserva. Intentando recuperar por horario manual...'
+      );
 
-      // intentar encontrar disponibilidad directamente por el horario
       const disponibilidad = await prisma.instructorDisponibilidad.updateMany({
         where: {
           horaInicio: reserva.fechaInicio,
@@ -59,10 +62,17 @@ export async function limpiarReservasExpiradas() {
     }
   }
 
+  // 🔥 Eliminar primero las entradas de ProductoReserva relacionadas
+  await prisma.productoReserva.deleteMany({
+    where: {
+      reservaId: { in: idsReservasExpiradas },
+    },
+  });
+
+  // 🧽 Luego eliminar las reservas
   const result = await prisma.reserva.deleteMany({
     where: {
-      pagado: false,
-      expiresAt: { lte: new Date() },
+      id: { in: idsReservasExpiradas },
     },
   });
 

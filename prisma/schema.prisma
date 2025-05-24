@@ -28,7 +28,6 @@ model Usuario {
   rolId        Int
   estadoCuenta Boolean      @default(true)
   reservas     Reserva[]
-  valoraciones Valoracion[]
   instructor   Instructor?
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @updatedAt
@@ -160,7 +159,6 @@ model Producto {
   medidas        String[]
   reservas       ProductoReserva[]
   disponibilidad ProductoDisponibilidad[]
-  valoraciones   Valoracion[]
   createdAt      DateTime                 @default(now())
   updatedAt      DateTime                 @updatedAt
 }
@@ -199,18 +197,6 @@ model ProductoReserva {
   cantidad   Int      @default(1)
 
   @@id([reservaId, productoId])
-}
-
-model Valoracion {
-  id         Int       @id @default(autoincrement())
-  usuario    Usuario   @relation(fields: [usuarioId], references: [id])
-  usuarioId  Int
-  tipo       String
-  puntuacion Int       @default(5)
-  comentario String
-  fecha      DateTime  @default(now())
-  producto   Producto? @relation(fields: [productoId], references: [id])
-  productoId Int?
 }
 
 enum AplicaEn {

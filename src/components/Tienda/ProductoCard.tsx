@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
+import { ShoppingCart } from 'lucide-react';
 
 const tallaGuiaUrl = '/img/productos/guia-tallas.webp';
 
@@ -18,12 +19,24 @@ type Producto = {
 };
 
 type Props = {
+  csrfToken: string;
   producto: Producto;
   dias: number;
+  fechaInicio: string;
+  fechaFin: string;
+  onReservado: () => void;
 };
 
-export default function ProductoCard({ producto, dias }: Props) {
+export default function ProductoCard({
+  csrfToken,
+  producto,
+  dias,
+  fechaInicio,
+  fechaFin,
+  onReservado,
+}: Props) {
   const [mostrarGuia, setMostrarGuia] = useState(false);
+  const [successAñadir, setSuccessAñadir] = useState(false);
 
   const categoria = producto.categorias[0]?.nombre.toLowerCase();
   const mostrarGuiaTallas = categoria.includes('bota');
@@ -33,6 +46,45 @@ export default function ProductoCard({ producto, dias }: Props) {
 
   const stockLabel = producto.estado.toLowerCase() === 'activo' ? 'En stock' : 'Sin stock';
   const total = producto.precioDia * dias;
+
+  const añadirAlCarrito = async () => {
+    try {
+      const res = await fetch('http://localhost:4000/api/carrito/reservaProducto', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'CSRF-Token': csrfToken,
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          productoId: producto.id,
+          fechaInicio,
+          fechaFin,
+          dias,
+          total,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (data.success) {
+        setSuccessAñadir(true);
+        setTimeout(() => {
+          setSuccessAñadir(false);
+        }, 2000);
+      } else {
+        alert('No se pudo añadir al carrito');
+      }
+
+      onReservado();
+    } catch (err) {
+      console.error('Error al reservar producto:', err);
+    }
+  };
+
+  const handleCarrito = async () => {
+    await añadirAlCarrito();
+  };
 
   return (
     <div className="bg-gray-900 shadow-lg rounded-xl p-6 w-full max-w-md mx-auto">
@@ -87,10 +139,43 @@ export default function ProductoCard({ producto, dias }: Props) {
           )}
         </div>
       )}
-
-      <button className="bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-full font-medium transition w-full">
-        Añadir al carrito
-      </button>
+      <div className="w-full flex justify-center">
+        <motion.button
+          layout
+          type="button"
+          onClick={handleCarrito}
+          disabled={successAñadir}
+          className={`transition-all duration-300 ease-in-out
+      ${
+        successAñadir
+          ? 'w-14 h-14 rounded-full bg-blue-500'
+          : 'w-full bg-blue-600 px-6 py-2 rounded-lg'
+      }
+      text-white font-semibold shadow flex justify-center items-center`}
+          whileTap={{ scale: 0.95 }}>
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.span
+              key={successAñadir ? 'icon' : 'text'}
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.8 }}
+              transition={{ duration: 0.2 }}
+              className="flex justify-center items-center">
+              {successAñadir ? (
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ type: 'spring', stiffness: 100 }}
+                  className="flex justify-center items-center">
+                  <ShoppingCart className="w-6 h-6 text-white" />
+                </motion.div>
+              ) : (
+                'Añadir al carrito'
+              )}
+            </motion.span>
+          </AnimatePresence>
+        </motion.button>
+      </div>
 
       <AnimatePresence>
         {mostrarGuia && (
