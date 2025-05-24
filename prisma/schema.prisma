@@ -68,6 +68,7 @@ model Montaña {
   rutas        Ruta[]
   instructores Instructor[] @relation("InstructorMontaña")
   climas       Clima[]
+  tienda       Tienda[]
   reservas     Reserva[]
   clases       Clase[]
 }
@@ -184,6 +185,8 @@ model Tienda {
   nombre    String     @unique
   direccion String
   telefono  String
+  montaña   Montaña    @relation(fields: [montanaId], references: [id])
+  montanaId Int
   productos Producto[]
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt

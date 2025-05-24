@@ -20,29 +20,43 @@ export async function seedTiendas() {
       .replace(/[\u0300-\u036f]/g, '');
     const palabras = nombreSinAcentos.split(' ');
 
-    // Para nombres compuestos: primera letra + palabra completa
     if (palabras.length > 1) {
       return `Bigfoot-${palabras[0][0].toUpperCase()}${palabras[1].charAt(0).toUpperCase()}${palabras[1].slice(1)}`;
     }
 
-    // Si es una sola palabra (como Cerler)
     return `Bigfoot-${palabras[0].charAt(0).toUpperCase()}${palabras[0].slice(1)}`;
   }
 
-  for (const montana of montanas) {
-    const nombre = generarNombreTienda(montana);
+  for (const nombreMontana of montanas) {
+    const nombreTienda = generarNombreTienda(nombreMontana);
+
+    const montana = await prisma.montaña.findFirst({
+      where: {
+        nombre: {
+          equals: nombreMontana,
+          mode: 'insensitive'
+        }
+      }
+    });
+
+    // Así aseguramos de que la montaña existe antes de crear la tienda
+    if (!montana) {
+      continue;
+    }
+
     await prisma.tienda.upsert({
-      where: { nombre },
+      where: { nombre: nombreTienda },
       update: {},
       create: {
-        nombre,
-        direccion: `${montana} Centro`,
+        nombre: nombreTienda,
+        direccion: `${nombreMontana} Centro`,
         telefono: '600123456',
+        montanaId: montana.id
       },
     });
   }
 
-  console.log('✅ Tiendas creadas');
+  console.log('✅ Tiendas creadas y vinculadas con montañas');
 }
 
 seedTiendas()

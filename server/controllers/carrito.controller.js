@@ -128,7 +128,14 @@ export const reservarProducto = async (req, res) => {
       token = jwt.sign({ tipo: 'reservaProducto' }, JWT_SECRET, { expiresIn: '10m' });
     }
 
-    const producto = await prisma.producto.findUnique({ where: { id: productoId } });
+    const producto = await prisma.producto.findUnique({
+      where: { id: productoId },
+      include: {
+        tienda: true,
+      },
+    });
+    console.log('Producto encontrado:', producto);
+
     if (!producto) {
       return res.status(404).json({ success: false, error: 'Producto no encontrado' });
     }
@@ -137,11 +144,7 @@ export const reservarProducto = async (req, res) => {
     const fechaFinReal = new Date(fechaFin);
     const diasReserva = [];
 
-    for (
-      let d = new Date(fechaIni);
-      d <= fechaFinReal;
-      d.setDate(d.getDate() + 1)
-    ) {
+    for (let d = new Date(fechaIni); d <= fechaFinReal; d.setDate(d.getDate() + 1)) {
       const fechaActual = new Date(d);
 
       const reservasEnFecha = await prisma.productoReserva.aggregate({
@@ -187,7 +190,7 @@ export const reservarProducto = async (req, res) => {
             cantidad: 1,
           },
         },
-        montanaId: 1, // opcional si quieres vincular a una montaña
+        montanaId: producto.tienda.montanaId,
       },
     });
 
@@ -205,3 +208,148 @@ export const reservarProducto = async (req, res) => {
   }
 };
 
+export async function reservasActivas(req, res) {
+  try {
+    let token =
+      req.cookies.token_carrito_producto ||
+      req.headers['token_carrito_producto'] ||
+      req.cookies.token_carrito_clase ||
+      req.headers['token_carrito_clase'];
+
+    if (!token) {
+      return res.status(200).json({ reservas: [] });
+    }
+
+    const reservas = await prisma.reserva.findMany({
+      where: {
+        tokenCarrito: token,
+        estado: 'pendiente',
+        pagado: false,
+        expiresAt: {
+          gt: new Date(),
+        },
+      },
+      include: {
+        productos: {
+          include: {
+            producto: {
+              include: {
+                categorias: true,
+              },
+            },
+          },
+        },
+        montaña: true,
+      },
+    });
+
+    const resultado = reservas.map((r) => {
+      const isProducto = r.productos.length > 0;
+      const producto = isProducto ? r.productos[0].producto : null;
+
+      console.log('Reserva encontrada:', r);
+      console.log('Producto asociado:', producto);
+      console.log('medidas del producto:', producto?.medidas);
+
+      return {
+        id: r.id,
+        tipo: isProducto ? 'producto' : 'clase',
+        titulo: isProducto ? producto?.nombre : `Clase en ${r.montaña?.nombre || 'Montaña'}`,
+        fechaInicio: r.fechaInicio,
+        fechaFin: r.fechaFin,
+        total: r.total,
+        imagen: isProducto ? producto?.imagenUrl : '/img/clases/reservaClases.webp',
+        montana: r.montaña?.nombre || '',
+        estado: isProducto ? producto?.estado : 'activo',
+        cantidad: isProducto ? r.productos[0]?.cantidad : 1,
+        talla: producto?.tallas || [],
+        categoria: producto?.categorias?.[0]?.nombre || undefined,
+        medidas: producto?.medidas || [], 
+      };
+    });
+
+    return res.status(200).json({ reservas: resultado });
+  } catch (error) {
+    console.error('❌ Error al obtener reservas activas:', error);
+    return res.status(500).json({ error: 'Error al obtener las reservas activas' });
+  }
+}
+
+export async function deleteReserva(req, res) {
+  try {
+    const { reservaId } = req.body;
+    console.log('🔍 Intentando eliminar reserva con ID:', reservaId);
+
+    const reserva = await prisma.reserva.findUnique({
+      where: { id: Number(reservaId) },
+      include: {
+        clase: { include: { instructor: true } },
+        productos: true,
+      },
+    });
+
+    if (!reserva) {
+      console.warn('⚠️ Reserva no encontrada con ID:', reservaId);
+      return res.status(404).json({ success: false, error: 'Reserva no encontrada' });
+    }
+
+    console.log('✅ Reserva encontrada:', reserva);
+
+    // Si es clase y hay instructor asociado, liberar disponibilidad
+    if (reserva.clase) {
+      console.log('📘 Es una reserva de clase. Instructor ID:', reserva.clase.instructorId);
+      const result = await prisma.instructorDisponibilidad.updateMany({
+        where: {
+          instructorId: reserva.clase.instructorId,
+          fecha: new Date(reserva.fechaInicio.toDateString()),
+          horaInicio: reserva.fechaInicio,
+          horaFin: reserva.fechaFin,
+          disponible: false,
+        },
+        data: {
+          disponible: true,
+        },
+      });
+      console.log(`🔓 Disponibilidad liberada (${result.count}) para clase`);
+    } else {
+      console.log('📦 Es una reserva de producto. Liberando disponibilidad si aplica...');
+      const result = await prisma.instructorDisponibilidad.updateMany({
+        where: {
+          horaInicio: reserva.fechaInicio,
+          horaFin: reserva.fechaFin,
+          disponible: false,
+        },
+        data: {
+          disponible: true,
+        },
+      });
+      console.log(`🔓 Disponibilidad liberada sin instructor (${result.count})`);
+    }
+
+    if (reserva.productos.length > 0) {
+      console.log('🧹 Eliminando productos asociados a la reserva...');
+      const deletedProductos = await prisma.productoReserva.deleteMany({
+        where: {
+          reservaId: reserva.id,
+        },
+      });
+      console.log(`🗑️ Productos eliminados: ${deletedProductos.count}`);
+    } else {
+      console.log('ℹ️ No hay productos asociados a la reserva.');
+    }
+
+    console.log('🗑️ Eliminando la reserva...');
+    await prisma.reserva.delete({
+      where: {
+        id: reserva.id,
+      },
+    });
+
+    console.log('✅ Reserva eliminada correctamente');
+    return res.status(200).json({ success: true });
+
+  } catch (error) {
+    console.error('❌ Error al eliminar reserva:', error);
+    return res.status(500).json({ success: false, error: 'Error al eliminar la reserva' });
+  }
+}

@@ -141,17 +141,16 @@ export default function ProductoCard({
       )}
       <div className="w-full flex justify-center">
         <motion.button
-          layout
           type="button"
           onClick={handleCarrito}
           disabled={successAñadir}
           className={`transition-all duration-300 ease-in-out
-      ${
-        successAñadir
-          ? 'w-14 h-14 rounded-full bg-blue-500'
-          : 'w-full bg-blue-600 px-6 py-2 rounded-lg'
-      }
-      text-white font-semibold shadow flex justify-center items-center`}
+    ${
+      successAñadir
+        ? 'w-14 h-14 rounded-full bg-blue-500'
+        : 'w-full bg-blue-600 px-6 py-2 rounded-lg'
+    }
+    text-white font-semibold shadow flex justify-center items-center`}
           whileTap={{ scale: 0.95 }}>
           <AnimatePresence mode="wait" initial={false}>
             <motion.span
@@ -159,7 +158,7 @@ export default function ProductoCard({
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.8 }}
-              transition={{ duration: 0.2 }}
+              transition={{ duration: 0.4 }}
               className="flex justify-center items-center">
               {successAñadir ? (
                 <motion.div
