@@ -116,7 +116,7 @@ export default function ProductosReservadosTable({ csrfToken, onUpdateEstadistic
           />
         </div>
 
-        <div className="rounded-xl overflow-hidden">
+        <div className="overflow-auto rounded-xl shadow">
           <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
             <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
               <tr>
