@@ -4,6 +4,7 @@ import Pagination from '../Pagination/Pagination';
 import { Filter, Plus, Tag, ToggleLeft, Euro, Store } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import FormularioProducto from './FormularioProducto';
+import { PUBLIC_API_URL } from '../config';
 
 type Producto = {
   id: number;
@@ -42,7 +43,7 @@ export default function ProductosTable({ csrfToken }: Props) {
   const filasPorPagina = 5;
 
   const fetchProductos = async () => {
-    const res = await fetch('http://localhost:4000/api/productos/all', {
+    const res = await fetch(PUBLIC_API_URL + '/api/productos/all', {
       credentials: 'include',
       headers: { 'CSRF-Token': csrfToken },
     });
@@ -53,11 +54,11 @@ export default function ProductosTable({ csrfToken }: Props) {
   const fetchFiltros = async () => {
     try {
       const [catRes, tiendaRes] = await Promise.all([
-        fetch('http://localhost:4000/api/categorias/all', {
+        fetch(PUBLIC_API_URL + '/api/categorias/all', {
           headers: { 'CSRF-Token': csrfToken },
           credentials: 'include',
         }),
-        fetch('http://localhost:4000/api/tiendas/all', {
+        fetch(PUBLIC_API_URL + '/api/tiendas/all', {
           headers: { 'CSRF-Token': csrfToken },
           credentials: 'include',
         }),
@@ -101,7 +102,7 @@ export default function ProductosTable({ csrfToken }: Props) {
     });
     if (!confirm.isConfirmed) return;
 
-    const res = await fetch('http://localhost:4000/api/productos/delete', {
+    const res = await fetch(PUBLIC_API_URL + '/api/productos/delete', {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
@@ -126,7 +127,7 @@ export default function ProductosTable({ csrfToken }: Props) {
     if (!confirm.isConfirmed) return;
 
     try {
-      const res = await fetch(`http://localhost:4000/api/productos/activate`, {
+      const res = await fetch(`${PUBLIC_API_URL}/api/productos/activate`, {
         method: 'PATCH',
         credentials: 'include',
         headers: { 'CSRF-Token': csrfToken, 'Content-Type': 'application/json' },

@@ -6,6 +6,7 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Swal from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
+import { PUBLIC_API_URL } from '../config';
 
 const paymentSchema = z.object({
   cardNumber: z.string().regex(/^4[0-9]{15}$/, 'Debe ser una tarjeta Visa válida'),
@@ -83,7 +84,7 @@ export default function ReservarClase({ session }: Props) {
   useEffect(() => {
     const fetchCsrfToken = async () => {
       try {
-        const res = await fetch('http://localhost:4000/api/csrf-token', {
+        const res = await fetch(PUBLIC_API_URL + '/api/csrf-token', {
           credentials: 'include',
         });
         const data = await res.json();
@@ -96,7 +97,7 @@ export default function ReservarClase({ session }: Props) {
   }, []);
 
   useEffect(() => {
-    fetch('http://localhost:4000/api/montanas/all', {
+    fetch(PUBLIC_API_URL + '/api/montanas/all', {
       credentials: 'include',
       headers: { 'CSRF-Token': csrfToken },
     })
@@ -104,7 +105,7 @@ export default function ReservarClase({ session }: Props) {
       .then((data) => setMontanas(data))
       .catch((err) => console.error('Error al cargar montañas:', err));
 
-    fetch('http://localhost:4000/api/nivel/all', {
+    fetch(PUBLIC_API_URL + '/api/nivel/all', {
       credentials: 'include',
       headers: { 'CSRF-Token': csrfToken },
     })
@@ -115,7 +116,7 @@ export default function ReservarClase({ session }: Props) {
 
   useEffect(() => {
     if (montanaId && especialidad && nivelSeleccionado && fechaSeleccionada) {
-      fetch('http://localhost:4000/api/instructor/disponibles', {
+      fetch(PUBLIC_API_URL + '/api/instructor/disponibles', {
         method: 'POST',
         credentials: 'include',
         headers: {
@@ -137,7 +138,7 @@ export default function ReservarClase({ session }: Props) {
 
   useEffect(() => {
     if (instructorSeleccionado && fechaSeleccionada) {
-      fetch('http://localhost:4000/api/instructor/horarios', {
+      fetch(PUBLIC_API_URL + '/api/instructor/horarios', {
         method: 'POST',
         credentials: 'include',
         headers: {
@@ -173,7 +174,7 @@ export default function ReservarClase({ session }: Props) {
         precio: precioTotal,
       };
 
-      const res = await fetch('http://localhost:4000/api/carrito/reservaClase', {
+      const res = await fetch(PUBLIC_API_URL + '/api/carrito/reservaClase', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -189,7 +190,7 @@ export default function ReservarClase({ session }: Props) {
             setHorasSeleccionadas([]);
 
             // Refrescar horarios tras reservar
-            fetch('http://localhost:4000/api/instructor/horarios', {
+            fetch(PUBLIC_API_URL + '/api/instructor/horarios', {
               method: 'POST',
               credentials: 'include',
               headers: {
@@ -226,7 +227,7 @@ export default function ReservarClase({ session }: Props) {
 
   const procesarPagoYReservar = async () => {
     try {
-      const res = await fetch('http://localhost:4000/api/reserva/clase', {
+      const res = await fetch(PUBLIC_API_URL + '/api/reserva/clase', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'CSRF-Token': csrfToken },
         credentials: 'include',
@@ -251,7 +252,7 @@ export default function ReservarClase({ session }: Props) {
         setMensaje(data.message);
         setHorasSeleccionadas([]);
 
-        await fetch('http://localhost:4000/api/instructor/horarios', {
+        await fetch(PUBLIC_API_URL + '/api/instructor/horarios', {
           method: 'POST',
           credentials: 'include',
           headers: {

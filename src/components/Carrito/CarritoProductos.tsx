@@ -9,6 +9,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Swal from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
+import { PUBLIC_API_URL } from '../config';
 
 const descuentoSchema = z.object({
   codigo: z.string().min(3, 'Mínimo 3 caracteres').max(20),
@@ -74,7 +75,7 @@ export default function CarritoProductos({ session }: Props) {
   useEffect(() => {
     const fetchCsrfToken = async () => {
       try {
-        const res = await fetch('http://localhost:4000/api/csrf-token', {
+        const res = await fetch(PUBLIC_API_URL + '/api/csrf-token', {
           credentials: 'include',
         });
         const data = await res.json();
@@ -88,7 +89,7 @@ export default function CarritoProductos({ session }: Props) {
 
   const fetchReservas = async () => {
     try {
-      const res = await fetch('http://localhost:4000/api/carrito/reservasActivas', {
+      const res = await fetch(PUBLIC_API_URL + '/api/carrito/reservasActivas', {
         headers: {
           'Content-Type': 'application/json',
           'CSRF-Token': csrfToken,
@@ -129,7 +130,7 @@ export default function CarritoProductos({ session }: Props) {
     else if (incluyeClases) tipo = 'CLASES';
 
     try {
-      const res = await fetch('http://localhost:4000/api/descuentos/comprobarDescuento', {
+      const res = await fetch(PUBLIC_API_URL + '/api/descuentos/comprobarDescuento', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -190,7 +191,7 @@ export default function CarritoProductos({ session }: Props) {
 
   const procesarPagoYReservar = async () => {
     try {
-      const res = await fetch('http://localhost:4000/api/carrito/realizarPagoCarrito', {
+      const res = await fetch(PUBLIC_API_URL + '/api/carrito/realizarPagoCarrito', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'CSRF-Token': csrfToken },
         credentials: 'include',

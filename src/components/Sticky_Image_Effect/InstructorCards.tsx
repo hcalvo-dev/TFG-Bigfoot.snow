@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
+import { PUBLIC_API_URL } from '../config';
 
 type Instructor = {
   usuario: {
@@ -41,7 +42,7 @@ export default function InstructorCarousel() {
   useEffect(() => {
     const fetchInstructores = async () => {
       try {
-        const res = await fetch('http://localhost:4000/api/instructor/all');
+        const res = await fetch(PUBLIC_API_URL + '/api/instructor/all');
         const data = (await res.json()) as Instructor[];
 
         const transformados = data.map((inst) => ({

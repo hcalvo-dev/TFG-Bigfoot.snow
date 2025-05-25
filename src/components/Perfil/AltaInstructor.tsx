@@ -4,6 +4,7 @@ import { z } from 'zod';
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import PasswordInput from '../Auth/PasswordInput';
+import { PUBLIC_API_URL } from '../config';
 
 type Props = {
   csrfToken: string;
@@ -59,7 +60,7 @@ export default function AltaInstructorForm({ csrfToken, onCreationSuccess }: Pro
   const testimonioValue = useWatch({ name: 'testimonio', control });
 
   useEffect(() => {
-    fetch('http://localhost:4000/api/montanas/all', {
+    fetch(PUBLIC_API_URL + '/api/montanas/all', {
       credentials: 'include',
       headers: { 'CSRF-Token': csrfToken },
     })
@@ -67,7 +68,7 @@ export default function AltaInstructorForm({ csrfToken, onCreationSuccess }: Pro
       .then((data) => setMontanas(data))
       .catch((err) => console.error('Error al cargar montañas:', err));
 
-    fetch('http://localhost:4000/api/nivel/all', {
+    fetch(PUBLIC_API_URL + '/api/nivel/all', {
       credentials: 'include',
       headers: { 'CSRF-Token': csrfToken },
     })
@@ -88,7 +89,7 @@ export default function AltaInstructorForm({ csrfToken, onCreationSuccess }: Pro
       formData.append('foto', data.foto[0]);
       formData.append('testimonio', data.testimonio);
 
-      const res = await fetch('http://localhost:4000/api/instructor/create', {
+      const res = await fetch(PUBLIC_API_URL + '/api/instructor/create', {
         method: 'POST',
         credentials: 'include',
         headers: {

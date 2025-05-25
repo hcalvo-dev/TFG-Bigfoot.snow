@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-
+import { PUBLIC_API_URL } from '../config';
 type Props = {
   session: string;
 };
@@ -20,7 +20,7 @@ export default function AccountLinkWrapper_lateral({ session }: Props) {
   useEffect(() => {
     const fetchCsrfToken = async () => {
       try {
-        const res = await fetch('http://localhost:4000/api/csrf-token', {
+        const res = await fetch(PUBLIC_API_URL + '/api/csrf-token', {
           credentials: 'include',
         });
         const data = await res.json();
@@ -56,7 +56,7 @@ export default function AccountLinkWrapper_lateral({ session }: Props) {
 
   const handleLogout = async () => {
     try {
-      await fetch('http://localhost:4000/api/auth/logout', {
+      await fetch(PUBLIC_API_URL + '/api/auth/logout', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

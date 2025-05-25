@@ -5,6 +5,7 @@ import 'sweetalert2/dist/sweetalert2.min.css';
 import FiltrosVerticales from './FiltrosVerticales';
 import ProductoCard from './ProductoCard';
 import { z } from 'zod';
+import { PUBLIC_API_URL } from '../config';
 
 const tomorrow = new Date();
 tomorrow.setDate(tomorrow.getDate() + 1);
@@ -88,7 +89,7 @@ export default function TiendaComponent({ session }: Props) {
   useEffect(() => {
     const fetchCsrfToken = async () => {
       try {
-        const res = await fetch('http://localhost:4000/api/csrf-token', { credentials: 'include' });
+        const res = await fetch(PUBLIC_API_URL + '/api/csrf-token', { credentials: 'include' });
         const data = await res.json();
         setCsrfToken(data.csrfToken);
       } catch (error) {
@@ -100,7 +101,7 @@ export default function TiendaComponent({ session }: Props) {
 
   const refrescarDisponibles = async () => {
     try {
-      const res = await fetch('http://localhost:4000/api/productos/disponibles', {
+      const res = await fetch(PUBLIC_API_URL + '/api/productos/disponibles', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -132,11 +133,11 @@ export default function TiendaComponent({ session }: Props) {
     const fetchFiltros = async () => {
       try {
         const [catRes, tiendaRes] = await Promise.all([
-          fetch('http://localhost:4000/api/categorias/all', {
+          fetch(PUBLIC_API_URL + '/api/categorias/all', {
             headers: { 'CSRF-Token': csrfToken },
             credentials: 'include',
           }),
-          fetch('http://localhost:4000/api/tiendas/all', {
+          fetch(PUBLIC_API_URL + '/api/tiendas/all', {
             headers: { 'CSRF-Token': csrfToken },
             credentials: 'include',
           }),

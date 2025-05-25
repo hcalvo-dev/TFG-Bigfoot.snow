@@ -3,6 +3,7 @@ import Swal from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
 import Pagination from '../Pagination/Pagination';
 import { error } from 'console';
+import { PUBLIC_API_URL } from '../config';
 
 type ClaseActiva = {
   id: number;
@@ -40,7 +41,7 @@ export default function ClasesActivasTable({ csrfToken, onUpdateEstadisticas }: 
 
   const fetchClases = async () => {
     try {
-      const res = await fetch('http://localhost:4000/api/clases/clases-activas', {
+      const res = await fetch(PUBLIC_API_URL + '/api/clases/clases-activas', {
         credentials: 'include',
         headers: { 'CSRF-Token': csrfToken },
       });
@@ -70,7 +71,7 @@ export default function ClasesActivasTable({ csrfToken, onUpdateEstadisticas }: 
     if (!confirm.isConfirmed) return;
 
     try {
-      const res = await fetch('http://localhost:4000/api/clases/cancelar-reserva', {
+      const res = await fetch(PUBLIC_API_URL + '/api/clases/cancelar-reserva', {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',

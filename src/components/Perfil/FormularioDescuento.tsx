@@ -3,6 +3,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
+import { PUBLIC_API_URL } from '../config';
 
 const schema = z.object({
   id: z.number().optional(),
@@ -52,8 +53,8 @@ export default function FormularioDescuento({ descuento, csrfToken, onSuccess }:
   const onSubmit = async (data: Descuento) => {
     const method = descuento?.id ? 'PATCH' : 'POST';
     const url = descuento?.id
-      ? 'http://localhost:4000/api/descuentos/edit'
-      : 'http://localhost:4000/api/descuentos/create';
+      ? PUBLIC_API_URL + '/api/descuentos/edit'
+      : PUBLIC_API_URL + '/api/descuentos/create';
 
     const res = await fetch(url, {
       method,

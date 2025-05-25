@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { PUBLIC_API_URL } from '../config';
 
 type Montania = {
   id: number;
@@ -30,7 +31,7 @@ export default function WeatherMontanas({ montana }: { montana: Montania | null 
   useEffect(() => {
     const fetchToken = async () => {
       try {
-        const res = await fetch('http://localhost:4000/api/csrf-token', {
+        const res = await fetch(PUBLIC_API_URL + '/api/csrf-token', {
           credentials: 'include',
         });
         const data = await res.json();
@@ -48,7 +49,7 @@ export default function WeatherMontanas({ montana }: { montana: Montania | null 
 
       setLoading(true);
       try {
-        const res = await fetch('http://localhost:4000/api/clima/all', {
+        const res = await fetch(PUBLIC_API_URL + '/api/clima/all', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

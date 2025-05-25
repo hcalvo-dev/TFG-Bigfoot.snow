@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import PasswordInput from '../Auth/PasswordInput';
 import Swal from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
+import { PUBLIC_API_URL } from '../config';
 
 type Props = {
   usuario: { id: number; nombre: string; email: string; rol: string };
@@ -104,7 +105,7 @@ export default function FormularioEdicionUsuario({
     }
 
     try {
-      const res = await fetch('http://localhost:4000/api/user/update', {
+      const res = await fetch(PUBLIC_API_URL + '/api/user/update', {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -144,7 +145,7 @@ export default function FormularioEdicionUsuario({
     if (result.isConfirmed) {
       setDeleting(true);
       try {
-        const res = await fetch('http://localhost:4000/api/user/delete', {
+        const res = await fetch(PUBLIC_API_URL + '/api/user/delete', {
           method: 'PATCH',
           headers: {
             'Content-Type': 'application/json',
@@ -172,7 +173,7 @@ export default function FormularioEdicionUsuario({
   useEffect(() => {
     if (typeof usuario.rol === 'string') {
       // Solo cargar roles si es un admin editando otro usuario
-      fetch('http://localhost:4000/api/roles/get-Roles', {
+      fetch(PUBLIC_API_URL + '/api/roles/get-Roles', {
         credentials: 'include',
         headers: { 'CSRF-Token': csrfToken },
       })

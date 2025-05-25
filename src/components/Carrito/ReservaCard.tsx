@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Trash2, Mountain } from 'lucide-react';
 import Swal from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
+import { PUBLIC_API_URL } from '../config';
 
 const tallaGuiaUrl = '/img/productos/guia-tallas.webp';
 
@@ -74,7 +75,7 @@ export default function ReservaCard({
     if (!confirm.isConfirmed) return;
 
     try {
-      const res = await fetch('http://localhost:4000/api/carrito/deleteReserva', {
+      const res = await fetch(PUBLIC_API_URL + '/api/carrito/deleteReserva', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

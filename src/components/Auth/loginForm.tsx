@@ -6,6 +6,7 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigate, useLocation } from 'react-router-dom';
 import PasswordInput from './PasswordInput'; 
+import { PUBLIC_API_URL } from '../config';
 
 // Defino el esquema de validación con Zod
 const schema = z
@@ -60,7 +61,7 @@ export default function AuthForm() {
   useEffect(() => {
     const fetchCsrf = async () => {
       try {
-        const res = await fetch('http://localhost:4000/api/csrf-token', {
+        const res = await fetch(PUBLIC_API_URL + '/api/csrf-token', {
           credentials: 'include',
         });
         const data = await res.json();
@@ -80,7 +81,7 @@ export default function AuthForm() {
       : data;
 
     try {
-      const res = await fetch(`http://localhost:4000/api/auth/${endpoint}`, {
+      const res = await fetch(`${PUBLIC_API_URL}/api/auth/${endpoint}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
