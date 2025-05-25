@@ -65,7 +65,7 @@ Todos los comandos necesarios para arrancar el proyecto, desde la términal:
 - [x] Estructura inicial de componentes (layouts, páginas)
 - [x] Carga de estilos globales con Tailwind
 - [X] Crear navegación principal (Home, Reservas, Alquiler, Contacto)
-- [ ] Diseñar vista de productos con tarjetas
+- [x] Diseñar vista de productos con tarjetas
 - [X] Implementar vista de reservas disponibles
 - [X] Adaptar diseño a dispositivos móviles (responsive)
 
@@ -74,9 +74,9 @@ Todos los comandos necesarios para arrancar el proyecto, desde la términal:
 ### 🛠️ Infraestructura y despliegue
 
 - [x] Docker Compose para PostgreSQL y pgAdmin
-- [ ] Añadir Dockerfile para app Astro
-- [ ] Ampliar `docker-compose.yml` para incluir Astro
-- [ ] Preparar entorno de producción
+- [x] Añadir Dockerfile para app Astro
+- [x] Ampliar `docker-compose.yml` para incluir Astro
+- [x] Preparar entorno de producción
 - [ ] Configurar VPS con Ubuntu + Docker
 - [ ] Desplegar aplicación completa en VPS
 
@@ -86,7 +86,6 @@ Todos los comandos necesarios para arrancar el proyecto, desde la términal:
 
 - [X] Integración con API meteorológica para mostrar estado de la nieve
 - [X] Sistema de reservas con control de fechas y disponibilidad
-- [ ] Envío de correos de confirmación al reservar
 - [X] Añadir sistema de autenticación de usuarios (login/registro)
 - [X] Panel de administración para gestionar instructores, productos y reservas
 
