@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
 import Pagination from '../Pagination/Pagination';
+import { PUBLIC_API_URL } from '../config';
 
 type ProductoReserva = {
   id: number;
@@ -36,7 +37,7 @@ export default function ProductosReservadosTable({ csrfToken, onUpdateEstadistic
 
   const fetchProductos = async () => {
     try {
-      const res = await fetch('http://localhost:4000/api/productos/reservados', {
+      const res = await fetch(PUBLIC_API_URL + '/api/productos/reservados', {
         credentials: 'include',
         headers: { 'CSRF-Token': csrfToken },
       });
@@ -77,7 +78,7 @@ export default function ProductosReservadosTable({ csrfToken, onUpdateEstadistic
       if (!confirm.isConfirmed) return;
   
       try {
-        const res = await fetch('http://localhost:4000/api/productos/cancelar-reserva', {
+        const res = await fetch(PUBLIC_API_URL + '/api/productos/cancelar-reserva', {
           method: 'DELETE',
           headers: {
             'Content-Type': 'application/json',

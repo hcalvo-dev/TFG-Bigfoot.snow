@@ -3,6 +3,7 @@ import Swal from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
 import FormularioEdicionUsuario from './FormEditUser';
 import Pagination from '../Pagination/Pagination';
+import { PUBLIC_API_URL } from '../config';
 
 type Usuario = { id: number; nombre: string; email: string; rol: string };
 
@@ -30,7 +31,7 @@ export default function UsuariosTable({ usuario, csrfToken, onUpdateSuccess }: P
 
   const fetchUsuarios = async () => {
     try {
-      const res = await fetch('http://localhost:4000/api/user/all', {
+      const res = await fetch(PUBLIC_API_URL + '/api/user/all', {
         credentials: 'include',
         headers: { 'CSRF-Token': csrfToken },
       });
@@ -56,7 +57,7 @@ export default function UsuariosTable({ usuario, csrfToken, onUpdateSuccess }: P
     if (!confirm.isConfirmed) return;
 
     try {
-      const res = await fetch('http://localhost:4000/api/user/delete', {
+      const res = await fetch(PUBLIC_API_URL + '/api/user/delete', {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -85,7 +86,7 @@ export default function UsuariosTable({ usuario, csrfToken, onUpdateSuccess }: P
     if (!confirm.isConfirmed) return;
 
     try {
-      const res = await fetch(`http://localhost:4000/api/user/activate`, {
+      const res = await fetch(`${PUBLIC_API_URL}/api/user/activate`, {
         method: 'PATCH',
         credentials: 'include',
         headers: { 'CSRF-Token': csrfToken, 'Content-Type': 'application/json' },

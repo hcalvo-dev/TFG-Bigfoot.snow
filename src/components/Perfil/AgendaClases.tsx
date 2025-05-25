@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import Pagination from '../Pagination/Pagination';
+import { PUBLIC_API_URL } from '../config';
 
 type ClaseAgendada = {
   id: number;
@@ -36,7 +37,7 @@ export default function AgendaClases({ usuario, csrfToken }: Props) {
 
   const fetchClases = async () => {
     try {
-      const res = await fetch('http://localhost:4000/api/clases/clases-agendadas', {
+      const res = await fetch(PUBLIC_API_URL + '/api/clases/clases-agendadas', {
         credentials: 'include',
         headers: { 'CSRF-Token': csrfToken },
       });

@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { BadgePercent, Frown } from 'lucide-react';
+import { PUBLIC_API_URL } from '../config';
 
 type Descuento = {
   id: number;
@@ -16,7 +17,7 @@ export default function DescuentosComponent() {
   const [descuentos, setDescuentos] = useState<Descuento[]>([]);
 
   useEffect(() => {
-    fetch('http://localhost:4000/api/descuentos/all')
+    fetch(PUBLIC_API_URL + '/api/descuentos/all')
       .then((res) => res.json())
       .then((data) => setDescuentos(data))
       .catch((err) => console.error('Error al cargar descuentos:', err));

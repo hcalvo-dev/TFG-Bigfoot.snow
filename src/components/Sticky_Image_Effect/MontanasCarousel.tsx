@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import { motion } from 'framer-motion';
+import { PUBLIC_API_URL } from '../config';
 
 type Montania = {
   id: number;
@@ -17,7 +18,7 @@ export default function MontanasCarousel() {
   useEffect(() => {
     const fetchMontanas = async () => {
       try {
-        const res = await fetch('http://localhost:4000/api/montanas/all');
+        const res = await fetch(PUBLIC_API_URL + '/api/montanas/all');
         const data = await res.json();
 
         // Imaginamos que agregas aquí las imágenes fijas según el ID o el nombre

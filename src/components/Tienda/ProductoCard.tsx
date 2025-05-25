@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ShoppingCart } from 'lucide-react';
+import { PUBLIC_API_URL } from '../config';
 
 const tallaGuiaUrl = '/img/productos/guia-tallas.webp';
 
@@ -49,7 +50,7 @@ export default function ProductoCard({
 
   const añadirAlCarrito = async () => {
     try {
-      const res = await fetch('http://localhost:4000/api/carrito/reservaProducto', {
+      const res = await fetch(PUBLIC_API_URL + '/api/carrito/reservaProducto', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

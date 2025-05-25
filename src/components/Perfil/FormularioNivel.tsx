@@ -3,6 +3,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
+import { PUBLIC_API_URL } from '../config';
 
 const schema = z.object({
   id: z.number(),
@@ -36,7 +37,7 @@ export default function FormularioNivel({ nivel, csrfToken, onSuccess }: Props) 
   const [success, setSuccess] = useState(false);
 
   const onSubmit = async (data: Nivel) => {
-    const res = await fetch('http://localhost:4000/api/nivel/edit', {
+    const res = await fetch(PUBLIC_API_URL + '/api/nivel/edit', {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',

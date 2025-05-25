@@ -3,6 +3,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useEffect, useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
+import { PUBLIC_API_URL } from '../config';
 
 const useProductoSchema = (categorias: Categoria[]) => {
   return useMemo(() => {
@@ -171,8 +172,8 @@ export default function FormularioProducto({
 
   const onSubmit = async (data: any) => {
     const url = producto
-      ? 'http://localhost:4000/api/productos/edit'
-      : 'http://localhost:4000/api/productos/create';
+      ? PUBLIC_API_URL + '/api/productos/edit'
+      : PUBLIC_API_URL + '/api/productos/create';
 
     const headers: HeadersInit = {
       'CSRF-Token': csrfToken,

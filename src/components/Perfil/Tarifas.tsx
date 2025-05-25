@@ -7,6 +7,7 @@ import FormularioDescuento from './FormularioDescuento';
 import Pagination from '../Pagination/Pagination';
 import { AplicaEn } from '@prisma/client';
 import { a } from 'node_modules/framer-motion/dist/types.d-B50aGbjN';
+import { PUBLIC_API_URL } from '../config';
 
 type Nivel = { id: number; nombre: string; precio: number };
 type Descuento = {
@@ -31,7 +32,7 @@ export default function Tarifas({ csrfToken }: Props) {
   const filasPorPagina = 6;
 
   const fetchDescuentos = async () => {
-    const res = await fetch('http://localhost:4000/api/descuentos/allDescuentos', {
+    const res = await fetch(PUBLIC_API_URL + '/api/descuentos/allDescuentos', {
       credentials: 'include',
       headers: { 'CSRF-Token': csrfToken },
     });
@@ -45,7 +46,7 @@ export default function Tarifas({ csrfToken }: Props) {
   };
 
   const fetchNiveles = async () => {
-    const res = await fetch('http://localhost:4000/api/nivel/all', {
+    const res = await fetch(PUBLIC_API_URL + '/api/nivel/all', {
       credentials: 'include',
       headers: { 'CSRF-Token': csrfToken },
     });
@@ -84,7 +85,7 @@ export default function Tarifas({ csrfToken }: Props) {
     });
     if (!confirm.isConfirmed) return;
 
-    const res = await fetch('http://localhost:4000/api/descuentos/delete', {
+    const res = await fetch(PUBLIC_API_URL + '/api/descuentos/delete', {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
@@ -109,7 +110,7 @@ export default function Tarifas({ csrfToken }: Props) {
     if (!confirm.isConfirmed) return;
 
     try {
-      const res = await fetch(`http://localhost:4000/api/descuentos/activate`, {
+      const res = await fetch(`${PUBLIC_API_URL}/api/descuentos/activate`, {
         method: 'PATCH',
         credentials: 'include',
         headers: { 'CSRF-Token': csrfToken, 'Content-Type': 'application/json' },

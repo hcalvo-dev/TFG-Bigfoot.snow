@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
+import { PUBLIC_API_URL } from '../config';
 import {
   User,
   School,
@@ -54,7 +55,7 @@ export default function PerfilContent({ session }: Props) {
   useEffect(() => {
     const fetchCsrfToken = async () => {
       try {
-        const res = await fetch('http://localhost:4000/api/csrf-token', {
+        const res = await fetch(PUBLIC_API_URL + '/api/csrf-token', {
           credentials: 'include',
         });
         const data = await res.json();
@@ -70,7 +71,7 @@ export default function PerfilContent({ session }: Props) {
   // Obtenemos el usuario al cargar el componente
   const fetchUsuario = async () => {
     try {
-      const res = await fetch('http://localhost:4000/api/user/me', {
+      const res = await fetch(PUBLIC_API_URL + '/api/user/me', {
         credentials: 'include',
         method: 'GET',
         headers: {
@@ -95,7 +96,7 @@ export default function PerfilContent({ session }: Props) {
       ];
 
       for (const { url, setter } of endpoints) {
-        const res = await fetch(`http://localhost:4000${url}`, {
+        const res = await fetch(`${PUBLIC_API_URL}${url}`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -126,7 +127,7 @@ export default function PerfilContent({ session }: Props) {
   // Función para cerrar sesión
   const handleLogout = async () => {
     try {
-      await fetch('http://localhost:4000/api/auth/logout', {
+      await fetch(PUBLIC_API_URL + '/api/auth/logout', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
