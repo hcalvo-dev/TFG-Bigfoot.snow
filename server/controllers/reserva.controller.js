@@ -99,7 +99,7 @@ export const ReservaClase = async (req, res) => {
           data: {
             titulo: `Clase de ${especialidad}`,
             descripcion: `Clase personalizada de ${especialidad} nivel ${nivelId}`,
-            nivel: nivelId.toString(),
+            nivel: nivel.nombre,
             duracion: 1,
             precio: nivel.precio,
             tipo: 'individual',

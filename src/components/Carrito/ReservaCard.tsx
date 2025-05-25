@@ -56,7 +56,6 @@ export default function ReservaCard({
     ) : (
       <span className="text-red-600 font-semibold text-sm">Sin stock</span>
     );
-  console.log('medida', reserva.medidas);
 
   const handleDeleteReserva = async (
     id: number,

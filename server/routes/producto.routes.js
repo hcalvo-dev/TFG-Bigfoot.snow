@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getAllProductos,createProductos, editProductos, desactivarProductos, activarProductos, productosDisponibles, getProductosReservados } from '../controllers/productos.controller';
+import { getAllProductos,createProductos, editProductos, desactivarProductos, activarProductos, productosDisponibles, getProductosReservados, cancelarReservaProductos } from '../controllers/productos.controller';
 import { authenticateUser } from '../middlewares/authenticate.middleware';
 import { sanitizeInputs } from '../middlewares/sanitize.middleware';
 import { uploadProductos } from '../middlewares/uploadProductos.middleware.js';
@@ -28,6 +28,9 @@ router.post('/disponibles',sanitizeInputs, productosDisponibles);
 
 // Ruta para obtener los productos reservados 
 router.get('/reservados',sanitizeInputs, authenticateUser, getProductosReservados);
+
+// Ruta para eliminar una reserva
+router.delete('/cancelar-reserva',sanitizeInputs, authenticateUser, cancelarReservaProductos);
 
 
 export default router;

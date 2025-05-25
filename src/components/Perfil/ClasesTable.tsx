@@ -14,6 +14,10 @@ type ClaseActiva = {
   total: number;
   clase?: {
     titulo: string;
+    nivel: string; 
+    montaña?: {
+      nombre: string;
+    };
     instructor?: {
       usuario?: {
         nombre: string;
@@ -21,6 +25,7 @@ type ClaseActiva = {
     };
   };
 };
+
 
 type Props = {
   csrfToken: string;
@@ -79,9 +84,9 @@ export default function ClasesActivasTable({ csrfToken, onUpdateEstadisticas }: 
       fetchClases();
       onUpdateEstadisticas();
       Swal.fire('Cancelado', 'La reserva ha sido cancelada', 'success');
-    } catch(err) {
+    } catch (err) {
       const error = err as Error;
-      Swal.fire('Cancelación no permitida', error.message  , 'error');
+      Swal.fire('Cancelación no permitida', error.message, 'error');
     }
   };
 
@@ -126,6 +131,8 @@ export default function ClasesActivasTable({ csrfToken, onUpdateEstadisticas }: 
                 <th className="py-3 px-4">ID</th>
                 <th className="py-3 px-4">Titulo</th>
                 <th className="py-3 px-4">Instructor</th>
+                <th className="py-3 px-4">Montaña</th>
+                <th className="py-3 px-4">Nivel</th>
                 <th className="py-3 px-4">Fecha</th>
                 <th className="py-3 px-4">Hora</th>
                 <th className="py-3 px-4">Estado</th>
@@ -147,9 +154,20 @@ export default function ClasesActivasTable({ csrfToken, onUpdateEstadisticas }: 
                     {' '}
                     {clase.clase?.instructor?.usuario?.nombre ?? 'Sin instructor'}
                   </td>
-                  <td className="py-2 px-4 text-white/90">{new Date(clase.fechaInicio).toLocaleDateString()}</td>
+                  <td className="py-2 px-4 text-white/90">
+                    {clase.clase?.montaña?.nombre ?? 'Sin montaña'}
+                  </td>
+                  <td className="py-2 px-4 text-white/90">{clase.clase?.nivel ?? 'Sin nivel'}</td>
+                  <td className="py-2 px-4 text-white/90">
+                    {new Date(clase.fechaInicio).toLocaleDateString()}
+                  </td>
                   <td className="py-2 px-4 text-white/90">
                     {new Date(clase.fechaInicio).toLocaleTimeString([], {
+                      hour: '2-digit',
+                      minute: '2-digit',
+                    })}{' '}
+                    -{' '}
+                    {new Date(clase.fechaFin).toLocaleTimeString([], {
                       hour: '2-digit',
                       minute: '2-digit',
                     })}

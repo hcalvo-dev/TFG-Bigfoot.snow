@@ -91,9 +91,6 @@ export const getCurrentUser = async (req, res) => {
         data: { estadoCuenta: false }, 
       });
 
-      console.log('Usuario actualizado:', updatedUser);
-
-  
       res.json({ message: 'Cuenta desactivada correctamente', user: updatedUser });
     } catch (error) {
       console.error(error);

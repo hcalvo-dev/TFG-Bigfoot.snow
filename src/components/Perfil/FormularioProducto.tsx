@@ -226,7 +226,6 @@ export default function FormularioProducto({
 
       bodyToSend = formData;
       for (const pair of formData.entries()) {
-        console.log(`➡️ ${pair[0]}:`, pair[1]);
       }
     }
 

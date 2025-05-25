@@ -7,20 +7,22 @@ import Pagination from '../Pagination/Pagination';
 
 type ProductoReserva = {
   id: number;
-  fechaInicio: string;
-  fechaFin: string;
-  estado: string;
   talla?: string;
   medidas?: string[];
   producto?: {
     nombre: string;
-    tienda?: {
-      nombre: string;
-    };
+    tienda?: { nombre: string };
     categorias?: { nombre: string }[];
+    tallas?: string[];
+    medidas?: string[];
+  };
+  reserva: {
+    id: number;
+    fechaInicio: string;
+    fechaFin: string;
+    estado: string;
   };
 };
-
 type Props = {
   csrfToken: string;
   onUpdateEstadisticas: () => void;
@@ -52,11 +54,48 @@ export default function ProductosReservadosTable({ csrfToken, onUpdateEstadistic
   const productosFiltrados = productos.filter((p) => {
     const nombre = p.producto?.nombre || '';
     const tienda = p.producto?.tienda?.nombre || '';
-    return nombre.toLowerCase().includes(busqueda.toLowerCase()) || tienda.toLowerCase().includes(busqueda.toLowerCase());
+    return (
+      nombre.toLowerCase().includes(busqueda.toLowerCase()) ||
+      tienda.toLowerCase().includes(busqueda.toLowerCase())
+    );
   });
 
   const totalPaginas = Math.ceil(productosFiltrados.length / filasPorPagina);
-  const productosPaginados = productosFiltrados.slice((paginaActual - 1) * filasPorPagina, paginaActual * filasPorPagina);
+  const productosPaginados = productosFiltrados.slice(
+    (paginaActual - 1) * filasPorPagina,
+    paginaActual * filasPorPagina
+  );
+
+  const handleCancelar = async (reservaId: number) => {
+      const confirm = await Swal.fire({
+        title: '¿Cancelar reserva?',
+        text: 'Esta acción no se puede deshacer.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Sí, cancelar',
+      });
+      if (!confirm.isConfirmed) return;
+  
+      try {
+        const res = await fetch('http://localhost:4000/api/productos/cancelar-reserva', {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+            'CSRF-Token': csrfToken,
+          },
+          credentials: 'include',
+          body: JSON.stringify({ reservaId }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error);
+        fetchProductos();
+        onUpdateEstadisticas();
+        Swal.fire('Cancelado', 'La reserva ha sido cancelada', 'success');
+      } catch (err) {
+        const error = err as Error;
+        Swal.fire('Cancelación no permitida', error.message, 'error');
+      }
+    };
 
   return (
     <div className="relative">
@@ -81,32 +120,64 @@ export default function ProductosReservadosTable({ csrfToken, onUpdateEstadistic
           <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
             <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
               <tr>
-                <th className="py-3 px-4">#</th>
+                <th className="py-3 px-4">ID</th>
                 <th className="py-3 px-4">Producto</th>
-                <th className="py-3 px-4">Tienda</th>
-                <th className="py-3 px-4">Fecha inicio</th>
-                <th className="py-3 px-4">Fecha fin</th>
+                <th className="py-3 px-4">Categoría</th>
                 <th className="py-3 px-4">Tallas/Medidas</th>
+                <th className="py-3 px-4">Tienda</th>
+                <th className="py-3 px-4">Fecha Reserva</th>
                 <th className="py-3 px-4">Estado</th>
+                <th className="py-3 px-4">Acciones</th>
               </tr>
             </thead>
             <tbody>
               {productosPaginados.map((r, i) => {
                 const categoria = r.producto?.categorias?.[0]?.nombre?.toLowerCase() || '';
-                const esEquipamiento = ['skii', 'snowboard'].some((tipo) => categoria.includes(tipo));
-                const infoExtra = esEquipamiento ? r.medidas?.join(', ') : r.talla;
+                const esEquipamiento = ['esquí', 'snowboard'].some((tipo) =>
+                  categoria.includes(tipo)
+                );
+                const esForfait = categoria.includes('forfait');
+                let infoExtra = '-';
+
+                if (!esForfait) {
+                  if (esEquipamiento && r.producto?.medidas && r.producto.medidas.length > 0) {
+                    infoExtra = r.producto.medidas.join(', ');
+                  } else if (r.producto?.tallas && r.producto.tallas.length > 0) {
+                    infoExtra = r.producto.tallas.join(', ');
+                  } else {
+                    infoExtra = 'Talla única';
+                  }
+                }
 
                 return (
                   <tr
                     key={r.id}
                     className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                    <td className="py-2 px-4 font-medium text-gray-900 dark:text-white">{(paginaActual - 1) * filasPorPagina + i + 1}</td>
-                    <td className="py-2 px-4 font-medium text-gray-900 dark:text-white">{r.producto?.nombre || 'Producto eliminado'}</td>
-                    <td className="py-2 px-4 text-white/90">{r.producto?.tienda?.nombre || 'Sin tienda'}</td>
-                    <td className="py-2 px-4 text-white/90">{new Date(r.fechaInicio).toLocaleDateString()}</td>
-                    <td className="py-2 px-4 text-white/90">{new Date(r.fechaFin).toLocaleDateString()}</td>
-                    <td className="py-2 px-4 text-white/90">{infoExtra || '-'}</td>
-                    <td className="py-2 px-4 text-white/90 capitalize">{r.estado}</td>
+                    <td className="py-2 px-4 font-medium text-gray-900 dark:text-white">
+                      {(paginaActual - 1) * filasPorPagina + i + 1}
+                    </td>
+                    <td className="py-2 px-4 font-medium text-gray-900 dark:text-white">
+                      {r.producto?.nombre || 'Producto eliminado'}
+                    </td>
+                    <td className="py-2 px-4 text-white/90">
+                      {categoria.charAt(0).toUpperCase() + categoria.slice(1)}
+                    </td>
+                    <td className="py-2 px-4 text-white/90">{infoExtra}</td>
+                    <td className="py-2 px-4 text-white/90">
+                      {r.producto?.tienda?.nombre || 'Sin tienda'}
+                    </td>
+                    <td className="py-2 px-4 text-white/90">
+                      {new Date(r.reserva.fechaInicio).toLocaleDateString()} -{' '}
+                      {new Date(r.reserva.fechaFin).toLocaleDateString()}
+                    </td>
+                    <td className="py-2 px-4 text-white/90 capitalize">{r.reserva.estado}</td>
+                    <td className="py-2 px-4 text-white/90">
+                      <button
+                        onClick={() => handleCancelar(r.reserva.id)}
+                        className="bg-red-500 hover:bg-red-600 px-3 py-1 rounded font-medium text-white shadow shadow-black/40">
+                        Cancelar
+                      </button>
+                    </td>
                   </tr>
                 );
               })}

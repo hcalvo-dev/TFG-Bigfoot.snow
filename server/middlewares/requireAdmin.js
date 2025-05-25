@@ -4,7 +4,6 @@ import prisma from '../../src/lib/prisma';
 export const requireAdmin = async (req, res, next) => {
   const userId = req.user?.id;
 
-  console.log('User ID en requireAdmin:', userId); // Agregar log para depuración
 
   if (!userId) {
     return res.status(401).json({ message: 'No autenticado' });

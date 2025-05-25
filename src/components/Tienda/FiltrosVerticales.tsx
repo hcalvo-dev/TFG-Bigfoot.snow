@@ -36,13 +36,13 @@ export default function FiltrosVerticales({
   return (
     <div className="space-y-8 p-6 bg-white border border-zinc-200 rounded-2xl shadow-xl">
       <div className="flex mb-3 items-center justify-between gap-4">
-        <h2 className="flex items-center gap-3 text-3xl font-blowbrush text-sky-950 uppercase tracking-widest">
+        <h2 className="flex items-center gap-3 text-2xl font-blowbrush text-sky-950 uppercase tracking-widest">
           <SlidersHorizontal className="w-7 h-7 text-sky-950" />
           PRODUCTOS
         </h2>
 
         <div className="flex items-center gap-2">
-          <Filter className="w-5 h-5 text-sky-950" />
+          <Filter className="w-4 h-4 text-sky-950" />
           <span className="text-gray-500">
             {total} {total === 1 ? 'producto' : 'productos'}
           </span>

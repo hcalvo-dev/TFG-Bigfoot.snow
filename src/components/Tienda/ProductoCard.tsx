@@ -117,7 +117,7 @@ export default function ProductoCard({
         <span className="text-sm text-gray-400 ml-2">(€{producto.precioDia.toFixed(2)} / día)</span>
       </div>
 
-      {!esCasco && (
+      {!esCasco && !esForfait && (
         <div className="text-sm text-gray-300 mb-3">
           {categoria.includes('snowboard') || categoria.includes('esquí') ? (
             <>

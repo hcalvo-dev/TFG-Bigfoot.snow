@@ -23,8 +23,6 @@ export const getAllDescuentosEstados = async (req, res) => {
       },
     });
 
-    console.log(descuentos);
-
     res.json(descuentos);
   } catch (error) {
     console.error('💥 Error inesperado al obtener descuentos:', error);
@@ -120,7 +118,6 @@ export const createDescuentos = async (req, res) => {
 
 export const comprobarDescuento = async (req, res) => {
   const { codigo, total, tipo, cantidadProductos } = req.body;
-console.log(req.body);
   try {
     const descuento = await prisma.descuento.findUnique({
       where: { codigo },

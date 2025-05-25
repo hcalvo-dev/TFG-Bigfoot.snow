@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 
 export function capitalizeNombre(req: Request, _res: Response, next: NextFunction) {
-  console.log('Capitalizando nombre:', req.body.name);
 
   if (typeof req.body?.nombre === 'string') {
     req.body.nombre = req.body.nombre
@@ -17,8 +16,6 @@ export function capitalizeNombre(req: Request, _res: Response, next: NextFunctio
       .map((palabra: string) => palabra.charAt(0).toUpperCase() + palabra.slice(1))
       .join(' ');
   }
-
-  console.log('Nombre capitalizado:', req.body.name);
 
   next();
 }

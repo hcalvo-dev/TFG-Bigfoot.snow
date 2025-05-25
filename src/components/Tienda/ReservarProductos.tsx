@@ -69,8 +69,6 @@ export default function TiendaComponent({ session }: Props) {
     tienda: 'Bigfoot-SNevada',
   });
 
-  console.log('opcion: ', opcion);
-
   useEffect(() => {
     switch (slug) {
       case 'skii':

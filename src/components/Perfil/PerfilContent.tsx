@@ -277,7 +277,7 @@ export default function PerfilContent({ session }: Props) {
       {/* Sidebar */}
       <aside className="bg-sky-950 h-[85vh] font-extrabold font-blowbrush tracking-widest rounded-2xl p-6 flex flex-col items-center shadow-lg w-full">
         <img
-          src="/img/perfil/perfil.jpg"
+          src="/img/perfil/perfil.webp"
           alt="avatar"
           className="w-30 h-30 my-3 rounded-full border-4 border-white"
         />

@@ -5,8 +5,6 @@ const prisma = new PrismaClient();
 const API_KEY = process.env.OPENWEATHER_KEY;
 
 export async function actualizarClimaMontanas() {
-  console.log('🌍 Iniciando actualización del clima...');
-  console.log('🔑 API_KEY:', API_KEY);
 
   if (!API_KEY) {
     console.error('❌ No se encontró la clave API en el entorno');
@@ -14,15 +12,12 @@ export async function actualizarClimaMontanas() {
   }
 
   const montanas = await prisma.montaña.findMany();
-  console.log(`🔎 Montañas encontradas: ${montanas.length}`);
 
   for (const montana of montanas) {
     const { lat, lon, nombre } = montana;
-    console.log(`📍 Procesando ${nombre} → lat: ${lat}, lon: ${lon}`);
 
     const url = `https://api.openweathermap.org/data/3.0/onecall?lat=${lat}&lon=${lon}&exclude=current,minutely,hourly,alerts&units=metric&lang=es&appid=${API_KEY}`;
 
-    console.log('🌐 URL generada:', url);
 
     try {
       const res = await fetch(url, {
@@ -39,7 +34,6 @@ export async function actualizarClimaMontanas() {
       }
 
       const data = await res.json();
-      console.log(`📦 Datos recibidos para ${nombre}:`, data.daily?.length, 'días');
 
       for (const dia of data.daily.slice(0, 7)) {
         const fecha = new Date(dia.dt * 1000);
@@ -47,10 +41,6 @@ export async function actualizarClimaMontanas() {
         const temperaturaMin = dia.temp.min;
         const descripcion = dia.weather[0].description;
         const icono = dia.weather[0].icon;
-
-        console.log(
-          `📅 Día: ${fecha.toISOString()}, Max: ${temperaturaMax}, Min: ${temperaturaMin}, Desc: ${descripcion}, Icono: ${icono}`
-        );
 
         await prisma.clima.upsert({
           where: {
@@ -75,10 +65,8 @@ export async function actualizarClimaMontanas() {
           },
         });
 
-        console.log(`✅ Clima guardado para ${nombre} en ${fecha.toISOString()}`);
       }
 
-      console.log(`✔ Clima actualizado para ${nombre}`);
     } catch (err) {
       console.error(`❌ Error al procesar ${nombre}:`, err);
     }

@@ -20,12 +20,11 @@ export const getClasesActivas = async (req, res) => {
                 usuario: true,
               },
             },
+            montaña: true, // ✅ incluir la montaña
           },
         },
       },
     });
-
-    console.log('Reservas activas de clases:', reservas);
 
     res.json({ total: reservas.length, datos: reservas });
   } catch (error) {
@@ -62,7 +61,8 @@ export const deleteReserva = async (req, res) => {
     }
 
     const ahora = new Date();
-    const diferenciaHoras = (new Date(reserva.fechaInicio).getTime() - ahora.getTime()) / (1000 * 60 * 60);
+    const diferenciaHoras =
+      (new Date(reserva.fechaInicio).getTime() - ahora.getTime()) / (1000 * 60 * 60);
 
     if (diferenciaHoras < 24) {
       return res.status(400).json({ error: 'Quedan menos de 24 horas para la clase' });

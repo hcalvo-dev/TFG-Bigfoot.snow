@@ -1,7 +1,6 @@
 import prisma from '../../src/lib/prisma';
 
 export const getClimaByMontana = async (req, res) => {
-  console.log('📥 Petición recibida en /api/clima/all');
 
   try {
     // Verificamos método
@@ -11,7 +10,6 @@ export const getClimaByMontana = async (req, res) => {
     }
 
     const { nombre } = req.body;
-    console.log('🔎 Nombre recibido:', nombre);
 
     if (!nombre) {
       console.warn('❌ Falta el parámetro "nombre"');
@@ -33,8 +31,6 @@ export const getClimaByMontana = async (req, res) => {
       return res.status(404).json({ error: 'Montaña no encontrada' });
     }
 
-    console.log('✅ Montaña encontrada:', montana.id, montana.nombre);
-
     // Buscar clima asociado
     const clima = await prisma.clima.findMany({
       where: {
@@ -44,8 +40,6 @@ export const getClimaByMontana = async (req, res) => {
         fecha: 'asc',
       },
     });
-
-    console.log('🌦️ Registros de clima encontrados:', clima.length);
 
     if (!clima || clima.length === 0) {
       console.warn('⚠️ No hay registros de clima para esta montaña');

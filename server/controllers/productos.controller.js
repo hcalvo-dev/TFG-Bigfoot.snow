@@ -36,9 +36,6 @@ export const getAllProductos = async (req, res) => {
 export const createProductos = async (req, res) => {
   try {
 
-    console.log('📦 BODY:', req.body);
-    console.log('🖼️ FILE:', req.file);
-
     const {
       nombre,
       descripcion,
@@ -85,8 +82,6 @@ export const createProductos = async (req, res) => {
 
 export const editProductos = async (req, res) => {
   try {
-    console.log('--- Editando producto ---');
-    console.log('BODY recibido:', req.body);
 
     const {
       id,
@@ -100,16 +95,6 @@ export const editProductos = async (req, res) => {
       medidas,
     } = req.body;
 
-    console.log('ID:', id);
-    console.log('Nombre:', nombre);
-    console.log('Descripción:', descripcion);
-    console.log('Precio/Día:', precioDia);
-    console.log('Stock total:', stockTotal);
-    console.log('Categoría ID:', categoriaId);
-    console.log('Tienda ID:', tiendaId);
-    console.log('Tallas:', tallas);
-    console.log('Medidas:', medidas);
-
     const tallasProcesadas =
       typeof tallas === 'string'
         ? tallas.split(',').map((t) => t.trim().toUpperCase())
@@ -117,9 +102,6 @@ export const editProductos = async (req, res) => {
 
     const medidasProcesadas =
       typeof medidas === 'string' ? medidas.split(',').map((m) => m.trim()) : medidas;
-
-    console.log('Tallas procesadas:', tallasProcesadas);
-    console.log('Medidas procesadas:', medidasProcesadas);
 
     const dataUpdate = {
       nombre,
@@ -136,14 +118,12 @@ export const editProductos = async (req, res) => {
       },
     };
 
-    console.log('Data final para update:', dataUpdate);
 
     const producto = await prisma.producto.update({
       where: { id: Number(id) },
       data: dataUpdate,
     });
 
-    console.log('Producto actualizado correctamente:', producto);
     res.status(200).json({ message: 'Producto actualizado', producto });
 
   } catch (error) {
@@ -159,7 +139,6 @@ export const desactivarProductos = async (req, res) => {
     if (!id) {
       return res.status(400).json({ message: 'ID de producto no proporcionado' });
     }
-    console.log(' id: ', id);
 
     const producto = await prisma.producto.update({
       where: { id },
@@ -196,7 +175,6 @@ export const activarProductos = async (req, res) => {
 export const productosDisponibles = async (req, res) => {
   const { fechaInicio, fechaFin } = req.body;
 
-  console.log('Fechas recibidas:', fechaInicio, fechaFin);
   if (!fechaInicio || !fechaFin ) {
     return res.status(400).json({ error: 'Faltan parámetros' });
   }
@@ -271,14 +249,57 @@ export const getProductosReservados = async (req, res) => {
         reserva: { usuarioId: user.id }
       },
       include: {
-        producto: true,
+        producto: {
+          include: {
+            tienda: true,
+            categorias: true
+          }
+        },
         reserva: true
       }
     });
-    console.log('Productos reservados:', productos);
+
     res.json({ productos });
   } catch (error) {
     res.status(500).json({ error: 'Error al obtener productos reservados' });
   }
 };
 
+
+export const cancelarReservaProductos = async (req, res) => {
+  try {
+    const { reservaId } = req.body;
+
+    const reserva = await prisma.reserva.findUnique({
+      where: { id: Number(reservaId) },
+      include: {
+        productos: true,
+      },
+    });
+
+    if (!reserva) {
+      console.warn('⚠️ Reserva no encontrada con ID:', reservaId);
+      return res.status(404).json({ success: false, error: 'Reserva no encontrada' });
+    }
+
+
+    if (reserva.productos.length > 0) {
+      const deletedProductos = await prisma.productoReserva.deleteMany({
+        where: {
+          reservaId: reserva.id,
+        },
+      });
+    }
+
+    await prisma.reserva.delete({
+      where: {
+        id: reserva.id,
+      },
+    });
+
+    return res.status(200).json({ success: true });
+  } catch (error) {
+    console.error('❌ Error al cancelar reserva de producto:', error);
+    return res.status(500).json({ success: false, error: 'Error al cancelar la reserva' });
+  }
+};

@@ -39,7 +39,6 @@ export default function ContactUs() {
   }, [messageValue, errors.message, clearErrors]);
 
   const onSubmit = (data: FormData) => {
-    console.log(data);
     setSuccess(true);
     setTimeout(() => {
       setSuccess(false);

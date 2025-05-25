@@ -7,9 +7,6 @@ export const reservarClase = async (req, res) => {
     const { instructorId, montanaId, especialidad, fecha, horas, nivelId } = req.body;
     const usuarioId = req.user?.id;
 
-    console.log('🟢 Inicio reserva de clase');
-    console.log({ instructorId, montanaId, especialidad, fecha, horas, nivelId, usuarioId });
-
     const fechaBase = new Date(fecha);
     const fechaSoloDia = fechaBase;
     fechaSoloDia.setHours(0, 0, 0, 0);
@@ -23,21 +20,15 @@ export const reservarClase = async (req, res) => {
 
     if (!token) {
       token = jwt.sign({ tipo: 'reservaClase' }, JWT_SECRET, { expiresIn: '10m' });
-      console.log('🔐 Nuevo token generado:', token);
-    } else {
-      console.log('🔐 Token de carrito encontrado:', token);
-    }
+    } 
 
     const nivel = await prisma.nivel.findUnique({
       where: { id: Number(nivelId) },
     });
 
     if (!nivel) {
-      console.log('⛔ Nivel no encontrado');
       return res.status(404).json({ error: 'Nivel no encontrado' });
     }
-
-    console.log('✅ Nivel encontrado:', nivel);
 
     const instructor = await prisma.instructor.findUnique({
       where: { id: Number(instructorId) },
@@ -45,17 +36,14 @@ export const reservarClase = async (req, res) => {
     });
 
     if (!instructor) {
-      console.log('⛔ Instructor no encontrado');
       return res.status(404).json({ error: 'Instructor no encontrado' });
     }
 
     if (instructor.userId === usuarioId) {
-      console.log('⛔ El usuario intenta reservar una clase consigo mismo');
       return res.status(400).json({ error: 'No puedes reservar una clase contigo mismo' });
     }
 
     for (const horaStr of horas) {
-      console.log(`⏰ Procesando hora: ${horaStr}`);
 
       const [h, m] = horaStr.split(':').map(Number);
       const inicio = new Date(fechaBase);
@@ -63,7 +51,6 @@ export const reservarClase = async (req, res) => {
       const fin = new Date(inicio);
       fin.setHours(fin.getHours() + 1);
 
-      console.log('🕒 Intervalo de tiempo:', inicio.toISOString(), '-', fin.toISOString());
 
       const yaOcupada = await prisma.instructorDisponibilidad.findFirst({
         where: {
@@ -76,7 +63,6 @@ export const reservarClase = async (req, res) => {
       });
 
       if (yaOcupada) {
-        console.log('🚫 Ya ocupada:', yaOcupada);
         continue;
       }
 
@@ -90,16 +76,13 @@ export const reservarClase = async (req, res) => {
       });
 
       if (disponibilidad) {
-        console.log('📌 Disponibilidad encontrada:', disponibilidad);
 
         if (disponibilidad.disponible) {
           await prisma.instructorDisponibilidad.update({
             where: { id: disponibilidad.id },
             data: { disponible: false },
           });
-          console.log('✅ Actualizada disponibilidad a false');
         } else {
-          console.log('🚫 Ya estaba no disponible, se salta');
           continue;
         }
       } else {
@@ -112,7 +95,6 @@ export const reservarClase = async (req, res) => {
             disponible: false,
           },
         });
-        console.log('🆕 Disponibilidad creada y marcada como no disponible');
       }
 
       const claseExistente = await prisma.clase.findFirst({
@@ -127,14 +109,13 @@ export const reservarClase = async (req, res) => {
       let clase;
 
       if (claseExistente) {
-        console.log('🧠 Clase ya existente:', claseExistente);
         clase = claseExistente;
       } else {
         clase = await prisma.clase.create({
           data: {
             titulo: `Clase de ${especialidad}`,
             descripcion: `Clase personalizada de ${especialidad} nivel ${nivelId}`,
-            nivel: nivelId.toString(),
+            nivel: nivel.nombre,
             duracion: 1,
             precio: nivel.precio,
             tipo: 'individual',
@@ -142,7 +123,6 @@ export const reservarClase = async (req, res) => {
             montanaId: Number(montanaId),
           },
         });
-        console.log('🆕 Clase creada:', clase);
       }
 
       await prisma.reserva.create({
@@ -161,16 +141,12 @@ export const reservarClase = async (req, res) => {
         },
       });
 
-      console.log('✅ Reserva creada para:', horaStr);
       horasReservadas.push(horaStr);
     }
 
     if (horasReservadas.length === 0) {
-      console.log('⚠️ Ninguna de las horas estaba disponible para reservar');
       return res.status(409).json({ message: 'Ninguna de las horas está disponible' });
     }
-
-    console.log('✅ Horas reservadas con éxito:', horasReservadas);
 
     return res
       .cookie('token_carrito_clase', token, {
@@ -207,7 +183,6 @@ export const reservarProducto = async (req, res) => {
         tienda: true,
       },
     });
-    console.log('Producto encontrado:', producto);
 
     if (!producto) {
       return res.status(404).json({ success: false, error: 'Producto no encontrado' });
@@ -315,14 +290,9 @@ export async function reservasActivas(req, res) {
         montaña: true,
       },
     });
-    console.log('Reservas encontradas:', reservas);
     const resultado = reservas.map((r) => {
       const isProducto = r.productos.length > 0;
       const producto = isProducto ? r.productos[0].producto : null;
-
-      console.log('Reserva encontrada:', r);
-      console.log('Producto asociado:', producto);
-      console.log('medidas del producto:', producto?.medidas);
 
       return {
         id: r.id,
@@ -351,7 +321,6 @@ export async function reservasActivas(req, res) {
 export async function deleteReserva(req, res) {
   try {
     const { reservaId } = req.body;
-    console.log('🔍 Intentando eliminar reserva con ID:', reservaId);
 
     const reserva = await prisma.reserva.findUnique({
       where: { id: Number(reservaId) },
@@ -366,11 +335,9 @@ export async function deleteReserva(req, res) {
       return res.status(404).json({ success: false, error: 'Reserva no encontrada' });
     }
 
-    console.log('✅ Reserva encontrada:', reserva);
 
     // Si es clase y hay instructor asociado, liberar disponibilidad
     if (reserva.clase) {
-      console.log('📘 Es una reserva de clase. Instructor ID:', reserva.clase.instructorId);
       const result = await prisma.instructorDisponibilidad.updateMany({
         where: {
           instructorId: reserva.clase.instructorId,
@@ -383,9 +350,7 @@ export async function deleteReserva(req, res) {
           disponible: true,
         },
       });
-      console.log(`🔓 Disponibilidad liberada (${result.count}) para clase`);
     } else {
-      console.log('📦 Es una reserva de producto. Liberando disponibilidad si aplica...');
       const result = await prisma.instructorDisponibilidad.updateMany({
         where: {
           horaInicio: reserva.fechaInicio,
@@ -396,29 +361,22 @@ export async function deleteReserva(req, res) {
           disponible: true,
         },
       });
-      console.log(`🔓 Disponibilidad liberada sin instructor (${result.count})`);
     }
 
     if (reserva.productos.length > 0) {
-      console.log('🧹 Eliminando productos asociados a la reserva...');
       const deletedProductos = await prisma.productoReserva.deleteMany({
         where: {
           reservaId: reserva.id,
         },
       });
-      console.log(`🗑️ Productos eliminados: ${deletedProductos.count}`);
-    } else {
-      console.log('ℹ️ No hay productos asociados a la reserva.');
     }
 
-    console.log('🗑️ Eliminando la reserva...');
     await prisma.reserva.delete({
       where: {
         id: reserva.id,
       },
     });
 
-    console.log('✅ Reserva eliminada correctamente');
     return res.status(200).json({ success: true });
   } catch (error) {
     console.error('❌ Error al eliminar reserva:', error);

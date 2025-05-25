@@ -1,8 +1,6 @@
 import prisma from '../src/lib/prisma';
 
 export async function limpiarReservasExpiradas() {
-  console.log('🧼 Iniciando limpieza de reservas expiradas...');
-  console.log('⏰ Fecha y hora actual:', new Date().toISOString());
 
   const reservasExpiradas = await prisma.reserva.findMany({
     where: {
@@ -14,16 +12,11 @@ export async function limpiarReservasExpiradas() {
     },
   });
 
-  console.log(`🔍 Reservas expiradas encontradas: ${reservasExpiradas.length}`);
-
   if (reservasExpiradas.length === 0) return;
 
   const idsReservasExpiradas = reservasExpiradas.map((r) => r.id);
 
   for (const reserva of reservasExpiradas) {
-    console.log(`🧾 Procesando reserva ID ${reserva.id}:`);
-    console.log(`  • Fecha inicio: ${reserva.fechaInicio.toISOString()}`);
-    console.log(`  • Fecha fin: ${reserva.fechaFin.toISOString()}`);
 
     const instructorId = reserva.clase?.instructorId;
 
@@ -37,15 +30,6 @@ export async function limpiarReservasExpiradas() {
           instructorId,
         },
       });
-      console.log('Disponibilidades existentes:', disponibilidadReal);
-
-      console.log('Intentando actualizar disponibilidad con:');
-      console.log({
-        instructorId,
-        fecha: reserva.fechaInicio.toISOString(),
-        horaInicio: reserva.fechaInicio.toISOString(),
-        horaFin: reserva.fechaFin.toISOString(),
-      });
 
       const disponibilidad = await prisma.instructorDisponibilidad.updateMany({
         where: {
@@ -58,7 +42,6 @@ export async function limpiarReservasExpiradas() {
         },
       });
 
-      console.log(`  🔄 Disponibilidad modificada: ${disponibilidad.count}`);
     } else {
       const disponibilidad = await prisma.instructorDisponibilidad.updateMany({
         where: {
@@ -73,7 +56,6 @@ export async function limpiarReservasExpiradas() {
         },
       });
 
-      console.log(`  🔄 Disponibilidad modificada: ${disponibilidad.count}`);
     }
   }
 

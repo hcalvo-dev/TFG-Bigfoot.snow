@@ -13,7 +13,6 @@ import {
 
 export const createInstructor = async (req, res) => {
   try {
-    console.log('📥 Datos recibidos del body:', req.body);
     const { nombre, email, password, especialidad, nivel, montanaId, testimonio } = req.body;
 
     if (!req.file) {
@@ -21,7 +20,6 @@ export const createInstructor = async (req, res) => {
       return res.status(400).json({ message: 'No se subió ninguna imagen' });
     }
 
-    console.log('📸 Imagen recibida:', req.file.filename);
 
     const existingUser = await prisma.usuario.findUnique({ where: { email } });
 
@@ -61,7 +59,6 @@ export const createInstructor = async (req, res) => {
       },
     });
 
-    console.log('✅ Instructor creado correctamente');
     res.status(201).json({ message: '✅ Instructor creado', user });
   } catch (err) {
     console.error('❌ Error al crear instructor:', err?.meta ?? err);
@@ -71,7 +68,6 @@ export const createInstructor = async (req, res) => {
 
 export const getInstructoresDisponibles = async (req, res) => {
   try {
-    console.log('Body recibido:', req.body);
     const { montanaId, especialidad } = req.body;
 
     // Validación
@@ -130,14 +126,12 @@ export const getHorariosInstructor = async (req, res) => {
   try {
     const { montanaId, especialidad, fechaSeleccionada, instructorId } = req.body;
 
-    console.log('📩 Body recibido:', { montanaId, especialidad, fechaSeleccionada, instructorId });
 
     if (!montanaId || !especialidad || !fechaSeleccionada) {
       return res.status(400).json({ message: 'Faltan parámetros requeridos.' });
     }
 
     const fechaConsulta = startOfDay(new Date(fechaSeleccionada));
-    console.log('📅 Fecha consulta (startOfDay):', fechaConsulta.toISOString());
 
     const instructores = await prisma.instructor.findMany({
       where: {
@@ -154,7 +148,6 @@ export const getHorariosInstructor = async (req, res) => {
     }
 
     const idInstructor = instructorId || instructoresIds[0];
-    console.log('👨‍🏫 Instructor utilizado:', idInstructor);
 
     // 🛠️ Cambio aquí: usar rango de fecha
     const disponibilidad = await prisma.instructorDisponibilidad.findMany({
@@ -175,17 +168,14 @@ export const getHorariosInstructor = async (req, res) => {
       disponibilidad.map((d) => format(new Date(d.horaInicio), 'HH:mm'))
     );
 
-    console.log('⛔ Horas ocupadas (por disponibilidad):', [...horasOcupadas]);
 
     const slots = [];
     for (let h = 9; h < 14; h++) {
       const hora = format(setMinutes(setHours(fechaConsulta, h), 0), 'HH:mm');
       const disponible = !horasOcupadas.has(hora);
-      console.log(`🕘 Slot ${hora}: ${disponible ? 'Disponible' : 'Ocupada'}`);
       slots.push({ hora, disponible });
     }
 
-    console.log('✅ Slots generados:', slots);
     res.json(slots);
   } catch (error) {
     console.error('❌ Error al obtener horarios:', error);
