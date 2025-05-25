@@ -15,6 +15,7 @@ export const getReservasActivas = async (req, res) => {
         productos: { include: { producto: true } }
       }
     });
+    console.log('Reservas activas:', reservas);
     
     res.json({ total: reservas.length, datos: reservas });
   } catch (error) {

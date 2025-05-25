@@ -104,7 +104,7 @@ export const loginUser = async (req, res) => {
   });
 
   if (!user) {
-    return res.status(400).json({ message: 'Usuario no encontrado' });
+    return res.status(400).json({ message: 'Usuario/contraseña incorrecta' });
   }
 
   const rol = await prisma.rol.findUnique({
@@ -114,7 +114,7 @@ export const loginUser = async (req, res) => {
   const isValid = await bcrypt.compare(password, user.password);
 
   if (!isValid) {
-    return res.status(401).json({ message: 'Contraseña incorrecta' });
+    return res.status(401).json({ message: 'Usuario/contraseña incorrecta' });
   }
 
   const secret = JWT_SECRET;

@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getAllProductos,createProductos, editProductos, desactivarProductos, activarProductos, productosDisponibles } from '../controllers/productos.controller';
+import { getAllProductos,createProductos, editProductos, desactivarProductos, activarProductos, productosDisponibles, getProductosReservados } from '../controllers/productos.controller';
 import { authenticateUser } from '../middlewares/authenticate.middleware';
 import { sanitizeInputs } from '../middlewares/sanitize.middleware';
 import { uploadProductos } from '../middlewares/uploadProductos.middleware.js';
@@ -25,6 +25,9 @@ router.patch('/activate',sanitizeInputs,authenticateUser,requireAdmin, activarPr
 
 // Ruta para comprobar la disponibilidad de un producto
 router.post('/disponibles',sanitizeInputs, productosDisponibles);
+
+// Ruta para obtener los productos reservados 
+router.get('/reservados',sanitizeInputs, authenticateUser, getProductosReservados);
 
 
 export default router;

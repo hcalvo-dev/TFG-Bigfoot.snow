@@ -110,7 +110,9 @@ export default function ReservaCard({
           <img
             src={imagenUrl}
             alt={reserva.titulo}
-            className={`w-full h-full ${!esForfait ? 'object-contain' : ''}`}
+            className={`w-full h-full ${
+              !esForfait && !esClase ? 'object-contain' : 'object-cover'
+            }`}
           />
         </div>
 
@@ -127,6 +129,12 @@ export default function ReservaCard({
             {format(fechaInicio, 'dd/MM/yyyy', { locale: es })} -{' '}
             {format(fechaFin, 'dd/MM/yyyy', { locale: es })} · {dias} día{dias > 1 ? 's' : ''}
           </p>
+
+          {esClase && (
+            <p className="text-xs text-gray-500">
+              {format(fechaInicio, 'HH:mm')} - {format(fechaFin, 'HH:mm')}
+            </p>
+          )}
 
           {reserva.montana && (
             <p className="flex items-center gap-1 text-xs text-gray-600">

@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { sanitizeInputs } from '../middlewares/sanitize.middleware';
-import { reservarClase, reservarProducto,reservasActivas, deleteReserva } from '../controllers/carrito.controller';
+import { reservarClase, reservarProducto,reservasActivas, deleteReserva, realizarPagoCarrito } from '../controllers/carrito.controller';
+import { authenticateUser } from '../middlewares/authenticate.middleware';
 
 const router = Router();
 
@@ -13,6 +14,8 @@ router.get('/reservasActivas', sanitizeInputs, reservasActivas);
 
 // Ruta para eliminar una reserva
 router.post('/deleteReserva', sanitizeInputs, deleteReserva);
+
+router.post('/realizarPagoCarrito', sanitizeInputs, authenticateUser, realizarPagoCarrito);
 
 
 export default router;

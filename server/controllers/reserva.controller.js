@@ -81,6 +81,7 @@ export const ReservaClase = async (req, res) => {
           titulo: `Clase de ${especialidad}`,
           nivel: nivelId.toString(),
           instructorId: Number(instructorId),
+          montanaId: Number(montanaId),
         },
       });
 

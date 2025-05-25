@@ -263,3 +263,22 @@ export const productosDisponibles = async (req, res) => {
   }
 };
 
+export const getProductosReservados = async (req, res) => {
+  try {
+    const user = req.user;
+    const productos = await prisma.productoReserva.findMany({
+      where: {
+        reserva: { usuarioId: user.id }
+      },
+      include: {
+        producto: true,
+        reserva: true
+      }
+    });
+    console.log('Productos reservados:', productos);
+    res.json({ productos });
+  } catch (error) {
+    res.status(500).json({ error: 'Error al obtener productos reservados' });
+  }
+};
+

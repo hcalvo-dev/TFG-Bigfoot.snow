@@ -1,0 +1,125 @@
+'use client';
+
+import { useEffect, useState } from 'react';
+import Swal from 'sweetalert2';
+import 'sweetalert2/dist/sweetalert2.min.css';
+import Pagination from '../Pagination/Pagination';
+
+type ProductoReserva = {
+  id: number;
+  fechaInicio: string;
+  fechaFin: string;
+  estado: string;
+  talla?: string;
+  medidas?: string[];
+  producto?: {
+    nombre: string;
+    tienda?: {
+      nombre: string;
+    };
+    categorias?: { nombre: string }[];
+  };
+};
+
+type Props = {
+  csrfToken: string;
+  onUpdateEstadisticas: () => void;
+};
+
+export default function ProductosReservadosTable({ csrfToken, onUpdateEstadisticas }: Props) {
+  const [productos, setProductos] = useState<ProductoReserva[]>([]);
+  const [busqueda, setBusqueda] = useState('');
+  const [paginaActual, setPaginaActual] = useState(1);
+  const filasPorPagina = 4;
+
+  const fetchProductos = async () => {
+    try {
+      const res = await fetch('http://localhost:4000/api/productos/reservados', {
+        credentials: 'include',
+        headers: { 'CSRF-Token': csrfToken },
+      });
+      const data = await res.json();
+      setProductos(data.productos || []);
+    } catch (err) {
+      console.error('Error al cargar productos reservados', err);
+    }
+  };
+
+  useEffect(() => {
+    if (csrfToken) fetchProductos();
+  }, [csrfToken]);
+
+  const productosFiltrados = productos.filter((p) => {
+    const nombre = p.producto?.nombre || '';
+    const tienda = p.producto?.tienda?.nombre || '';
+    return nombre.toLowerCase().includes(busqueda.toLowerCase()) || tienda.toLowerCase().includes(busqueda.toLowerCase());
+  });
+
+  const totalPaginas = Math.ceil(productosFiltrados.length / filasPorPagina);
+  const productosPaginados = productosFiltrados.slice((paginaActual - 1) * filasPorPagina, paginaActual * filasPorPagina);
+
+  return (
+    <div className="relative">
+      <div className="rounded-xl text-white">
+        <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-4">
+          <h2 className="text-xl font-extrabold font-blowbrush tracking-widest text-sky-950 uppercase">
+            Productos reservados
+          </h2>
+          <input
+            type="text"
+            placeholder="Buscar por producto o tienda..."
+            value={busqueda}
+            onChange={(e) => {
+              setBusqueda(e.target.value);
+              setPaginaActual(1);
+            }}
+            className="p-2 rounded-md border border-gray-300 text-black placeholder-gray-400 w-full max-w-xs"
+          />
+        </div>
+
+        <div className="rounded-xl overflow-hidden">
+          <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+            <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+              <tr>
+                <th className="py-3 px-4">#</th>
+                <th className="py-3 px-4">Producto</th>
+                <th className="py-3 px-4">Tienda</th>
+                <th className="py-3 px-4">Fecha inicio</th>
+                <th className="py-3 px-4">Fecha fin</th>
+                <th className="py-3 px-4">Tallas/Medidas</th>
+                <th className="py-3 px-4">Estado</th>
+              </tr>
+            </thead>
+            <tbody>
+              {productosPaginados.map((r, i) => {
+                const categoria = r.producto?.categorias?.[0]?.nombre?.toLowerCase() || '';
+                const esEquipamiento = ['skii', 'snowboard'].some((tipo) => categoria.includes(tipo));
+                const infoExtra = esEquipamiento ? r.medidas?.join(', ') : r.talla;
+
+                return (
+                  <tr
+                    key={r.id}
+                    className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                    <td className="py-2 px-4 font-medium text-gray-900 dark:text-white">{(paginaActual - 1) * filasPorPagina + i + 1}</td>
+                    <td className="py-2 px-4 font-medium text-gray-900 dark:text-white">{r.producto?.nombre || 'Producto eliminado'}</td>
+                    <td className="py-2 px-4 text-white/90">{r.producto?.tienda?.nombre || 'Sin tienda'}</td>
+                    <td className="py-2 px-4 text-white/90">{new Date(r.fechaInicio).toLocaleDateString()}</td>
+                    <td className="py-2 px-4 text-white/90">{new Date(r.fechaFin).toLocaleDateString()}</td>
+                    <td className="py-2 px-4 text-white/90">{infoExtra || '-'}</td>
+                    <td className="py-2 px-4 text-white/90 capitalize">{r.estado}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+
+        <Pagination
+          currentPage={paginaActual}
+          totalPages={totalPaginas}
+          onPageChange={setPaginaActual}
+        />
+      </div>
+    </div>
+  );
+}

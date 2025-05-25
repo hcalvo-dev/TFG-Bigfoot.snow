@@ -6,17 +6,18 @@ import FiltrosVerticales from './FiltrosVerticales';
 import ProductoCard from './ProductoCard';
 import { z } from 'zod';
 
-const today = new Date();
-today.setHours(0, 0, 0, 0);
+const tomorrow = new Date();
+tomorrow.setDate(tomorrow.getDate() + 1);
+tomorrow.setHours(0, 0, 0, 0);
 
 const fechaSchema = z
   .object({
     fechaInicio: z.string().refine(
       (val) => {
         const fecha = new Date(val);
-        return fecha >= today;
+        return fecha >= tomorrow;
       },
-      { message: 'La fecha de inicio no puede ser anterior a hoy' }
+      { message: 'La fecha de inicio debe ser al menos mañana' }
     ),
     fechaFin: z.string(),
   })
@@ -225,7 +226,11 @@ export default function TiendaComponent({ session }: Props) {
             id="fechaInicio"
             type="date"
             className="bg-transparent focus:outline-none text-gray-800"
-            min={new Date().toISOString().split('T')[0]}
+            min={(() => {
+              const mañana = new Date();
+              mañana.setDate(mañana.getDate() + 1);
+              return mañana.toISOString().split('T')[0];
+            })()}
             onChange={(e) => {
               setFechaInicio(e.target.value);
               if (fechaFin) {

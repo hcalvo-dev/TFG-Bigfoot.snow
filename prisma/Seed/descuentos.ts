@@ -26,7 +26,7 @@ export async function seedDescuentos() {
     },
     {
       codigo: 'WELCOME5',
-      descripcion: '5% de descuento en tu primera reserva',
+      descripcion: '5% de descuento en compras superiores a 100€',
       porcentaje: 5,
       aplicaEn: AplicaEn.AMBOS,
       fechaValidez: fechaLimite,
@@ -36,7 +36,7 @@ export async function seedDescuentos() {
       codigo: 'SNOWFREAK15',
       descripcion: '15% de descuento si reservas más de 2 productos',
       porcentaje: 15,
-      aplicaEn: AplicaEn.PRODUCTOS,
+      aplicaEn: AplicaEn.AMBOS,
       fechaValidez: fechaLimite,
       activo: true,
     }

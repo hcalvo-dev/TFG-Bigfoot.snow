@@ -25,12 +25,27 @@ export async function limpiarReservasExpiradas() {
     console.log(`  • Fecha inicio: ${reserva.fechaInicio.toISOString()}`);
     console.log(`  • Fecha fin: ${reserva.fechaFin.toISOString()}`);
 
-    const instructorId = reserva.clase?.instructorId || null;
+    const instructorId = reserva.clase?.instructorId;
 
     if (!instructorId) {
       console.warn(
         '  ⚠️ No hay clase/instructor asociado a esta reserva. Intentando recuperar por horario manual...'
       );
+
+      const disponibilidadReal = await prisma.instructorDisponibilidad.findFirst({
+        where: {
+          instructorId,
+        },
+      });
+      console.log('Disponibilidades existentes:', disponibilidadReal);
+
+      console.log('Intentando actualizar disponibilidad con:');
+      console.log({
+        instructorId,
+        fecha: reserva.fechaInicio.toISOString(),
+        horaInicio: reserva.fechaInicio.toISOString(),
+        horaFin: reserva.fechaFin.toISOString(),
+      });
 
       const disponibilidad = await prisma.instructorDisponibilidad.updateMany({
         where: {

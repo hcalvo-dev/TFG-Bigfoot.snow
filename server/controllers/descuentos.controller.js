@@ -117,3 +117,51 @@ export const createDescuentos = async (req, res) => {
     return res.status(500).json({ error: 'Error interno del servidor' });
   }
 };
+
+export const comprobarDescuento = async (req, res) => {
+  const { codigo, total, tipo, cantidadProductos } = req.body;
+console.log(req.body);
+  try {
+    const descuento = await prisma.descuento.findUnique({
+      where: { codigo },
+    });
+
+    if (!descuento) {
+      return res.status(404).json({ error: 'Código de descuento no disponible' });
+    }
+
+    if (!descuento.activo) {
+      return res.status(400).json({ error: 'Código de descuento no disponible' });
+    }
+
+    if (descuento.fechaValidez < new Date()) {
+      return res.status(400).json({ error: 'Código de descuento expirado' });
+    }
+
+    if (total <= 0) {
+      return res.status(400).json({ error: 'Debes reservar algo para usar este código' });
+    }
+
+    // Validar si aplica al tipo
+    if (descuento.aplicaEn !== tipo && descuento.aplicaEn !== 'AMBOS') {
+      return res.status(400).json({ error: 'Este código no se aplica a este tipo de reserva' });
+    }
+
+    // Reglas específicas por código
+    if (codigo === 'WELCOME5' && total < 100) {
+      return res.status(400).json({ error: 'Este código requiere un mínimo de 100€' });
+    }
+
+    if (codigo === 'SNOWFREAK15' && (!cantidadProductos || cantidadProductos < 3)) {
+      return res
+        .status(400)
+        .json({ error: 'Debes reservar al menos 3 productos para usar este código' });
+    }
+
+    // Si pasa todo
+    return res.status(200).json({ descuento });
+  } catch (err) {
+    console.error('❌ Error al comprobar descuento:', err);
+    return res.status(500).json({ error: 'Error interno del servidor' });
+  }
+};

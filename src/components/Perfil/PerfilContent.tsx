@@ -15,6 +15,7 @@ import FormularioEdicionUsuario from './FormEditUser';
 import UsuariosTable from './UsuariosTable';
 import AltaInstructorForm from './AltaInstructor';
 import ClasesTable from './ClasesTable';
+import ProductosReservadosTable from './ProductosReservadosTable';
 import ProductosTable from './GestionStock';
 import AgendaClases from './AgendaClases';
 import Tarifas from './Tarifas';
@@ -184,8 +185,9 @@ export default function PerfilContent({ session }: Props) {
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.3 }}
             className="bg-white/40 rounded-xl p-6 mb-8 md:mb-0 text-sm leading-loose shadow">
-            <h3 className="text-xl mb-4 text-blue-300">Tus productos comprados</h3>
-            <p className="text-gray-300">Aquí verás el historial de tus productos.</p>
+            {usuario && csrfToken && (
+              <ProductosReservadosTable csrfToken={csrfToken} onUpdateEstadisticas={fetchEstadisticas} />
+            )}
           </motion.div>
         );
       case 'instructor':

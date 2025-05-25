@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getAllDescuentos, getAllDescuentosEstados , deleteDescuentos, activarDescuentos, editDescuentos, createDescuentos } from '../controllers/descuentos.controller';
+import { getAllDescuentos, getAllDescuentosEstados , deleteDescuentos, activarDescuentos, editDescuentos, createDescuentos,comprobarDescuento } from '../controllers/descuentos.controller';
 import { authenticateUser } from '../middlewares/authenticate.middleware';
 import { sanitizeInputs } from '../middlewares/sanitize.middleware';
 import { requireAdmin } from '../middlewares/requireAdmin';
@@ -23,5 +23,8 @@ router.patch('/edit',authenticateUser,requireAdmin, sanitizeInputs, editDescuent
 
 // Ruta para crear un descuento
 router.post('/create',authenticateUser,requireAdmin, sanitizeInputs, createDescuentos);
+
+// Ruta para comprobar validez del descuento
+router.post('/comprobarDescuento', sanitizeInputs, comprobarDescuento);
 
 export default router;

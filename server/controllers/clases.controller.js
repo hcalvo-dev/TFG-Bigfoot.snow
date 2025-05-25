@@ -3,9 +3,11 @@ import prisma from '../../src/lib/prisma';
 export const getClasesActivas = async (req, res) => {
   try {
     const user = req.user;
+
     const reservas = await prisma.reserva.findMany({
       where: {
         usuarioId: user.id,
+        claseId: { not: null }, // ✅ Solo reservas con clase asociada
         fechaFin: { gt: new Date() },
         estado: 'confirmada',
         pagado: true,
@@ -15,20 +17,19 @@ export const getClasesActivas = async (req, res) => {
           include: {
             instructor: {
               include: {
-                usuario: true, // para acceder a instructor.usuario.nombre
+                usuario: true,
               },
             },
           },
         },
-        productos: {
-          include: { producto: true },
-        },
       },
     });
 
+    console.log('Reservas activas de clases:', reservas);
+
     res.json({ total: reservas.length, datos: reservas });
   } catch (error) {
-    res.status(500).json({ error: 'Error al obtener reservas activas' });
+    res.status(500).json({ error: 'Error al obtener reservas activas de clases' });
   }
 };
 

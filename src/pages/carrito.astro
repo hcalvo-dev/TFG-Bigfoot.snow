@@ -2,14 +2,16 @@
 export const prerender = false;
 import Layout from '../layouts/Layout.astro';
 import CarritoProductos from '../components/Carrito/CarritoProductos';
+import { checkSession } from '../../utils/checkSession';
 
+const session = checkSession(Astro.request);
 ---
 
 <Layout title="BIGFOOT : Carrito">
   <main>
     <!-- Sección Form de contacto -->
     <section id="contenido" class="relative w-full">
-      <CarritoProductos client:only="react" />
+      <CarritoProductos client:only="react" session={JSON.stringify(session)} />
     </section>
   </main>
 </Layout>

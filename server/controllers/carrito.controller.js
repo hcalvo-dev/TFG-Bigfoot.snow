@@ -4,9 +4,15 @@ import jwt from 'jsonwebtoken';
 
 export const reservarClase = async (req, res) => {
   try {
-    const { instructorId, montanaId, fecha, horas, nivelId } = req.body;
+    const { instructorId, montanaId, especialidad, fecha, horas, nivelId } = req.body;
     const usuarioId = req.user?.id;
+
+    console.log('🟢 Inicio reserva de clase');
+    console.log({ instructorId, montanaId, especialidad, fecha, horas, nivelId, usuarioId });
+
     const fechaBase = new Date(fecha);
+    const fechaSoloDia = fechaBase;
+    fechaSoloDia.setHours(0, 0, 0, 0);
     const horasReservadas = [];
 
     let token =
@@ -17,6 +23,9 @@ export const reservarClase = async (req, res) => {
 
     if (!token) {
       token = jwt.sign({ tipo: 'reservaClase' }, JWT_SECRET, { expiresIn: '10m' });
+      console.log('🔐 Nuevo token generado:', token);
+    } else {
+      console.log('🔐 Token de carrito encontrado:', token);
     }
 
     const nivel = await prisma.nivel.findUnique({
@@ -24,80 +33,144 @@ export const reservarClase = async (req, res) => {
     });
 
     if (!nivel) {
+      console.log('⛔ Nivel no encontrado');
       return res.status(404).json({ error: 'Nivel no encontrado' });
     }
 
-    const precioNivel = nivel.precio;
+    console.log('✅ Nivel encontrado:', nivel);
+
+    const instructor = await prisma.instructor.findUnique({
+      where: { id: Number(instructorId) },
+      select: { userId: true },
+    });
+
+    if (!instructor) {
+      console.log('⛔ Instructor no encontrado');
+      return res.status(404).json({ error: 'Instructor no encontrado' });
+    }
+
+    if (instructor.userId === usuarioId) {
+      console.log('⛔ El usuario intenta reservar una clase consigo mismo');
+      return res.status(400).json({ error: 'No puedes reservar una clase contigo mismo' });
+    }
 
     for (const horaStr of horas) {
+      console.log(`⏰ Procesando hora: ${horaStr}`);
+
       const [h, m] = horaStr.split(':').map(Number);
       const inicio = new Date(fechaBase);
       inicio.setHours(h, m, 0, 0);
       const fin = new Date(inicio);
       fin.setHours(fin.getHours() + 1);
 
+      console.log('🕒 Intervalo de tiempo:', inicio.toISOString(), '-', fin.toISOString());
+
       const yaOcupada = await prisma.instructorDisponibilidad.findFirst({
         where: {
           instructorId: Number(instructorId),
-          fecha: fechaBase,
+          fecha: fechaSoloDia,
           horaInicio: inicio,
           horaFin: fin,
           disponible: false,
         },
       });
 
-      if (yaOcupada) continue;
-
-      const reserva = await prisma.reserva.create({
-        data: {
-          fechaInicio: inicio,
-          fechaFin: fin,
-          estado: 'pendiente',
-          metodoPago: '',
-          total: precioNivel,
-          pagado: false,
-          ...(usuarioId && { usuarioId }),
-          tokenCarrito: token,
-          claseId: null,
-          montanaId: Number(montanaId),
-          expiresAt: new Date(Date.now() + 10 * 60 * 1000),
-        },
-      });
-
-      horasReservadas.push(horaStr);
+      if (yaOcupada) {
+        console.log('🚫 Ya ocupada:', yaOcupada);
+        continue;
+      }
 
       const disponibilidad = await prisma.instructorDisponibilidad.findFirst({
         where: {
           instructorId: Number(instructorId),
-          fecha: fechaBase,
+          fecha: fechaSoloDia,
           horaInicio: inicio,
           horaFin: fin,
         },
       });
 
       if (disponibilidad) {
+        console.log('📌 Disponibilidad encontrada:', disponibilidad);
+
         if (disponibilidad.disponible) {
           await prisma.instructorDisponibilidad.update({
             where: { id: disponibilidad.id },
             data: { disponible: false },
           });
+          console.log('✅ Actualizada disponibilidad a false');
+        } else {
+          console.log('🚫 Ya estaba no disponible, se salta');
+          continue;
         }
       } else {
         await prisma.instructorDisponibilidad.create({
           data: {
             instructorId: Number(instructorId),
-            fecha: fechaBase,
+            fecha: fechaSoloDia,
             horaInicio: inicio,
             horaFin: fin,
             disponible: false,
           },
         });
+        console.log('🆕 Disponibilidad creada y marcada como no disponible');
       }
+
+      const claseExistente = await prisma.clase.findFirst({
+        where: {
+          titulo: `Clase de ${especialidad}`,
+          nivel: nivelId.toString(),
+          instructorId: Number(instructorId),
+          montanaId: Number(montanaId),
+        },
+      });
+
+      let clase;
+
+      if (claseExistente) {
+        console.log('🧠 Clase ya existente:', claseExistente);
+        clase = claseExistente;
+      } else {
+        clase = await prisma.clase.create({
+          data: {
+            titulo: `Clase de ${especialidad}`,
+            descripcion: `Clase personalizada de ${especialidad} nivel ${nivelId}`,
+            nivel: nivelId.toString(),
+            duracion: 1,
+            precio: nivel.precio,
+            tipo: 'individual',
+            instructorId: Number(instructorId),
+            montanaId: Number(montanaId),
+          },
+        });
+        console.log('🆕 Clase creada:', clase);
+      }
+
+      await prisma.reserva.create({
+        data: {
+          fechaInicio: inicio,
+          fechaFin: fin,
+          estado: 'pendiente',
+          metodoPago: 'tarjeta',
+          total: nivel.precio,
+          pagado: false,
+          usuarioId,
+          claseId: clase.id,
+          montanaId: Number(montanaId),
+          tokenCarrito: token,
+          expiresAt: new Date(Date.now() + 10 * 60 * 1000),
+        },
+      });
+
+      console.log('✅ Reserva creada para:', horaStr);
+      horasReservadas.push(horaStr);
     }
 
     if (horasReservadas.length === 0) {
+      console.log('⚠️ Ninguna de las horas estaba disponible para reservar');
       return res.status(409).json({ message: 'Ninguna de las horas está disponible' });
     }
+
+    console.log('✅ Horas reservadas con éxito:', horasReservadas);
 
     return res
       .cookie('token_carrito_clase', token, {
@@ -242,7 +315,7 @@ export async function reservasActivas(req, res) {
         montaña: true,
       },
     });
-
+    console.log('Reservas encontradas:', reservas);
     const resultado = reservas.map((r) => {
       const isProducto = r.productos.length > 0;
       const producto = isProducto ? r.productos[0].producto : null;
@@ -264,7 +337,7 @@ export async function reservasActivas(req, res) {
         cantidad: isProducto ? r.productos[0]?.cantidad : 1,
         talla: producto?.tallas || [],
         categoria: producto?.categorias?.[0]?.nombre || undefined,
-        medidas: producto?.medidas || [], 
+        medidas: producto?.medidas || [],
       };
     });
 
@@ -347,9 +420,64 @@ export async function deleteReserva(req, res) {
 
     console.log('✅ Reserva eliminada correctamente');
     return res.status(200).json({ success: true });
-
   } catch (error) {
     console.error('❌ Error al eliminar reserva:', error);
     return res.status(500).json({ success: false, error: 'Error al eliminar la reserva' });
+  }
+}
+
+export async function realizarPagoCarrito(req, res) {
+  try {
+    const usuarioId = req.user?.id;
+    const metodoPago = 'tarjeta';
+
+    let token =
+      req.cookies.token_carrito_producto ||
+      req.headers['token_carrito_producto'] ||
+      req.cookies.token_carrito_clase ||
+      req.headers['token_carrito_clase'];
+
+    if (!token) {
+      return res.status(400).json({ error: 'Token de carrito no encontrado' });
+    }
+
+    const reservas = await prisma.reserva.findMany({
+      where: {
+        tokenCarrito: token,
+        pagado: false,
+        estado: 'pendiente',
+        expiresAt: { gt: new Date() },
+      },
+      include: {
+        clase: true,
+        productos: { include: { producto: true } },
+      },
+    });
+
+    if (reservas.length === 0) {
+      return res.status(410).json({
+        error: 'El tiempo para completar el pago ha expirado. Las reservas ya no son válidas.',
+      });
+    }
+
+    for (const reserva of reservas) {
+      await prisma.reserva.update({
+        where: { id: reserva.id },
+        data: {
+          pagado: true,
+          estado: 'confirmada',
+          metodoPago,
+          usuarioId,
+        },
+      });
+    }
+
+    res.clearCookie('token_carrito_producto');
+    res.clearCookie('token_carrito_clase');
+
+    return res.status(200).json({ message: 'Reservas confirmadas correctamente' });
+  } catch (error) {
+    console.error('❌ Error al confirmar las reservas del carrito:', error);
+    return res.status(500).json({ error: 'Error interno al confirmar las reservas' });
   }
 }
