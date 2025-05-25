@@ -71,7 +71,7 @@ export default function TiendaComponent({ session }: Props) {
 
   useEffect(() => {
     switch (slug) {
-      case 'skii':
+      case 'esqui':
         setTituloSeccion('Equipo de Skii');
         setMensajeIntro('Equípate con lo mejor para deslizarte por la nieve.');
         break;

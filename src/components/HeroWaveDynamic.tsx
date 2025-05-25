@@ -18,17 +18,19 @@ const HeroWaveDynamic = () => {
     const searchParams = new URLSearchParams(window.location.search);
     const categoria = searchParams.get('categoria') ?? 'porDefecto';
     const slug = slugify(categoria);
-    const slugsValidos = ['snowboard', 'skii', 'porDefecto'];
+    const slugsValidos = ['snowboard', 'esqui', 'porDefecto'];
     const slugEsValido = slugsValidos.includes(slug);
     const categoriaValida = slugEsValido ? slug : 'porDefecto';
-    
+    console.log('categoria', categoria);
+    console.log('slug', slug);
+    console.log('categoriaValida', categoriaValida);
     switch (categoriaValida) {
       case 'snowboard':
         setLineas(['PRODUCTOS SNOWBOARD']);
         setSubtitulo('DESCUBRE NUESTRO MATERIAL PARA SNOW');
         setImagen('/img/productos/snowboard.webp');
         break;
-      case 'skii':
+      case 'esqui':
         setLineas(['PRODUCTOS SKII']);
         setSubtitulo('TODO LO QUE NECESITAS PARA EL SKII');
         setImagen('/img/productos/skii.webp');
