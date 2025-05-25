@@ -162,50 +162,50 @@ export async function seedProductos() {
       nombre: 'Cascos',
       categorias: ['Cascos'],
       imagenBase: 'cascos',
-      tallas: null,
-      medidas: null,
+      tallas: undefined ,
+      medidas: undefined ,
     },
     {
       nombre: 'Chaquetas',
       categorias: ['Chaquetas'],
       imagenBase: 'chaquetas',
       tallas: ['S', 'M', 'L'],
-      medidas: null,
+      medidas: undefined ,
     },
     {
       nombre: 'Pantalones',
       categorias: ['Pantalones'],
       imagenBase: 'pantalones',
       tallas: ['S', 'M', 'L'],
-      medidas: null,
+      medidas: undefined ,
     },
     {
       nombre: 'Botas',
       categorias: ['Botas'],
       imagenBase: 'botas',
       tallas: ['S', 'M', 'L'],
-      medidas: null,
+      medidas: undefined ,
     },
     {
       nombre: 'Snowboard',
       categorias: ['Snowboard'],
       imagenBase: 'snowboard',
-      tallas: null,
+      tallas: undefined ,
       medidas: Array.from({ length: 9 }, (_, i) => ({ largo: 151 + i, ancho: 31 + i })),
     },
     {
       nombre: 'Esquí',
       categorias: ['Esquí'],
       imagenBase: 'esquí',
-      tallas: null,
+      tallas: undefined ,
       medidas: Array.from({ length: 9 }, (_, i) => ({ largo: 151 + i, ancho: 31 + i })),
     },
     {
       nombre: 'Forfait',
       categorias: ['Forfait'],
       imagenBase: 'forfait',
-      tallas: null,
-      medidas: null,
+      tallas: undefined ,
+      medidas: undefined ,
     },
   ];
 
@@ -247,15 +247,16 @@ export async function seedProductos() {
             imagenUrl: `/uploads/productos/${base.imagenBase}-${i + 1}.webp`,
             stockTotal: base.nombre === 'Forfait' ? 9999999 : Math.floor(Math.random() * 10 + 1),
             ubicacion: `almacen-${tienda.id}`,
-            tallas: base.tallas ?? undefined,
-            medidas: base.medidas
-              ? [`${base.medidas[i]?.largo}:${base.medidas[i]?.ancho}`]
-              : undefined,
+             tallas: Array.isArray(base.tallas) ? base.tallas : undefined,
+            medidas:
+              Array.isArray(base.medidas) && base.medidas[i]
+                ? [`${base.medidas[i].largo}:${base.medidas[i].ancho}`]
+                : undefined,
             categorias: {
               connect: base.categorias
                 .map((nombre) => {
                   const cat = categorias.find((c) => c.nombre === nombre);
-                  return cat ? { id: cat.id } : null;
+                  return cat ? { id: cat.id } : undefined ;
                 })
                 .filter(Boolean) as { id: number }[],
             },

@@ -13,10 +13,13 @@
     "db:clima": "ts-node scripts/actualizarClima.ts",
     "db:tienda": "ts-node prisma/Seed/tienda.ts", 
     "db:categoria": "ts-node prisma/Seed/categoria.ts",
-    "db:productos": "ts-node prisma/Seed/productos.ts"
+    "db:productos": "ts-node prisma/Seed/productos.ts",
+    "start:both": "concurrently \"pnpm preview --host\" \"node dist/server/entry.mjs\""
   },
   "dependencies": {
+    "@astrojs/node": "9.2.1",
     "@astrojs/react": "4.2.4",
+    "astro": "5.6.1",
     "@fontsource/permanent-marker": "5.2.5",
     "@hookform/resolvers": "5.0.1",
     "@lucide/astro": "0.488.0",
@@ -53,7 +56,6 @@
     "zod": "3.24.3"
   },
   "devDependencies": {
-    "@astrojs/node": "9.2.1",
     "@astrojs/tailwind": "6.0.2",
     "@tailwindcss/typography": "0.5.16",
     "@types/bcryptjs": "3.0.0",
@@ -66,7 +68,6 @@
     "@types/nodemailer": "6.4.17",
     "@types/react": "19.1.2",
     "@types/sanitize-html": "2.15.0",
-    "astro": "5.6.1",
     "autoprefixer": "10.4.21",
     "concurrently": "9.1.2",
     "postcss": "8.5.3",

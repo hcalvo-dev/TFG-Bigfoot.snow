@@ -96,3 +96,4 @@ app.get('/api/csrf-token', (req, res) => {
 app.listen(PORT, () => {
   console.log(`Servidor escuchando en puerto ${PORT}`);
 });
+

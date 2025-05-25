@@ -1,0 +1,30 @@
+FROM node:20-alpine
+
+# Instalar herramientas
+RUN apk add --no-cache libc6-compat openssl
+
+WORKDIR /app
+
+# Instalar dependencias
+COPY package.json pnpm-lock.yaml ./
+RUN npm install -g pnpm && pnpm install
+
+# Copiar código fuente
+COPY . .
+RUN rm -rf public/uploads/productos/*.ts
+
+# Prisma: generar cliente
+RUN npx prisma generate
+
+# Build Astro + compilar TS
+RUN pnpm build && pnpm tsc
+
+# Copiar script de entrada y hacerlo ejecutable
+COPY entrypoint.sh /app/entrypoint.sh
+RUN chmod +x /app/entrypoint.sh
+
+ENV NODE_ENV=production
+EXPOSE 4000
+
+# Ejecutar script de entrada
+ENTRYPOINT ["/app/entrypoint.sh"]

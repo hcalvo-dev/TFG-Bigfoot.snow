@@ -1,6 +1,28 @@
 version: '3.8'
 
 services:
+  frontend:
+    image: hcalsan/bigfoot-frontend:latest
+    container_name: bigfoot-frontend
+    restart: always
+    ports:
+      - "4321:4321"
+    networks:
+      - postgres_net
+
+  backend:
+    image: hcalsan/bigfoot-backend:latest
+    container_name: bigfoot-backend
+    restart: always
+    ports:
+      - "4000:4000"
+    depends_on:
+      - postgres
+    env_file:
+      - .env
+    networks:
+      - postgres_net
+
   postgres:
     image: postgres:15
     container_name: postgres
