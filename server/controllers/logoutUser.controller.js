@@ -1,5 +1,4 @@
-import { Node_ENV } from '../config.js';
-
+import { NODE_ENV } from '../config';
 
 export const logoutUser = async (req, res) => {
     res
