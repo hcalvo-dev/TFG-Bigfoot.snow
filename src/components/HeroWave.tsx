@@ -42,6 +42,7 @@ export default function HeroWave({ imagen, alt, lineas, subtitulo, href }: HeroW
 
         <motion.a
           href={href}
+          aria-label="Desplazarse hacia abajo"
           className="absolute z-20 bottom-[12%] left-1/2 transform -translate-x-1/2 bg-sky-9500/50 hover:bg-sky-950 p-2 rounded-xl transition duration-700 ease-in-out">
           <CircleChevronDown className="w-10 h-10 text-white" />
         </motion.a>

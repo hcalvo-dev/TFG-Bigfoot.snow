@@ -326,6 +326,7 @@ export default function CarritoProductos({ session }: Props) {
             <div className="w-full bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-lg font-semibold">
               <motion.a
                 href="/equipos"
+                aria-label='Redirección a la tienda'
                 className="text-center w-full h-full py-3 flex items-center justify-center">
                 Seguir comprando
               </motion.a>

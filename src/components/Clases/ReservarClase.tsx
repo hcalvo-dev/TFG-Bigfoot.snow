@@ -426,46 +426,45 @@ export default function ReservarClase({ session }: Props) {
 
         {mensaje && <p className="text-center text-red-500 font-semibold mb-8">{mensaje}</p>}
 
-   {instructores.length > 0 && (
-  <div className="grid md:grid-cols-3 gap-6 mb-12">
-    {instructores.map((instr) => (
-      <div
-        key={instr.id}
-        onClick={() => {
-          setInstructorSeleccionado(instr);
-          setTimeout(() => {
-            if (tablaRef.current) {
-              const offsetTop =
-                tablaRef.current.getBoundingClientRect().top + window.pageYOffset;
-              const headerOffset = 250;
-              window.scrollTo({ top: offsetTop - headerOffset, behavior: 'smooth' });
-            }
-          }, 100);
-        }}
-        className={`cursor-pointer rounded-2xl overflow-hidden shadow-lg group transition-transform duration-200 hover:scale-105 ${
-          instructorSeleccionado?.id === instr.id ? 'ring-4 ring-blue-500' : ''
-        }`}
-      >
-        <div className="relative w-full h-[40vh] bg-gray-200">
-          <img
-            src={instr.fotoUrl}
-            alt={instr.usuario.nombre}
-            className={`absolute inset-0 w-full h-full object-cover object-top transition duration-300 ${
-              instructorSeleccionado?.id === instr.id
-                ? ''
-                : 'grayscale group-hover:grayscale-0'
-            }`}
-          />
-        </div>
-        <div className="p-4 text-center bg-white dark:bg-gray-800">
-          <h3 className="font-bold text-lg text-gray-800 dark:text-white">{instr.usuario.nombre}</h3>
-        </div>
-      </div>
-    ))}
-  </div>
-)}
-
-
+        {instructores.length > 0 && (
+          <div className="grid md:grid-cols-3 gap-6 mb-12">
+            {instructores.map((instr) => (
+              <div
+                key={instr.id}
+                onClick={() => {
+                  setInstructorSeleccionado(instr);
+                  setTimeout(() => {
+                    if (tablaRef.current) {
+                      const offsetTop =
+                        tablaRef.current.getBoundingClientRect().top + window.pageYOffset;
+                      const headerOffset = 250;
+                      window.scrollTo({ top: offsetTop - headerOffset, behavior: 'smooth' });
+                    }
+                  }, 100);
+                }}
+                className={`cursor-pointer rounded-2xl overflow-hidden shadow-lg group transition-transform duration-200 hover:scale-105 ${
+                  instructorSeleccionado?.id === instr.id ? 'ring-4 ring-blue-500' : ''
+                }`}>
+                <div className="relative w-full h-[40vh] bg-gray-200">
+                  <img
+                    src={`${PUBLIC_API_URL}${instr.fotoUrl}`}
+                    alt={`Foto de ${instr.usuario.nombre}`}
+                    className={`absolute inset-0 w-full h-full object-cover object-top transition duration-300 ${
+                      instructorSeleccionado?.id === instr.id
+                        ? ''
+                        : 'grayscale group-hover:grayscale-0'
+                    }`}
+                  />
+                </div>
+                <div className="p-4 text-center bg-white dark:bg-gray-800">
+                  <h3 className="font-bold text-lg text-gray-800 dark:text-white">
+                    {instr.usuario.nombre}
+                  </h3>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
 
         {instructorSeleccionado && horasDisponibles.length > 0 && nivelSeleccionado && (
           <div ref={tablaRef} className="relative overflow-x-auto sm:rounded-lg">

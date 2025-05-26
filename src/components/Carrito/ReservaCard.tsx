@@ -109,7 +109,7 @@ export default function ReservaCard({
           style={{ backgroundColor: esEsqui ? '#FFFFFF' : '#F1F1F1' }}>
           <img
             src={imagenUrl}
-            alt={reserva.titulo}
+            alt={`Producto - ${reserva.titulo}`}
             className={`w-full h-full ${
               !esForfait && !esClase ? 'object-contain' : 'object-cover'
             }`}

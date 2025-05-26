@@ -12,7 +12,7 @@ export default function StickyHero({ imageOpacity, textOpacity, marqueeOpacity }
       <motion.div className="absolute w-full h-full" style={{ opacity: imageOpacity }}>
         <img
           src="/img/index/portada.webp"
-          alt="Imagen principal"
+          alt="Fondo de montañas nevadas con esquiadores"
           className="w-full h-full object-cover"
         />
       </motion.div>

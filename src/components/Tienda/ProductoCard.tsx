@@ -94,7 +94,7 @@ export default function ProductoCard({
         style={{ backgroundColor: esEsqui ? '#FFFFFF' : '#F1F1F1' }}>
         <img
           src={producto.imagenUrl}
-          alt={producto.nombre}
+          alt={`Producto - ${producto.nombre}`}
           className={`w-full h-full ${!esForfait ? 'object-contain' : ''}`}
         />
       </div>

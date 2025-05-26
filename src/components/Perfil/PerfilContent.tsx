@@ -279,7 +279,7 @@ export default function PerfilContent({ session }: Props) {
       <aside className="bg-sky-950 h-[85vh] font-extrabold font-blowbrush tracking-widest rounded-2xl p-6 flex flex-col items-center shadow-lg w-full">
         <img
           src="/img/perfil/perfil.webp"
-          alt="avatar"
+          alt="Imagen de perfil"
           className="w-30 h-30 my-3 rounded-full border-4 border-white"
         />
         <span className="text-xs text-gray-200 text-16 uppercase">Rol: {usuario?.rol}</span>

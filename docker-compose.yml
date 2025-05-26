@@ -6,7 +6,7 @@ services:
     container_name: bigfoot-frontend
     restart: always
     ports:
-      - "4321:4321"
+      - "80:4321"
     networks:
       - postgres_net
 

@@ -116,7 +116,7 @@ export default function MontanasInteractive({
               <motion.img
                 key={principal.id}
                 src={principal.imagen}
-                alt={principal.nombre}
+                alt={`Montaña principal - ${principal.nombre}`}
                 className="w-full h-full object-cover object-bottom"
                 initial={{ opacity: 0, scale: 1.05 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -173,7 +173,7 @@ export default function MontanasInteractive({
             <div className="relative w-full h-full z-20 overflow-hidden rounded-2xl border border-transparent group-hover:border-blue-600 transition">
               <img
                 src={montana.imagen}
-                alt={montana.nombre}
+                alt={`Montaña - ${montana.nombre}`}
                 className="w-full h-full object-cover object-bottom transition-all duration-300 grayscale group-hover:grayscale-0 group-hover:scale-105"
               />
               <div className="absolute bottom-0 left-0 w-full bg-black/50 text-white text-center py-1  font-semibold opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-30">
@@ -198,7 +198,7 @@ export default function MontanasInteractive({
               onClick={() => handleSeleccion(montana)}>
               <img
                 src={montana.imagen}
-                alt={montana.nombre}
+                alt={`Montaña - ${montana.nombre}`}
                 className="w-full h-full object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent p-4 flex flex-col justify-end text-white">
