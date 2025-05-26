@@ -21,9 +21,6 @@ const HeroWaveDynamic = () => {
     const slugsValidos = ['snowboard', 'esqui', 'porDefecto'];
     const slugEsValido = slugsValidos.includes(slug);
     const categoriaValida = slugEsValido ? slug : 'porDefecto';
-    console.log('categoria', categoria);
-    console.log('slug', slug);
-    console.log('categoriaValida', categoriaValida);
     switch (categoriaValida) {
       case 'snowboard':
         setLineas(['PRODUCTOS SNOWBOARD']);
