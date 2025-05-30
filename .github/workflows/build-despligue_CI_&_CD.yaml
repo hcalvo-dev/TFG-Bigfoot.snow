@@ -15,8 +15,12 @@ jobs:
 
   despliegue:
     needs: build-and-push-image
-    uses: ./.github/workflows/reusable-despliegue.yaml
+    uses: ./.github/workflows/build-despligue_CI_&_CD.yaml
     with:
-      image_name: ${{ needs.build-and-push-image.outputs.tag }}
+      image_frontend_tag: ${{ needs.build-and-push-image.outputs.tag_frontend }}
+      image_backend_tag: ${{ needs.build-and-push-image.outputs.tag_backend }}
     secrets:
       DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+      HOST: ${{ secrets.HOST }}
+      USER: ${{ secrets.USER }}
