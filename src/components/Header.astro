@@ -1,10 +1,10 @@
 ---
 const navItems = [
-  { label: 'INICIO', path: '/' },
-  { label: 'EQUIPOS', path: 'equipos' },
-  { label: 'CLASES', path: 'clases' },
-  { label: 'MONTAÑAS', path: 'montanas' },
-  { label: 'CONTACTO', path: 'contacto' },
+  { label: 'INICIO', path: '/', ariaLabel: 'Redirección a la página de inicio' },
+  { label: 'EQUIPOS', path: 'equipos' , ariaLabel: 'Redirección a la página de equipos' },
+  { label: 'CLASES', path: 'clases', ariaLabel: 'Redirección a la página de clases' },
+  { label: 'MONTAÑAS', path: 'montanas', ariaLabel: 'Redirección a la página de montañas' },
+  { label: 'CONTACTO', path: 'contacto', ariaLabel: 'Redirección a la página de contacto' },
 ];
 import MenuClient from './dropdown.tsx';
 import { ShoppingCart } from '@lucide/astro';
@@ -32,8 +32,8 @@ const currentPath = Astro.url.pathname;
   <!-- Logo + Nav -->
   <div class="flex items-center space-x-6">
     <!-- Logo -->
-    <a href="/" class="flex items-center space-x-2">
-      <img src="/img/logo_1.svg" alt="Logo" class="w-12 h-12 m-0 pr-0.5" />
+    <a href="/" aria-label="Redirección a la página de inicio" class="flex items-center space-x-2">
+      <img src="/img/logo_1.svg" alt="Logo de Bigfoot" class="w-12 h-12 m-0 pr-0.5" />
       <h1 class="text-4xl text-black font-bold font-blowbrush tracking-widest">BIGFOOT</h1>
     </a>
 
@@ -41,11 +41,12 @@ const currentPath = Astro.url.pathname;
       <!-- Desktop Menu -->
       <ul class="hidden xl:flex space-x-4 ml-10 mr-5 pl-10">
         {
-          navItems.map(({ label, path }) => {
+          navItems.map(({ label, path, ariaLabel }) => {
             return (
               <li>
                 <a
                   href={path}
+                  aria-label={ariaLabel}
                   class={`font-bold text-standard font-blowbrush tracking-widest transition-colors duration-300 ${
                     currentPath === `/${path}` || (path === '/' && currentPath === '/')
                       ? 'squiggly-underline text-blue-600'
@@ -76,11 +77,12 @@ const currentPath = Astro.url.pathname;
         </div>
         <ul class="flex flex-col pt-12 px-6 pb-6">
           {
-            navItems.map(({ label, path }) => {
+            navItems.map(({ label, path, ariaLabel }) => {
               return (
                 <li>
                   <a
                     href={path}
+                    aria-label={ariaLabel}
                     class={`text-white text-xl pt-4 hover:text-blue-600 text-standard font-blowbrush tracking-widest transition-colors duration-300 ${
                       currentPath === `/${path}` || (path === '/' && currentPath === '/')
                         ? 'squiggly-underline text-blue-600'
@@ -103,6 +105,7 @@ const currentPath = Astro.url.pathname;
           <!-- Carrito -->
           <a
             href="/carrito"
+            aria-label="Redirección a la página de carrito"
             class="flex justify-center items-center space-x-2 text-standard font-blowbrush tracking-widest text-white">
             <ShoppingCart class="w-6 h-6" />
             <span class="pt-1 pl-0.75 hover:text-blue-600 transition-colors">CARRITO</span>
@@ -125,7 +128,7 @@ const currentPath = Astro.url.pathname;
     <!-- Iconos de cesta y cuenta -->
     <div class="flex items-center mr-2 space-x-6">
       <!-- Carrito -->
-      <a href="/carrito" class="flex flex-col mr-3 items-center text-black hover:text-blue-600 transition">
+      <a href="/carrito" aria-label="Redirección a la página de carrito" class="flex flex-col mr-3 items-center text-black hover:text-blue-600 transition">
         <ShoppingCart class="w-6 h-6 mt-1 mb-1" />
         <span
           class="text-xs font-semibold font-blowbrush hover:text-blue-600 transition tracking-widest">

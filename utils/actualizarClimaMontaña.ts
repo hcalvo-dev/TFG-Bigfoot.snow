@@ -37,6 +37,7 @@ export async function actualizarClimaMontanas() {
 
       for (const dia of data.daily.slice(0, 7)) {
         const fecha = new Date(dia.dt * 1000);
+        fecha.setHours(12, 0, 0, 0);
         const temperaturaMax = dia.temp.max;
         const temperaturaMin = dia.temp.min;
         const descripcion = dia.weather[0].description;

@@ -1,7 +1,7 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import prisma from '../../src/lib/prisma';
-import { JWT_SECRET } from '../config';
+import { JWT_SECRET,NODE_ENV } from '../config';
 
 export const registerUser = async (req, res) => {
   const { email, password, name, confirmPassword } = req.body;
@@ -61,7 +61,7 @@ export const registerUser = async (req, res) => {
       );
 
       return res
-        .cookie('token', token, { httpOnly: true, secure: true, sameSite: 'strict' })
+        .cookie('token', token, { httpOnly: true, secure: NODE_ENV === 'https_production', sameSite: 'strict' })
         .status(200)
         .json({ message: 'Cuenta reactivada correctamente', token });
     } else {
@@ -85,7 +85,7 @@ export const registerUser = async (req, res) => {
   });
 
   res
-    .cookie('token', token, { httpOnly: true, secure: true, sameSite: 'strict' })
+    .cookie('token', token, { httpOnly: true, secure: NODE_ENV === 'https_production', sameSite: 'strict' })
     .status(201)
     .json({ message: 'Usuario registrado correctamente', token });
 };
@@ -130,6 +130,6 @@ export const loginUser = async (req, res) => {
 
   // Enviar el token como cookie httpOnly
   res
-    .cookie('token', token, { httpOnly: true, secure: false, sameSite: 'lax' })
+    .cookie('token', token, { httpOnly: true, secure: NODE_ENV === 'https_production', sameSite: 'lax' })
     .json({ message: 'Login correcto', token });
 };

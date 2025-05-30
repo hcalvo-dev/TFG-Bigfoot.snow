@@ -15,7 +15,7 @@ type ClaseActiva = {
   total: number;
   clase?: {
     titulo: string;
-    nivel: string; 
+    nivel: string;
     montaña?: {
       nombre: string;
     };
@@ -26,7 +26,6 @@ type ClaseActiva = {
     };
   };
 };
-
 
 type Props = {
   csrfToken: string;
@@ -175,11 +174,13 @@ export default function ClasesActivasTable({ csrfToken, onUpdateEstadisticas }: 
                   </td>
                   <td className="py-2 px-4 text-white/90 capitalize">{clase.estado}</td>
                   <td className="py-2 px-4 text-white/90">
-                    <button
-                      onClick={() => handleCancelar(clase.id)}
-                      className="bg-red-500 hover:bg-red-600 px-3 py-1 rounded font-medium text-white shadow shadow-black/40">
-                      Cancelar
-                    </button>
+                    {new Date(clase.fechaFin) >= new Date() && (
+                      <button
+                        onClick={() => handleCancelar(clase.id)}
+                        className="bg-red-500 hover:bg-red-600 px-3 py-1 rounded font-medium text-white shadow shadow-black/40">
+                        Cancelar
+                      </button>
+                    )}
                   </td>
                 </tr>
               ))}

@@ -1,6 +1,6 @@
 {
   "name": "bigfoot-snow",
-  "version": "0.0.1",
+  "version": "latest",
   "scripts": {
     "dev": "concurrently \"astro dev\" \"ts-node-dev server/index.ts\"",
     "build": "astro build",

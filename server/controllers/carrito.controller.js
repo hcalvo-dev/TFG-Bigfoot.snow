@@ -1,5 +1,5 @@
 import prisma from '../../src/lib/prisma';
-import { JWT_SECRET } from '../config';
+import { JWT_SECRET, NODE_ENV } from '../config';
 import jwt from 'jsonwebtoken';
 
 export const reservarClase = async (req, res) => {
@@ -151,7 +151,7 @@ export const reservarClase = async (req, res) => {
     return res
       .cookie('token_carrito_clase', token, {
         httpOnly: true,
-        secure: false,
+        secure: NODE_ENV === 'https_production',
         sameSite: 'lax',
       })
       .status(200)
@@ -245,7 +245,7 @@ export const reservarProducto = async (req, res) => {
     return res
       .cookie('token_carrito_producto', token, {
         httpOnly: true,
-        secure: false,
+        secure: NODE_ENV === 'https_production',
         sameSite: 'lax',
       })
       .status(200)

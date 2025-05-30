@@ -4,9 +4,9 @@ import TiltImageBlock from './TiltImageBlock';
 import { useState } from 'react';
 
 const navLinks = [
-  { id: 'forfait', label: 'Forfait', href: '/equipos?categoria=forfait', Icon: CableCar },
-  { id: 'equipos', label: 'Equipos', href: '/equipos?equipos', Icon: Backpack  },
-  { id: 'weather', label: 'Montañas', href: '/montanas', Icon: SunSnow },
+  { id: 'forfait', label: 'Forfait', href: '/equipos?categoria=forfait', Icon: CableCar, ariaLabel: 'Redirección a la página de forfait' },
+  { id: 'equipos', label: 'Equipos', href: '/equipos?equipos', Icon: Backpack, ariaLabel: 'Redirección a la página de Tienda' },
+  { id: 'weather', label: 'Montañas', href: '/montanas', Icon: SunSnow, ariaLabel: 'Redirección a la página de montañas' },
 ];
 
 type Props = {
@@ -53,7 +53,7 @@ export default function DesktopContent({
               {i === 0 && (
                 <img
                   src="/img/logo_1.svg"
-                  alt="Logo"
+                  alt="Logo de Bigfoot"
                   className="md:w-14 md:h-14 xl:w-18 xl:h-18"
                 />
               )}
@@ -61,7 +61,7 @@ export default function DesktopContent({
           ))}
 
           {/* Iconos con tooltip */}
-          {navLinks.map(({ id, label, href, Icon }, i) => (
+          {navLinks.map(({ id, label, href, Icon, ariaLabel }, i) => (
             <div
               key={id}
               className="absolute left-1/2 -translate-x-1/2 -translate-y-1/2"
@@ -70,6 +70,7 @@ export default function DesktopContent({
               onMouseLeave={() => setTooltip(null)}>
               <motion.a
                 href={href}
+                aria-label={ariaLabel}
                 whileHover={{ scale: 1.1 }}
                 className="origin-center md:w-18 md:h-18 xl:w-20 xl:h-20 rounded-full bg-white hover:bg-blue-600 transition-colors duration-300 flex items-center justify-center shadow-md group"
                 style={{ opacity: iconsOpacity }}>
@@ -90,6 +91,7 @@ export default function DesktopContent({
         <motion.a
           className="absolute rotate-[-12deg] top-1/2 left-[12.5%] -translate-y-1/2 cursor-pointer"
           href="/equipos?categoria=snowboard"
+          aria-label='Redirección a la página de equipos de snowboard'
           style={{ opacity: rombosOpacity }}>
           <TiltImageBlock text="SNOW" image="/img/index/snowboard.webp" />
         </motion.a>
@@ -97,6 +99,7 @@ export default function DesktopContent({
         <motion.a
           className="absolute rotate-[12deg] top-1/2 right-[12.5%] -translate-y-1/2 cursor-pointer"
           href="/equipos?categoria=esquí"
+          aria-label='Redirección a la página de equipos de esquí'
           style={{ opacity: rombosOpacity }}>
           <TiltImageBlock text="SKI" image="/img/index/skii.webp" />
         </motion.a>

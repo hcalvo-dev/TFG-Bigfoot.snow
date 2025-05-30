@@ -106,8 +106,8 @@ export default function InstructorCarousel() {
                 }}
                 className="absolute inset-0 origin-bottom">
                 <img
-                  src={testimonial.src}
-                  alt={testimonial.name}
+                  src={`${PUBLIC_API_URL}${testimonial.src}`}
+                  alt={`Instructor - ${testimonial.name}`}
                   width={500}
                   height={500}
                   draggable={false}

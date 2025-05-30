@@ -74,7 +74,7 @@ export default function MontanasCarousel() {
               className="relative w-[80%] md:w-[31%] h-[350px] rounded-3xl overflow-hidden flex-shrink-0">
               <img
                 src={montana.imagen}
-                alt={montana.nombre}
+                alt={`Montaña - ${montana.nombre}`}
                 className="w-full h-full object-cover"
               />
               <div

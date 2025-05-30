@@ -23,6 +23,7 @@ export default function ContactSection() {
 
             <motion.a
               href="/contacto"
+              aria-label='Redirigir a la página de contacto'
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               className="bg-blue-600 hover:bg-blue-700 text-white font-bold px-6 py-3 rounded-full shadow-lg transition">

@@ -318,8 +318,8 @@ export default function ProductosTable({ csrfToken }: Props) {
                   <td className="p-3 min-w-[200px] max-w-[250px]">
                     <div className="flex items-center gap-3">
                       <img
-                        src={p.imagenUrl}
-                        alt={p.nombre}
+                        src={PUBLIC_API_URL + p.imagenUrl}
+                        alt={`Producto - ${p.nombre}`}
                         className="w-12 h-12 object-cover rounded-md border border-gray-300 shrink-0"
                       />
                       <span className="font-medium text-gray-900 dark:text-white break-words line-clamp-2">

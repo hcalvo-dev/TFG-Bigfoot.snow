@@ -78,7 +78,7 @@ export default function AccountLinkWrapper_lateral({ session }: Props) {
         onClick={handleClick}
         className="flex justify-center items-center space-x-1 text-standard font-blowbrush tracking-widest text-white"
       >
-        <img src="/img/icon_cuenta_white.svg" alt="Mi cuenta" className="w-8 h-8 m-0 pr-1" />
+        <img src="/img/icon_cuenta_white.svg" alt="Logo de mi cuenta blanco" className="w-8 h-8 m-0 pr-1" />
         <span className="pt-1 hover:text-blue-600 transition-colors">
           MI CUENTA
         </span>
@@ -92,7 +92,7 @@ export default function AccountLinkWrapper_lateral({ session }: Props) {
       className="flex justify-center items-center space-x-2 text-standard font-blowbrush tracking-widest text-white relative"
     >
       <button onClick={() => setShowDropdown(!showDropdown)} className="flex cursor-pointer items-center space-x-1">
-        <img src="/img/icon_cuenta_white.svg" alt="Mi cuenta" className="w-8 h-8 m-0 pr-1" />
+        <img src="/img/icon_cuenta_white.svg" alt="Logo de mi cuenta blanco" className="w-8 h-8 m-0 pr-1" />
         <span className="pt-1  hover:text-blue-600 transition-colors">
           MI CUENTA
         </span>
@@ -100,7 +100,7 @@ export default function AccountLinkWrapper_lateral({ session }: Props) {
 
       {showDropdown && (
         <div className="absolute left-0 top-10 w-full text-sm bg-white border border-gray-300 rounded shadow z-50 text-black">
-          <a href="/perfil" className="block px-4 py-2 hover:bg-gray-100">MI PERFIL</a>
+          <a href="/perfil" aria-label="Redirigir a la página de perfil" className="block px-4 py-2 hover:bg-gray-100">MI PERFIL</a>
           <button
             onClick={handleLogout}
             className="w-full text-left px-4 py-2 cursor-pointer hover:bg-gray-100"

@@ -47,7 +47,7 @@ export default function ServiceCards() {
                 ${rotate} ${translateY}`}>
               <img
                 src={servicio.imagen}
-                alt={servicio.titulo}
+                alt={`Servicio de ${servicio.titulo}`}
                 className="w-full h-40 object-cover rounded-2xl mb-4"
               />
               <h3 className="text-xl font-bold text-sky-900 mb-3">{servicio.titulo}</h3>
