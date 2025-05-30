@@ -33,7 +33,7 @@ jobs:
         run: |
           echo "Conectando a la máquina remota y desplegando..."
           ssh -o StrictHostKeyChecking=no ${{ secrets.USER }}@${{ secrets.HOST }} << 'EOF'
-            cd /ruta/del/proyecto
+            cd /root/TFG-Bigfoot.snow
             docker compose -f docker-compose.app.yml down
             docker compose -f docker-compose.app.yml pull
             docker compose -f docker-compose.app.yml up -d
