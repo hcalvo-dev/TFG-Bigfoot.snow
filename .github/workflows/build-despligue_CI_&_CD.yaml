@@ -15,7 +15,7 @@ jobs:
 
   despliegue:
     needs: build-and-push-image
-    uses: ./.github/workflows/build-despligue_CI_&_CD.yaml
+    uses: ./.github/workflows/reusable-despliegue.yaml
     with:
       image_frontend_tag: ${{ needs.build-and-push-image.outputs.tag_frontend }}
       image_backend_tag: ${{ needs.build-and-push-image.outputs.tag_backend }}
