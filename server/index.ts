@@ -63,13 +63,13 @@ setInterval(() => {
 }, 60 * 1000); // cada minuto
 
 // Tarea programada para actualizar el clima de las montañas a las 06:00 AM todos los días
-cron.schedule('0 6 * * *', async () => {
+cron.schedule('0 4 * * *', async () => {
   console.log('Actualizando clima de montañas...');
   await actualizarClimaMontanas();
 });
 
 // Tarea programada para actualizar el clima de las montañas a las 16:00 PM todos los días
-cron.schedule('0 15 * * *', async () => {
+cron.schedule('0 12 * * *', async () => {
   console.log('Actualizando clima de montañas...');
   await actualizarClimaMontanas();
 });

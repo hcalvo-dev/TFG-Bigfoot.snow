@@ -1,0 +1,40 @@
+name: Reutilizable para despliegue
+
+on:
+  workflow_call:
+    inputs:
+      image_frontend_tag:
+        required: true
+        type: string
+      image_backend_tag:
+        required: true
+        type: string
+    secrets:
+      DOCKER_PASSWORD:
+        required: true
+      SSH_PRIVATE_KEY:
+        required: true
+      HOST:
+        required: true
+      USER:
+        required: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Configurar la clave SSH
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Realizar despliegue remoto por SSH
+        run: |
+          echo "Conectando a la máquina remota y desplegando..."
+          ssh -o StrictHostKeyChecking=no ${{ secrets.USER }}@${{ secrets.HOST }} << 'EOF'
+            cd /ruta/del/proyecto
+            docker compose -f docker-compose.app.yml down
+            docker compose -f docker-compose.app.yml pull
+            docker compose -f docker-compose.app.yml up -d
+          EOF

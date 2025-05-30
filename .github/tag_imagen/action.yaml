@@ -1,0 +1,25 @@
+name: Tag Imagen
+description: Taggear una imagen Docker usando la versión del package.json
+
+inputs:
+  image_name:
+    required: true
+    description: Nombre de la imagen Docker
+  version:
+    required: true
+    description: Versión extraída de package.json
+
+outputs:
+  tag:
+    description: Nombre completo con tag de la imagen
+    value: ${{ steps.tag_name.outputs.tag }}
+    
+runs:
+  using: "composite"
+  steps:
+    - name: Generar el tag
+      id: tag_name
+      shell: bash
+      run: |
+        echo "Generando tag..."
+        echo "tag=${{ env.USERNAME }}/${{ inputs.image_name }}:${{ inputs.version }}" >> $GITHUB_OUTPUT

@@ -1,0 +1,22 @@
+name: CI/CD
+
+on:
+  pull_request:
+    types: [opened, reopened,synchronize]
+
+jobs:
+  build-and-push-image:
+    uses: ./.github/workflows/reusable-build-push.yaml
+    with:
+      image_frontend: bigfoot-frontend
+      image_backend: bigfoot-backend
+    secrets:
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+
+  despliegue:
+    needs: build-and-push-image
+    uses: ./.github/workflows/reusable-despliegue.yaml
+    with:
+      image_name: ${{ needs.build-and-push-image.outputs.tag }}
+    secrets:
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}

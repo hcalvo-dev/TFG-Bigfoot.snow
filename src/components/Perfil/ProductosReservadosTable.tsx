@@ -68,35 +68,35 @@ export default function ProductosReservadosTable({ csrfToken, onUpdateEstadistic
   );
 
   const handleCancelar = async (reservaId: number) => {
-      const confirm = await Swal.fire({
-        title: '¿Cancelar reserva?',
-        text: 'Esta acción no se puede deshacer.',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Sí, cancelar',
+    const confirm = await Swal.fire({
+      title: '¿Cancelar reserva?',
+      text: 'Esta acción no se puede deshacer.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, cancelar',
+    });
+    if (!confirm.isConfirmed) return;
+
+    try {
+      const res = await fetch(PUBLIC_API_URL + '/api/productos/cancelar-reserva', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'CSRF-Token': csrfToken,
+        },
+        credentials: 'include',
+        body: JSON.stringify({ reservaId }),
       });
-      if (!confirm.isConfirmed) return;
-  
-      try {
-        const res = await fetch(PUBLIC_API_URL + '/api/productos/cancelar-reserva', {
-          method: 'DELETE',
-          headers: {
-            'Content-Type': 'application/json',
-            'CSRF-Token': csrfToken,
-          },
-          credentials: 'include',
-          body: JSON.stringify({ reservaId }),
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error);
-        fetchProductos();
-        onUpdateEstadisticas();
-        Swal.fire('Cancelado', 'La reserva ha sido cancelada', 'success');
-      } catch (err) {
-        const error = err as Error;
-        Swal.fire('Cancelación no permitida', error.message, 'error');
-      }
-    };
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+      fetchProductos();
+      onUpdateEstadisticas();
+      Swal.fire('Cancelado', 'La reserva ha sido cancelada', 'success');
+    } catch (err) {
+      const error = err as Error;
+      Swal.fire('Cancelación no permitida', error.message, 'error');
+    }
+  };
 
   return (
     <div className="relative">
@@ -173,11 +173,13 @@ export default function ProductosReservadosTable({ csrfToken, onUpdateEstadistic
                     </td>
                     <td className="py-2 px-4 text-white/90 capitalize">{r.reserva.estado}</td>
                     <td className="py-2 px-4 text-white/90">
-                      <button
-                        onClick={() => handleCancelar(r.reserva.id)}
-                        className="bg-red-500 hover:bg-red-600 px-3 py-1 rounded font-medium text-white shadow shadow-black/40">
-                        Cancelar
-                      </button>
+                      {new Date(r.reserva.fechaFin) >= new Date() && (
+                        <button
+                          onClick={() => handleCancelar(r.reserva.id)}
+                          className="bg-red-500 hover:bg-red-600 px-3 py-1 rounded font-medium text-white shadow shadow-black/40">
+                          Cancelar
+                        </button>
+                      )}
                     </td>
                   </tr>
                 );
