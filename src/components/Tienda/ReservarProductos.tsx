@@ -257,7 +257,7 @@ export default function TiendaComponent({ session }: Props) {
       {mostrarAside && (
         <div className="flex flex-col md:flex-row gap-6">
           <AnimatePresence mode="wait">
-            <motion.aside
+            <motion.div
               key="aside-filtros"
               initial={{ x: -50, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
@@ -272,7 +272,7 @@ export default function TiendaComponent({ session }: Props) {
                 slug={opcion}
                 onFiltroChange={(nuevo) => setFiltros(nuevo)}
               />
-            </motion.aside>
+            </motion.div>
           </AnimatePresence>
 
           <motion.div

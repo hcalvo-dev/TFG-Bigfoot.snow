@@ -233,7 +233,7 @@ export default function CarritoProductos({ session }: Props) {
           )}
         </div>
 
-        <aside className="w-full xl:max-w-[28%] h-fit bg-white border border-zinc-200 rounded-2xl shadow-xl p-6 space-y-6">
+        <div className="w-full xl:max-w-[28%] h-fit bg-white border border-zinc-200 rounded-2xl shadow-xl p-6 space-y-6">
           <div>
             <h2 className="text-3xl font-blowbrush text-sky-950 uppercase tracking-widest mb-4">
               Carrito
@@ -332,7 +332,7 @@ export default function CarritoProductos({ session }: Props) {
               </motion.a>
             </div>
           </div>
-        </aside>
+        </div>
       </div>
       {mostrarPago && (
         <AnimatePresence>

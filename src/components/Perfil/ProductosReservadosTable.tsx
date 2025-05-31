@@ -176,7 +176,7 @@ export default function ProductosReservadosTable({ csrfToken, onUpdateEstadistic
                       {new Date(r.reserva.fechaFin) >= new Date() && (
                         <button
                           onClick={() => handleCancelar(r.reserva.id)}
-                          className="bg-red-500 hover:bg-red-600 px-3 py-1 rounded font-medium text-white shadow shadow-black/40">
+                          className="bg-red-600 hover:bg-red-700 px-3 py-1 rounded font-medium text-white shadow shadow-black/40">
                           Cancelar
                         </button>
                       )}

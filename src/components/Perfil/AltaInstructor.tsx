@@ -282,8 +282,8 @@ export default function AltaInstructorForm({ csrfToken, onCreationSuccess }: Pro
               disabled={success}
               className={`${
                 success
-                  ? 'w-14 h-14 rounded-full bg-blue-500 flex justify-center items-center mx-auto'
-                  : 'bg-blue-500 cursor-pointer hover:bg-blue-600 text-white font-bold py-2 px-4 rounded w-full shadow-md shadow-black/40'
+                  ? 'w-14 h-14 rounded-full bg-blue-600 flex justify-center items-center mx-auto'
+                  : 'bg-blue-600 cursor-pointer hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full shadow-md shadow-black/40'
               }`}
               whileTap={{ scale: 0.95 }}>
               {success ? (

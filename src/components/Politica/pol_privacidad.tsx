@@ -40,7 +40,7 @@ export default function PoliticPrivacidad() {
       >
         <div className="flex flex-col items-center gap-3">
           <LockKeyhole className="w-12 h-12 text-blue-700" />
-          <span className="text-18 uppercase text-gray-500 font-semibold tracking-wider">Protección de datos</span>
+          <span className="text-18 uppercase text-gray-700 font-semibold tracking-wider">Protección de datos</span>
           <p className=" text-gray-500 max-w-xs">
             Tus datos están protegidos con medidas técnicas y organizativas de seguridad, cumpliendo con el RGPD y otras normativas aplicables.
           </p>
@@ -48,7 +48,7 @@ export default function PoliticPrivacidad() {
 
         <div className="flex flex-col items-center gap-3">
           <FileCheck2 className="w-12 h-12 text-blue-700" />
-          <span className="text-18 uppercase text-gray-500 font-semibold tracking-wider">Uso responsable</span>
+          <span className="text-18 uppercase text-gray-700 font-semibold tracking-wider">Uso responsable</span>
           <p className=" text-gray-500 max-w-xs">
             Solo utilizamos la información con fines estrictamente necesarios: gestión de reservas, contacto y mejora del servicio.
           </p>
@@ -56,7 +56,7 @@ export default function PoliticPrivacidad() {
 
         <div className="flex flex-col items-center gap-3">
           <GraduationCap className="w-12 h-12 text-blue-700" />
-          <span className="text-18 uppercase text-gray-500 font-semibold tracking-wider">Proyecto académico</span>
+          <span className="text-18 uppercase text-gray-700 font-semibold tracking-wider">Proyecto académico</span>
           <p className=" text-gray-500 max-w-xs">
             Esta web forma parte de un TFG para demostrar competencias profesionales en desarrollo web, diseño, accesibilidad y protección de datos.
           </p>
