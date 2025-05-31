@@ -4,9 +4,10 @@ import Tilt from 'react-parallax-tilt';
 type Props = {
   text: string;
   image: string;
+  alt: string;
 };
 
-export default function TiltImageBlock({ text, image }: Props) {
+export default function TiltImageBlock({ text, alt, image }: Props) {
   return (
     <Tilt
       tiltMaxAngleX={20}
@@ -31,7 +32,7 @@ export default function TiltImageBlock({ text, image }: Props) {
       </motion.div>
       <motion.img
         src={image}
-        alt={text || 'Hombre en la nieve con esquís o snowboard'}
+        alt={alt || 'Hombre en la nieve con esquís o snowboard'}
         className="relative w-full h-full object-cover grayscale transition-all duration-500 ease-in-out group-hover:grayscale-0"
       />
     </Tilt>

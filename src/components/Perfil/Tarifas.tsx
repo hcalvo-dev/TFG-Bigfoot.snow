@@ -232,7 +232,7 @@ export default function Tarifas({ csrfToken }: Props) {
               transition={{ duration: 0.4 }}
               className="overflow-auto rounded-xl shadow">
               <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-300">
                   <tr>
                     <th className="p-3">Código</th>
                     <th className="p-3">Descripción</th>

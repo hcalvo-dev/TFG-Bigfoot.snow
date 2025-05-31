@@ -375,7 +375,7 @@ export default function PerfilContent({ session }: Props) {
         {/* Estadísticas */}
         <div className="bg-white/40 p-4 rounded-xl font-blowbrush tracking-widest text-center shadow">
           <AnimatePresence mode="wait">
-            <motion.h3
+            <motion.h2
               key={usuario?.nombre} // forzar animación cuando cambie el nombre
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
@@ -383,7 +383,7 @@ export default function PerfilContent({ session }: Props) {
               transition={{ duration: 0.4 }}
               className="text-3xl text-sky-950 font-bold">
               ¡BIENVENIDO {usuario?.nombre?.toUpperCase() || 'USUARIO'}!
-            </motion.h3>
+            </motion.h2>
           </AnimatePresence>
           <p className="text-gray-400 uppercase">
             Aquí puedes ver tus estadísticas y actividades recientes.
