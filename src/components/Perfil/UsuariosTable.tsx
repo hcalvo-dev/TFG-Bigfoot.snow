@@ -168,12 +168,12 @@ export default function UsuariosTable({ usuario, csrfToken, onUpdateSuccess }: P
                       <>
                         <button
                           onClick={() => setEditando(u)}
-                          className="bg-blue-500 hover:bg-blue-600 px-3 py-1 rounded font-medium text-gray-900 whitespace-nowrap dark:text-white shadow shadow-black/40">
+                          className="bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded font-medium text-gray-900 whitespace-nowrap dark:text-white shadow shadow-black/40">
                           Editar
                         </button>
                         <button
                           onClick={() => handleDelete(u.id)}
-                          className="bg-red-500 hover:bg-red-600 px-3 py-1 rounded font-medium text-gray-900 whitespace-nowrap dark:text-white shadow shadow-black/40">
+                          className="bg-red-600 hover:bg-red-700 px-3 py-1 rounded font-medium text-gray-900 whitespace-nowrap dark:text-white shadow shadow-black/40">
                           Eliminar
                         </button>
                       </>

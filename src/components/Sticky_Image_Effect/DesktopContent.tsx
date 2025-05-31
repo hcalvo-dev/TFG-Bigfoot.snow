@@ -93,7 +93,7 @@ export default function DesktopContent({
           href="/equipos?categoria=snowboard"
           aria-label='Redirección a la página de equipos de snowboard'
           style={{ opacity: rombosOpacity }}>
-          <TiltImageBlock text="SNOW" image="/img/index/snowboard.webp" />
+          <TiltImageBlock text="Hombre trasportando una tabla de snowboard" image="/img/index/snowboard.webp" />
         </motion.a>
 
         <motion.a
@@ -101,7 +101,7 @@ export default function DesktopContent({
           href="/equipos?categoria=esquí"
           aria-label='Redirección a la página de equipos de esquí'
           style={{ opacity: rombosOpacity }}>
-          <TiltImageBlock text="SKI" image="/img/index/skii.webp" />
+          <TiltImageBlock text="Persona haciendo skii sobre la nieve" image="/img/index/skii.webp" />
         </motion.a>
 
         {/* Tooltip flotante */}

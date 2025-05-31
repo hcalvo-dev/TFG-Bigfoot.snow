@@ -205,7 +205,7 @@ export default function Tarifas({ csrfToken }: Props) {
                       <td className="p-3 text-white/90">
                         <button
                           onClick={() => setModalNivel(nivel)}
-                          className="bg-blue-500 hover:bg-blue-600 px-3 py-1 rounded font-medium text-gray-900 whitespace-nowrap dark:text-white shadow shadow-black/40">
+                          className="bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded font-medium text-gray-900 whitespace-nowrap dark:text-white shadow shadow-black/40">
                           Editar
                         </button>
                       </td>
@@ -279,12 +279,12 @@ export default function Tarifas({ csrfToken }: Props) {
                                   aplicaEn: normalizeAplicaEn(d.aplicaEn),
                                 })
                               }
-                              className="bg-blue-500 hover:bg-blue-600 px-3 py-1 rounded font-medium text-gray-900 whitespace-nowrap dark:text-white shadow shadow-black/40">
+                              className="bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded font-medium text-gray-900 whitespace-nowrap dark:text-white shadow shadow-black/40">
                               Editar
                             </button>
                             <button
                               onClick={() => handleDelete(d.id)}
-                              className="bg-red-500 hover:bg-red-600 px-3 py-1 rounded font-medium text-gray-900 whitespace-nowrap dark:text-white shadow shadow-black/40">
+                              className="bg-red-600 hover:bg-red-700 px-3 py-1 rounded font-medium text-gray-900 whitespace-nowrap dark:text-white shadow shadow-black/40">
                               Eliminar
                             </button>
                           </>

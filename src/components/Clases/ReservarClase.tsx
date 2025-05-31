@@ -375,6 +375,7 @@ export default function ReservarClase({ session }: Props) {
         <div className="flex flex-col md:flex-row items-center justify-center gap-4 mb-10">
           <select
             onChange={(e) => setMontanaId(e.target.value)}
+            aria-label='Elige una estación'
             defaultValue=""
             className="p-3 rounded-xl border-2 border-blue-400 shadow">
             <option value="" disabled>
@@ -389,6 +390,7 @@ export default function ReservarClase({ session }: Props) {
 
           <input
             type="date"
+            aria-label='Selecciona una fecha'
             className="p-3 rounded-xl border-2 border-blue-400 shadow"
             min={(() => {
               const mañana = new Date();
@@ -401,6 +403,7 @@ export default function ReservarClase({ session }: Props) {
           <select
             onChange={(e) => setEspecialidad(e.target.value)}
             defaultValue=""
+            aria-label='Selecciona una especialidad'
             className="p-3 rounded-xl border-2 border-blue-400 shadow">
             <option value="" disabled>
               Especialidad
@@ -411,6 +414,7 @@ export default function ReservarClase({ session }: Props) {
 
           <select
             value={nivelSeleccionado}
+            aria-label='Selecciona el nivel'
             onChange={(e) => setNivelSeleccionado(e.target.value)}
             className="p-3 rounded-xl border-2 border-blue-400 shadow">
             <option value="" disabled>
@@ -457,9 +461,9 @@ export default function ReservarClase({ session }: Props) {
                   />
                 </div>
                 <div className="p-4 text-center bg-white dark:bg-gray-800">
-                  <h3 className="font-bold text-lg text-gray-800 dark:text-white">
+                  <h2 className="font-bold text-lg text-gray-800 dark:text-white">
                     {instr.usuario.nombre}
-                  </h3>
+                  </h2>
                 </div>
               </div>
             ))}
@@ -492,6 +496,7 @@ export default function ReservarClase({ session }: Props) {
                     <td className="w-4 p-4">
                       <input
                         type="checkbox"
+                        aria-label='Seleccion de horas'
                         disabled={!hora.disponible}
                         checked={horasSeleccionadas.includes(hora.hora)}
                         onChange={() => toggleHora(hora.hora)}
@@ -516,7 +521,7 @@ export default function ReservarClase({ session }: Props) {
                     </td>
                     <td className="px-8 py-4">
                       {hora.disponible ? (
-                        <span className="text-green-600 font-semibold">Disponible</span>
+                        <span className="text-green-500 font-semibold">Disponible</span>
                       ) : (
                         <span className="text-red-500 font-semibold">Ocupada</span>
                       )}
@@ -528,7 +533,7 @@ export default function ReservarClase({ session }: Props) {
                       {hora.disponible && (
                         <button
                           onClick={() => toggleHora(hora.hora)}
-                          className="bg-blue-500 text-white font-bold py-1 px-4 rounded hover:bg-blue-600">
+                          className="bg-blue-600 text-white font-bold py-1 px-4 rounded hover:bg-blue-700">
                           {horasSeleccionadas.includes(hora.hora) ? 'Quitar' : 'Seleccionar'}
                         </button>
                       )}
@@ -554,7 +559,7 @@ export default function ReservarClase({ session }: Props) {
               </p>
               <button
                 onClick={() => setMostrarModal(true)}
-                className="mt-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-bold py-2 px-6 rounded-full shadow hover:from-blue-600 hover:to-blue-700 transition-transform transform hover:scale-105 w-full md:w-auto">
+                className="mt-2 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-bold py-2 px-6 rounded-full shadow hover:from-blue-600 hover:to-blue-700 transition-transform transform hover:scale-105 w-full md:w-auto">
                 Reservar clase
               </button>
             </div>

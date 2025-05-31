@@ -38,7 +38,7 @@ export default function VentajasComponent() {
         
         <div className="flex flex-col items-center gap-3">
           <Star className="w-12 h-12 text-blue-700" />
-          <span className="text-18 uppercase text-gray-500 font-semibold tracking-wider">Material de calidad</span>
+          <span className="text-18 uppercase text-gray-700 font-semibold tracking-wider">Material de calidad</span>
           <p className=" text-gray-500 max-w-xs">
             Todo nuestro equipo está seleccionado para ofrecer el máximo rendimiento, comodidad y seguridad, sin importar tu nivel.
           </p>
@@ -46,7 +46,7 @@ export default function VentajasComponent() {
 
         <div className="flex flex-col items-center gap-3">
           <Trophy className="w-12 h-12 text-blue-700" />
-          <span className="text-18 uppercase text-gray-500 font-semibold tracking-wider">Instructores top</span>
+          <span className="text-18 uppercase text-gray-700 font-semibold tracking-wider">Instructores top</span>
           <p className=" text-gray-500 max-w-xs">
             Contamos con profesionales que aman enseñar y transmitir su pasión por la nieve, adaptándose a ti paso a paso.
           </p>
@@ -54,7 +54,7 @@ export default function VentajasComponent() {
 
         <div className="flex flex-col items-center gap-3">
           <HeartHandshake className="w-12 h-12 text-blue-700" />
-          <span className="text-18 uppercase text-gray-500 font-semibold tracking-wider">Atención cercana</span>
+          <span className="text-18 uppercase text-gray-700 font-semibold tracking-wider">Atención cercana</span>
           <p className=" text-gray-500 max-w-xs">
             Somos de aquí, hablamos tu idioma y nos importas. Cada detalle está pensado para que te sientas como en casa.
           </p>

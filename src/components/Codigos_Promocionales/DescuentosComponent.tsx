@@ -68,10 +68,10 @@ export default function DescuentosComponent() {
                 <h3 className="text-xl font-bold text-sky-800 uppercase tracking-wide">
                   {d.codigo}
                 </h3>
-                <p className="text-gray-600 mt-2">{d.descripcion}</p>
-                <p className="text-18 text-gray-500 mt-1">Descuento: {d.porcentaje}%</p>
-                <p className="text-18 text-gray-500">Aplicable en: {d.aplicaEn}</p>
-                <p className=" text-gray-400 mt-2">
+                <p className="text-gray-700 mt-2">{d.descripcion}</p>
+                <p className="text-18 text-gray-600 mt-1">Descuento: {d.porcentaje}%</p>
+                <p className="text-18 text-gray-600">Aplicable en: {d.aplicaEn}</p>
+                <p className=" text-gray-500 mt-2">
                   Válido hasta: {new Date(d.fechaValidez).toLocaleDateString()}
                 </p>
               </div>

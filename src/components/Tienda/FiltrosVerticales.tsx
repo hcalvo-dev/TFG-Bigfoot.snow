@@ -53,6 +53,7 @@ export default function FiltrosVerticales({
         <Tag className="w-5 h-5 text-sky-950" />
         <select
           name="categoria"
+          aria-label='Seleccion de categoría'
           onChange={handleChange}
           value={filtros.categoria}
           className="flex-1 bg-white border border-zinc-300 text-gray-800 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-950">
@@ -70,6 +71,7 @@ export default function FiltrosVerticales({
         <ToggleLeft className="w-5 h-5 text-sky-950" />
         <select
           name="estado"
+          aria-label='Seleccion de estado'
           onChange={handleChange}
           value={filtros.estado}
           className="flex-1 bg-white border border-zinc-300 text-gray-800 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-950">
@@ -84,6 +86,7 @@ export default function FiltrosVerticales({
         <Euro className="w-5 h-5 text-sky-950" />
         <select
           name="precio"
+          aria-label='Seleccion de precio'
           onChange={handleChange}
           value={filtros.precio}
           className="flex-1 bg-white border border-zinc-300 text-gray-800 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-950">
@@ -99,6 +102,7 @@ export default function FiltrosVerticales({
         <Store className="w-5 h-5 text-sky-950" />
         <select
           name="tienda"
+          aria-label='Seleccion de tienda'
           onChange={handleChange}
           value={filtros.tienda}
           className="flex-1 bg-white border border-zinc-300 text-gray-800 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-950">

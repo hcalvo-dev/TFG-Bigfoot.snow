@@ -105,7 +105,7 @@ export default function ProductoCard({
         </h2>
         <span
           className={`text-xs px-2 py-0.5 rounded font-bold ${
-            producto.estado.toLowerCase() === 'activo' ? 'bg-green-600' : 'bg-red-500'
+            producto.estado.toLowerCase() === 'activo' ? 'bg-green-700' : 'bg-red-700'
           } text-white`}>
           {stockLabel}
         </span>

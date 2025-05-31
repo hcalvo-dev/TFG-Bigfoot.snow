@@ -42,21 +42,21 @@ export default function AboutUs() {
         className="mt-14 grid grid-cols-1 md:grid-cols-3 text-center gap-10">
         <div className="flex flex-col items-center gap-3">
           <Snowflake className="w-12 h-12 text-blue-700" />
-          <span className="uppercase text-18 text-gray-400 font-semibold tracking-wider">Clima</span>
+          <span className="uppercase text-18 text-gray-700 font-semibold tracking-wider">Clima</span>
           <p className=" text-gray-500 max-w-xs">
             Aprovechamos al máximo las condiciones de la Sierra: nieve natural, cielos limpios y un entorno privilegiado que inspira cada aventura.
           </p>
         </div>
         <div className="flex flex-col items-center gap-3">
           <GraduationCap className="w-12 h-12 text-blue-700" />
-          <span className="uppercase text-18 text-gray-400 font-semibold tracking-wider">Aprendizaje</span>
+          <span className="uppercase text-18 text-gray-700 font-semibold tracking-wider">Aprendizaje</span>
           <p className=" text-gray-500 max-w-xs">
             Nuestro equipo de instructores no solo enseña, también contagia la pasión por la nieve con una metodología cercana y motivadora.
           </p>
         </div>
         <div className="flex flex-col items-center gap-3">
           <ImageIcon className="w-12 h-12 text-blue-700" />
-          <span className="uppercase text-18 text-gray-400 font-semibold tracking-wider">Terreno</span>
+          <span className="uppercase text-18 text-gray-700 font-semibold tracking-wider">Terreno</span>
           <p className=" text-gray-500 max-w-xs">
             Desde rutas freestyle hasta zonas de iniciación, cada pista está pensada para ofrecerte emoción y libertad sin importar tu nivel.
           </p>

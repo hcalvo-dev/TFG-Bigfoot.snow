@@ -40,7 +40,7 @@ export default function CondicionesGeneralesComponent() {
       >
         <div className="flex flex-col items-center gap-3">
           <ScrollText className="w-12 h-12 text-blue-700" />
-          <span className="text-18 uppercase text-gray-500 font-semibold tracking-wider">Uso del servicio</span>
+          <span className="text-18 uppercase text-gray-700 font-semibold tracking-wider">Uso del servicio</span>
           <p className=" text-gray-500 max-w-xs">
             El usuario es responsable del equipo alquilado y debe devolverlo en el plazo pactado y en condiciones óptimas. Cualquier daño no contemplado supondrá un coste adicional.
           </p>
@@ -48,7 +48,7 @@ export default function CondicionesGeneralesComponent() {
 
         <div className="flex flex-col items-center gap-3">
           <AlertCircle className="w-12 h-12 text-blue-700" />
-          <span className="text-18 uppercase text-gray-500 font-semibold tracking-wider">Modificaciones o cancelaciones</span>
+          <span className="text-18 uppercase text-gray-700 font-semibold tracking-wider">Modificaciones o cancelaciones</span>
           <p className=" text-gray-500 max-w-xs">
             Las reservas pueden modificarse o cancelarse con un mínimo de 24 horas de antelación. Pasado ese plazo, no se garantiza devolución o reprogramación.
           </p>
@@ -56,7 +56,7 @@ export default function CondicionesGeneralesComponent() {
 
         <div className="flex flex-col items-center gap-3">
           <ShieldCheck className="w-12 h-12 text-blue-700" />
-          <span className="text-18 uppercase text-gray-500 font-semibold tracking-wider">Seguridad y responsabilidad</span>
+          <span className="text-18 uppercase text-gray-700 font-semibold tracking-wider">Seguridad y responsabilidad</span>
           <p className=" text-gray-500 max-w-xs">
             Bigfoot no se hace responsable de lesiones o accidentes derivados de un uso incorrecto del equipo. Recomendamos seguir siempre las indicaciones de nuestros instructores.
           </p>
