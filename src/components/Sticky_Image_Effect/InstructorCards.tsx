@@ -148,11 +148,13 @@ export default function InstructorCarousel() {
           <div className="flex gap-4 pt-12 md:pt-0">
             <button
               onClick={handlePrev}
+              aria-label='Desplarse a la izquierda en el carrousel'
               className="group/button flex h-7 w-7 items-center justify-center rounded-full bg-gray-100 dark:bg-zinc-900">
               <ArrowLeft className="h-5 w-5 text-black transition-transform duration-300 group-hover/button:rotate-12 dark:text-neutral-400" />
             </button>
             <button
               onClick={handleNext}
+              aria-label='Desplazarse a la derecha en el carrousel'
               className="group/button flex h-7 w-7 items-center justify-center rounded-full bg-gray-100 dark:bg-zinc-900">
               <ArrowRight className="h-5 w-5 text-black transition-transform duration-300 group-hover/button:-rotate-12 dark:text-neutral-400" />
             </button>
