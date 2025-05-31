@@ -5,11 +5,21 @@ const prisma = new PrismaClient();
 const API_KEY = process.env.OPENWEATHER_KEY;
 
 export async function actualizarClimaMontanas() {
-
   if (!API_KEY) {
     console.error('❌ No se encontró la clave API en el entorno');
     return;
   }
+
+  const hoy = new Date();
+  hoy.setHours(0, 0, 0, 0);
+
+  const deleted = await prisma.clima.deleteMany({
+    where: {
+      fecha: { lt: hoy },
+    },
+  });
+
+  console.log(`🗑️ Registros antiguos eliminados: ${deleted.count}`);
 
   const montanas = await prisma.montaña.findMany();
 
@@ -17,7 +27,6 @@ export async function actualizarClimaMontanas() {
     const { lat, lon, nombre } = montana;
 
     const url = `https://api.openweathermap.org/data/3.0/onecall?lat=${lat}&lon=${lon}&exclude=current,minutely,hourly,alerts&units=metric&lang=es&appid=${API_KEY}`;
-
 
     try {
       const res = await fetch(url, {
@@ -65,9 +74,7 @@ export async function actualizarClimaMontanas() {
             icono,
           },
         });
-
       }
-
     } catch (err) {
       console.error(`❌ Error al procesar ${nombre}:`, err);
     }
