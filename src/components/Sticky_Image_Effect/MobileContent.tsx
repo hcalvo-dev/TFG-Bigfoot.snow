@@ -17,7 +17,7 @@ export default function MobileContent({ firstOpacity, firstY, secondOpacity, sec
           className="flex flex-col items-center gap-6 p-4"
           style={{ opacity: firstOpacity, y: firstY }}>
           <motion.a className="cursor-pointer" href="/equipos?snowboard" aria-label='Redirigir a la sección de snowboard'>
-            <TiltImageBlock text="SNOW" image="/img/index/snowboard.webp" />
+            <TiltImageBlock text="SNOW" alt='Imagen de un hombre en la nieve con un snowboard' image="/img/index/snowboard.webp" />
           </motion.a>
           <div className="text-center">
             <h2 className="text-3xl font-bold text-black mb-4">SNOWBOARD</h2>
@@ -32,7 +32,7 @@ export default function MobileContent({ firstOpacity, firstY, secondOpacity, sec
           className="flex flex-col items-center gap-6 p-4"
           style={{ opacity: secondOpacity, y: secondY }}>
           <motion.a className="cursor-pointer" href="/equipos?skii" aria-label='Redirigir a la sección de esquí'>
-            <TiltImageBlock text="SKI" image="/img/index/skii.webp" />
+            <TiltImageBlock text="SKI" alt='Imagen de un hombre en la nieve con un esquí' image="/img/index/skii.webp" />
           </motion.a>
           <div className="text-center">
             <h2 className="text-3xl font-bold text-black mb-4">ESQUÍ</h2>
