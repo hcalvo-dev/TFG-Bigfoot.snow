@@ -257,95 +257,79 @@ export default function FormularioEdicionUsuario({
             />
             {errors.email && <p className="text-red-400 text-sm mt-1">{errors.email.message}</p>}
           </div>
-          <AnimatePresence mode="wait">
-            {permitirEditarRol && roles.length > 0 ? (
-              <>
-                <motion.div
-                  key="rol"
-                  className="md:col-span-2"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
-                  transition={{ duration: 0.3 }}>
-                  {usuario.rol !== 'instructor' && (
-                    <div>
-                      <label className="block font-bold font-blowbrush tracking-widest text-sky-950 mb-1">
-                        ROL
-                      </label>
-                      <select
-                        {...register('rol')}
-                        defaultValue={usuario.rol}
-                        className="w-full p-2 rounded bg-[#1f2937] text-white border border-white/20 focus:outline-none focus:ring-2 focus:ring-sky-500">
-                        {roles.map((r) => (
-                          <option key={r} value={r}>
-                            {r}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  )}
-                  {usuario.rol === 'instructor' && (
-                    <div>
-                      <label className="block font-bold font-blowbrush tracking-widest text-sky-950 mb-1">
-                        FOTO DE PERFIL
-                      </label>
-                      <input
-                        type="file"
-                        accept="image/*"
-                        {...register('foto')}
-                        className={`w-full p-2 rounded bg-[#1f2937] text-white file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-sky-700 file:text-white hover:file:bg-sky-600 focus:outline-none focus:ring-2 focus:ring-sky-500`}
-                      />
-                      {errors.foto && typeof errors.foto.message === 'string' && (
-                        <p className="text-red-400 text-sm mt-1">{errors.foto.message}</p>
-                      )}
-                    </div>
-                  )}
-                </motion.div>
-              </>
-            ) : (
-              <>
-                <motion.div
-                  key="password"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
-                  transition={{ duration: 0.3 }}>
-                  <label className="block font-bold font-blowbrush tracking-widest text-sky-950 mb-1">
-                    NUEVA CONTRASEÑA
-                  </label>
-                  <PasswordInput
-                    {...register('password')}
-                    placeholder="********"
-                    className={`w-full p-2 rounded bg-[#1f2937] text-white placeholder-gray-400 border border-white/20 focus:outline-none focus:ring-2 focus:ring-sky-500 ${
-                      errors.password ? 'border-red-500' : ''
-                    }`}
-                  />
-                  {errors.password && (
-                    <p className="text-red-400 text-sm mt-1">{errors.password.message}</p>
-                  )}
-                </motion.div>
+          <div>
+            <label className="block font-bold font-blowbrush tracking-widest text-sky-950 mb-1">
+              NUEVA CONTRASEÑA
+            </label>
+            <PasswordInput
+              {...register('password')}
+              placeholder="********"
+              className={`w-full p-2 rounded bg-[#1f2937] text-white placeholder-gray-400 border border-white/20 focus:outline-none focus:ring-2 focus:ring-sky-500 ${
+                errors.password ? 'border-red-500' : ''
+              }`}
+            />
+            {errors.password && (
+              <p className="text-red-400 text-sm mt-1">{errors.password.message}</p>
+            )}
+          </div>
 
-                <motion.div
-                  key="password"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
-                  transition={{ duration: 0.3 }}>
-                  <label className="block font-bold font-blowbrush tracking-widest text-sky-950 mb-1">
-                    REPITE CONTRASEÑA
-                  </label>
-                  <PasswordInput
-                    {...register('confirmPassword')}
-                    placeholder="********"
-                    className={`w-full p-2 rounded bg-[#1f2937] text-white placeholder-gray-400 border border-white/20 focus:outline-none focus:ring-2 focus:ring-sky-500 ${
-                      errors.confirmPassword ? 'border-red-500' : ''
-                    }`}
-                  />
-                  {errors.confirmPassword && (
-                    <p className="text-red-400 text-sm mt-1">{errors.confirmPassword.message}</p>
-                  )}
-                </motion.div>
-              </>
+          <div>
+            <label className="block font-bold font-blowbrush tracking-widest text-sky-950 mb-1">
+              REPITE CONTRASEÑA
+            </label>
+            <PasswordInput
+              {...register('confirmPassword')}
+              placeholder="********"
+              className={`w-full p-2 rounded bg-[#1f2937] text-white placeholder-gray-400 border border-white/20 focus:outline-none focus:ring-2 focus:ring-sky-500 ${
+                errors.confirmPassword ? 'border-red-500' : ''
+              }`}
+            />
+            {errors.confirmPassword && (
+              <p className="text-red-400 text-sm mt-1">{errors.confirmPassword.message}</p>
+            )}
+          </div>
+          <AnimatePresence mode="wait">
+            {permitirEditarRol && roles.length > 0 && (
+              <motion.div
+                key="rol"
+                className="md:col-span-2"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.3 }}>
+                {usuario.rol !== 'instructor' ? (
+                  <>
+                    <label className="block font-bold font-blowbrush tracking-widest text-sky-950 mb-1">
+                      ROL
+                    </label>
+                    <select
+                      {...register('rol')}
+                      defaultValue={usuario.rol}
+                      className="w-full p-2 rounded bg-[#1f2937] text-white border border-white/20 focus:outline-none focus:ring-2 focus:ring-sky-500">
+                      {roles.map((r) => (
+                        <option key={r} value={r}>
+                          {r}
+                        </option>
+                      ))}
+                    </select>
+                  </>
+                ) : (
+                  <>
+                    <label className="block font-bold font-blowbrush tracking-widest text-sky-950 mb-1">
+                      FOTO DE PERFIL
+                    </label>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      {...register('foto')}
+                      className="w-full p-2 rounded bg-[#1f2937] text-white file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-sky-700 file:text-white hover:file:bg-sky-600 focus:outline-none focus:ring-2 focus:ring-sky-500"
+                    />
+                    {errors.foto && typeof errors.foto.message === 'string' && (
+                      <p className="text-red-400 text-sm mt-1">{errors.foto.message}</p>
+                    )}
+                  </>
+                )}
+              </motion.div>
             )}
           </AnimatePresence>
           <div className="md:col-span-2 gap-6 flex flex-row justify-between items-center mt-2">
