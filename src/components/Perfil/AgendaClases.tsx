@@ -11,7 +11,7 @@ type ClaseAgendada = {
   total: number;
   clase?: {
     titulo: string;
-    nivelNombre?: string; // <-- Aquí el nuevo campo que añadimos manualmente en el backend
+     nivel: string;
     montaña?: {
       nombre: string;
     };
@@ -58,7 +58,7 @@ export default function AgendaClases({ usuario, csrfToken }: Props) {
   const clasesFiltradas = clases.filter((clase) => {
     const tituloClase = clase.clase?.titulo ?? '';
     const nombreAlumno = clase.usuario?.nombre ?? '';
-    const nivel = clase.clase?.nivelNombre ?? '';
+    const nivel = clase.clase?.nivel ?? '';
     return (
       tituloClase.toLowerCase().includes(busqueda.toLowerCase()) ||
       nombreAlumno.toLowerCase().includes(busqueda.toLowerCase()) ||
@@ -128,7 +128,7 @@ export default function AgendaClases({ usuario, csrfToken }: Props) {
                     })}
                   </td>
                   <td className="py-2 px-4 text-white/90">{clase.clase?.montaña?.nombre ?? '-'}</td>
-                  <td className="py-2 px-4 text-white/90">{clase.clase?.nivelNombre ?? '-'}</td>
+                  <td className="py-2 px-4 text-white/90">{clase.clase?.nivel ?? '-'}</td>
                 </tr>
               ))}
             </tbody>

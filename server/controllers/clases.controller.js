@@ -138,30 +138,7 @@ export const clases_agendadas = async (req, res) => {
       },
     });
 
-    // Obtener nombre del nivel desde el ID que se guarda como string en clase.nivel
-    const reservasConNivelNombre = await Promise.all(
-      reservas.map(async (reserva) => {
-        let nivelNombre = '-';
-        const nivelId = parseInt(reserva.clase?.nivel || '', 10);
-        if (!isNaN(nivelId)) {
-          const nivel = await prisma.nivel.findUnique({
-            where: { id: nivelId },
-            select: { nombre: true },
-          });
-          nivelNombre = nivel?.nombre || '-';
-        }
-
-        return {
-          ...reserva,
-          clase: {
-            ...reserva.clase,
-            nivelNombre,
-          },
-        };
-      })
-    );
-
-    return res.json({ total: reservas.length, datos: reservasConNivelNombre });
+   return res.json({ total: reservas.length, datos: reservas });
   } catch (error) {
     console.error('❌ Error al obtener clases agendadas:', error);
     return res.status(500).json({ error: 'Error al obtener clases agendadas' });
