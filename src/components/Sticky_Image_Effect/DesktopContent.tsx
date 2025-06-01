@@ -93,7 +93,7 @@ export default function DesktopContent({
           href="/equipos?categoria=snowboard"
           aria-label='Redirección a la página de equipos de snowboard'
           style={{ opacity: rombosOpacity }}>
-          <TiltImageBlock text="SNOWBOARD" alt="Hombre trasportando una tabla de snowboard" image="/img/index/snowboard.webp" />
+          <TiltImageBlock text="SNOW" alt="Hombre trasportando una tabla de snowboard" image="/img/index/snowboard.webp" />
         </motion.a>
 
         <motion.a
