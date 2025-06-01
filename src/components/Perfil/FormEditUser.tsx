@@ -132,7 +132,7 @@ export default function FormularioEdicionUsuario({
         const formToSend = new FormData();
         formToSend.append('id', usuario.id.toString());
         Object.entries(camposActualizados).forEach(([key, val]) => {
-            formToSend.append(key, String(val)); 
+          formToSend.append(key, String(val));
         });
         formToSend.append('foto', formData.foto[0]);
         body = formToSend;
@@ -262,27 +262,30 @@ export default function FormularioEdicionUsuario({
               <>
                 <motion.div
                   key="rol"
+                  className="md:col-span-2"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
                   transition={{ duration: 0.3 }}>
-                  <div className="md:col-span-2">
-                    <label className="block font-bold font-blowbrush tracking-widest text-sky-950 mb-1">
-                      ROL
-                    </label>
-                    <select
-                      {...register('rol')}
-                      defaultValue={usuario.rol}
-                      className="w-full p-2 rounded bg-[#1f2937] text-white border border-white/20 focus:outline-none focus:ring-2 focus:ring-sky-500">
-                      {roles.map((r) => (
-                        <option key={r} value={r}>
-                          {r}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
+                  {usuario.rol !== 'instructor' && (
+                    <div>
+                      <label className="block font-bold font-blowbrush tracking-widest text-sky-950 mb-1">
+                        ROL
+                      </label>
+                      <select
+                        {...register('rol')}
+                        defaultValue={usuario.rol}
+                        className="w-full p-2 rounded bg-[#1f2937] text-white border border-white/20 focus:outline-none focus:ring-2 focus:ring-sky-500">
+                        {roles.map((r) => (
+                          <option key={r} value={r}>
+                            {r}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  )}
                   {usuario.rol === 'instructor' && (
-                    <div className="md:col-span-2">
+                    <div>
                       <label className="block font-bold font-blowbrush tracking-widest text-sky-950 mb-1">
                         FOTO DE PERFIL
                       </label>
@@ -307,37 +310,40 @@ export default function FormularioEdicionUsuario({
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
                   transition={{ duration: 0.3 }}>
-                  <div>
-                    <label className="block font-bold font-blowbrush tracking-widest text-sky-950 mb-1">
-                      NUEVA CONTRASEÑA
-                    </label>
-                    <PasswordInput
-                      {...register('password')}
-                      placeholder="********"
-                      className={`w-full p-2 rounded bg-[#1f2937] text-white placeholder-gray-400 border border-white/20 focus:outline-none focus:ring-2 focus:ring-sky-500 ${
-                        errors.password ? 'border-red-500' : ''
-                      }`}
-                    />
-                    {errors.password && (
-                      <p className="text-red-400 text-sm mt-1">{errors.password.message}</p>
-                    )}
-                  </div>
+                  <label className="block font-bold font-blowbrush tracking-widest text-sky-950 mb-1">
+                    NUEVA CONTRASEÑA
+                  </label>
+                  <PasswordInput
+                    {...register('password')}
+                    placeholder="********"
+                    className={`w-full p-2 rounded bg-[#1f2937] text-white placeholder-gray-400 border border-white/20 focus:outline-none focus:ring-2 focus:ring-sky-500 ${
+                      errors.password ? 'border-red-500' : ''
+                    }`}
+                  />
+                  {errors.password && (
+                    <p className="text-red-400 text-sm mt-1">{errors.password.message}</p>
+                  )}
+                </motion.div>
 
-                  <div>
-                    <label className="block font-bold font-blowbrush tracking-widest text-sky-950 mb-1">
-                      REPITE CONTRASEÑA
-                    </label>
-                    <PasswordInput
-                      {...register('confirmPassword')}
-                      placeholder="********"
-                      className={`w-full p-2 rounded bg-[#1f2937] text-white placeholder-gray-400 border border-white/20 focus:outline-none focus:ring-2 focus:ring-sky-500 ${
-                        errors.confirmPassword ? 'border-red-500' : ''
-                      }`}
-                    />
-                    {errors.confirmPassword && (
-                      <p className="text-red-400 text-sm mt-1">{errors.confirmPassword.message}</p>
-                    )}
-                  </div>
+                <motion.div
+                  key="password"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ duration: 0.3 }}>
+                  <label className="block font-bold font-blowbrush tracking-widest text-sky-950 mb-1">
+                    REPITE CONTRASEÑA
+                  </label>
+                  <PasswordInput
+                    {...register('confirmPassword')}
+                    placeholder="********"
+                    className={`w-full p-2 rounded bg-[#1f2937] text-white placeholder-gray-400 border border-white/20 focus:outline-none focus:ring-2 focus:ring-sky-500 ${
+                      errors.confirmPassword ? 'border-red-500' : ''
+                    }`}
+                  />
+                  {errors.confirmPassword && (
+                    <p className="text-red-400 text-sm mt-1">{errors.confirmPassword.message}</p>
+                  )}
                 </motion.div>
               </>
             )}
