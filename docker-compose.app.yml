@@ -18,6 +18,8 @@ services:
       - "4000:4000"
     env_file:
       - .env
+    volumes:
+      - bigfoot_uploads:/app/public/uploads
     networks:
       - postgres_net
 
