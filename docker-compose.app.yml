@@ -19,7 +19,7 @@ services:
     env_file:
       - .env
     volumes:
-      - bigfoot_uploads:/app/public/uploads
+      - ./uploads:/app/public/uploads
     networks:
       - postgres_net
 
