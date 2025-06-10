@@ -20,7 +20,7 @@ export async function generarPDF(reservas, usuario) {
   const stream = fs.createWriteStream(outputPath);
   doc.pipe(stream);
 
-  // === Marca de agua ===
+  //  Marca de agua 
   const logoPath = path.resolve('./public/img/logo_1.svg');
   let logoBuffer;
   if (fs.existsSync(logoPath)) {
@@ -45,7 +45,7 @@ export async function generarPDF(reservas, usuario) {
   dibujarMarcaAgua();
   doc.on('pageAdded', dibujarMarcaAgua);
 
-  // === Cabecera ===
+  //  Cabecera 
   doc.font('Helvetica-Bold').fontSize(30).fillColor('#0c4a6e').text('Bigfoot', { align: 'center' });
   doc.moveDown(0.5);
   doc
@@ -72,11 +72,11 @@ export async function generarPDF(reservas, usuario) {
     const fechaFin = new Date(r.fechaFin).toLocaleString('es-ES');
     const total = r.total.toFixed(2);
 
-    // === Dibuja el título primero
-    doc.fontSize(16).fillColor('#0c4a6e').text(titulo);
+    //  Dibuja el título primero
+    doc.fontSize(16).fillColor('#0c4a6e').text(titulo, doc.page.margins.left, doc.y);
     doc.moveDown(0.3);
 
-    // === Layout horizontal imagen + info
+    //  Layout horizontal imagen + info
     const imagenPath = r.clase
       ? path.resolve('./public/img/clases/imgProducto.webp')
       : r.productos?.[0]?.producto?.imagenUrl
@@ -110,12 +110,12 @@ export async function generarPDF(reservas, usuario) {
     const tallas = r.productos?.[0]?.producto?.tallas;
     const medidas = r.productos?.[0]?.producto?.medidas;
 
-    if (tallas) {
+    if (tallas.length > 0) {
       doc.text(`Talla(s): ${tallas}`, textX, yActual);
       yActual = doc.y + 5;
     }
 
-    if (medidas) {
+    if (medidas.length > 0) {
       doc.text(`Medidas: ${medidas}`, textX, yActual);
     }
 
