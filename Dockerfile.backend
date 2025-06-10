@@ -1,7 +1,20 @@
 FROM node:20-alpine
 
 # Instalar herramientas
-RUN apk add --no-cache libc6-compat openssl
+RUN apk add --no-cache \
+    libc6-compat \
+    openssl \
+    libc6-compat \
+    vips-dev \
+    fftw-dev \
+    build-base \
+    cairo-dev \
+    jpeg-dev \
+    pango-dev \
+    giflib-dev \
+    libpng-dev \
+    libwebp-dev \
+    tiff-dev
 
 WORKDIR /app
 

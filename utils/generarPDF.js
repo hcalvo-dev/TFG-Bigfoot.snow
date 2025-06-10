@@ -2,6 +2,8 @@ import PDFDocument from 'pdfkit';
 import fs from 'fs';
 import path from 'path';
 import fsSync from 'fs';
+import fsPromises from 'fs/promises';
+import sharp from 'sharp';
 
 export async function generarPDF(reservas, usuario) {
   try {
@@ -20,10 +22,13 @@ export async function generarPDF(reservas, usuario) {
     const stream = fs.createWriteStream(outputPath);
     doc.pipe(stream);
 
-    // Marca de agua con el logo
-    const logoPath = path.resolve('./public/img/logo_1.svg'); 
-    if (fsSync.existsSync(logoPath)) {
-      doc.image(logoPath, 150, 300, { width: 300, opacity: 0.1 });
+    // Logo como marca de agua
+    const logoOriginal = path.resolve('./public/img/logo_1.svg');
+    const logoConvertido = path.join(tempDir, 'logo_1.png');
+
+    if (fsSync.existsSync(logoOriginal)) {
+      await sharp(logoOriginal).png().toFile(logoConvertido);
+      doc.image(logoConvertido, 150, 300, { width: 300, opacity: 0.1 });
     }
 
     doc.fontSize(20).fillColor('#0c4a6e').text('Bigfoot.snow - Resumen de Reservas', { align: 'center' });
@@ -32,7 +37,7 @@ export async function generarPDF(reservas, usuario) {
     doc.text(`Fecha: ${new Date().toLocaleDateString('es-ES')}`);
     doc.moveDown();
 
-    for (const r of reservas) {
+    for (const [i, r] of reservas.entries()) {
       const titulo = r.clase ? `Clase: ${r.clase.titulo}` :
         r.productos?.[0] ? `Producto: ${r.productos[0].producto.nombre}` : 'Reserva';
 
@@ -40,18 +45,25 @@ export async function generarPDF(reservas, usuario) {
       const fechaFin = new Date(r.fechaFin).toLocaleString('es-ES');
       const total = r.total.toFixed(2);
 
-      // Imagen
+      // Imagen original
       const imagen = r.clase
         ? path.resolve('./public/img/clases/imgProducto.webp')
         : r.productos?.[0]?.producto?.imagen
         ? path.resolve(`./public/img/productos/${r.productos[0].producto.imagen}`)
         : null;
 
+      // Si la imagen existe, convertirla a PNG temporal
       if (imagen && fsSync.existsSync(imagen)) {
-        doc.image(imagen, { fit: [100, 100] }).moveDown(0.5);
+        const imagenTemp = path.join(tempDir, `imagen_${i}.png`);
+        try {
+          await sharp(imagen).resize(100, 100, { fit: 'inside' }).png().toFile(imagenTemp);
+          doc.image(imagenTemp, { fit: [100, 100] }).moveDown(0.5);
+        } catch (err) {
+          console.warn(`⚠️ No se pudo procesar imagen ${imagen}:`, err.message);
+        }
       }
 
-      // Texto
+      // Detalles de reserva
       doc.fontSize(14).fillColor('#0c4a6e').text(titulo);
       doc.fontSize(10).fillColor('black').text(`${fechaInicio} - ${fechaFin}`);
       doc.text(`Precio: ${total} €`);
