@@ -55,7 +55,7 @@ export async function generarPDF(reservas, usuario) {
     .text('~~ Resumen de Reservas ~~', { align: 'center' });
   doc.moveDown();
   doc
-    .fontSize(12)
+    .fontSize(14)
     .fillColor('black')
     .text(`Cliente: ${usuario?.nombre ?? 'Usuario'}`);
   doc.text(`Fecha: ${new Date().toLocaleDateString('es-ES')}`);
@@ -73,6 +73,12 @@ export async function generarPDF(reservas, usuario) {
     const total = r.total.toFixed(2);
 
     // === Imagen + Texto en línea horizontal ===
+    const imagenPath = r.clase
+      ? path.resolve('./public/img/clases/imgProducto.webp')
+      : r.productos?.[0]?.producto?.imagen
+      ? path.resolve(`./public/${r.productos[0].producto.imagenUrl}`)
+      : null;
+
     const imageSize = 100;
     const gap = 20;
     const startY = doc.y;
