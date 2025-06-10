@@ -72,14 +72,17 @@ export async function generarPDF(reservas, usuario) {
     const fechaFin = new Date(r.fechaFin).toLocaleString('es-ES');
     const total = r.total.toFixed(2);
 
-    // === Imagen + Texto en línea horizontal ===
+    // === Dibuja el título primero
+    doc.fontSize(16).fillColor('#0c4a6e').text(titulo);
+    doc.moveDown(0.3);
+
+    // === Layout horizontal imagen + info
     const imagenPath = r.clase
       ? path.resolve('./public/img/clases/imgProducto.webp')
       : r.productos?.[0]?.producto?.imagenUrl
       ? path.resolve(`./public/${r.productos[0].producto.imagenUrl}`)
       : null;
 
-      console.log("Ruta de la imagen", imagenPath);
     const imageSize = 100;
     const gap = 20;
     const startY = doc.y;
@@ -87,7 +90,6 @@ export async function generarPDF(reservas, usuario) {
     const textX = imageX + imageSize + gap;
     let imageHeightUsed = 0;
 
-    doc.fontSize(16).fillColor('#0c4a6e').text(titulo);
     if (imagenPath && fs.existsSync(imagenPath)) {
       try {
         const buffer = await sharp(imagenPath).resize(imageSize, imageSize).png().toBuffer();
@@ -98,22 +100,26 @@ export async function generarPDF(reservas, usuario) {
       }
     }
 
-    // === Texto alineado junto a la imagen ===
     let yActual = startY;
     doc.fontSize(12).fillColor('black').text(`${fechaInicio} - ${fechaFin}`, textX, yActual);
     yActual = doc.y + 5;
 
     doc.text(`Precio: ${total} €`, textX, yActual);
-    if (r.talla?.length) {
+    yActual = doc.y + 5;
+
+    const tallas = r.productos?.[0]?.producto?.tallas;
+    const medidas = r.productos?.[0]?.producto?.medidas;
+
+    if (tallas) {
+      doc.text(`Talla(s): ${tallas}`, textX, yActual);
       yActual = doc.y + 5;
-      doc.text(`Talla(s): ${r.talla.join(', ')}`, textX, yActual);
-    }
-    if (r.medidas?.length) {
-      yActual = doc.y + 5;
-      doc.text(`Medidas: ${r.medidas.join(', ')}`, textX, yActual);
     }
 
-    // Avanzar la posición vertical para la siguiente reserva (mínimo altura de imagen)
+    if (medidas) {
+      doc.text(`Medidas: ${medidas}`, textX, yActual);
+    }
+
+    // Avanzar a la siguiente ficha
     doc.y = Math.max(startY + imageHeightUsed, doc.y) + 20;
   }
 
