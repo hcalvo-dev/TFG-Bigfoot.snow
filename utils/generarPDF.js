@@ -20,7 +20,7 @@ export async function generarPDF(reservas, usuario) {
   const stream = fs.createWriteStream(outputPath);
   doc.pipe(stream);
 
-  //  Marca de agua 
+  //  Marca de agua
   const logoPath = path.resolve('./public/img/logo_1.svg');
   let logoBuffer;
   if (fs.existsSync(logoPath)) {
@@ -45,7 +45,7 @@ export async function generarPDF(reservas, usuario) {
   dibujarMarcaAgua();
   doc.on('pageAdded', dibujarMarcaAgua);
 
-  //  Cabecera 
+  //  Cabecera
   doc.font('Helvetica-Bold').fontSize(30).fillColor('#0c4a6e').text('Bigfoot', { align: 'center' });
   doc.moveDown(0.5);
   doc
@@ -110,13 +110,20 @@ export async function generarPDF(reservas, usuario) {
     const tallas = r.productos?.[0]?.producto?.tallas;
     const medidas = r.productos?.[0]?.producto?.medidas;
 
-    if (tallas.length > 0) {
-      doc.text(`Talla(s): ${tallas}`, textX, yActual);
-      yActual = doc.y + 5;
+    if (Array.isArray(tallas)) {
+      const tallasValidas = tallas.filter((t) => t != null && t !== '');
+      if (tallasValidas.length > 0) {
+        doc.text(`Talla(s): ${tallasValidas.join(', ')}`, textX, yActual);
+        yActual = doc.y + 5;
+      }
     }
 
-    if (medidas.length > 0) {
-      doc.text(`Medidas: ${medidas}`, textX, yActual);
+    if (Array.isArray(medidas)) {
+      const medidasValidas = medidas.filter((m) => m != null && m !== '');
+      if (medidasValidas.length > 0) {
+        doc.text(`Medidas: ${medidasValidas.join(', ')}`, textX, yActual);
+        yActual = doc.y + 5;
+      }
     }
 
     // Avanzar a la siguiente ficha
