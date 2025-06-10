@@ -75,10 +75,11 @@ export async function generarPDF(reservas, usuario) {
     // === Imagen + Texto en línea horizontal ===
     const imagenPath = r.clase
       ? path.resolve('./public/img/clases/imgProducto.webp')
-      : r.productos?.[0]?.producto?.imagen
+      : r.productos?.[0]?.producto?.imagenUrl
       ? path.resolve(`./public/${r.productos[0].producto.imagenUrl}`)
       : null;
 
+      console.log("Ruta de la imagen", imagenPath);
     const imageSize = 100;
     const gap = 20;
     const startY = doc.y;
@@ -86,6 +87,7 @@ export async function generarPDF(reservas, usuario) {
     const textX = imageX + imageSize + gap;
     let imageHeightUsed = 0;
 
+    doc.fontSize(16).fillColor('#0c4a6e').text(titulo);
     if (imagenPath && fs.existsSync(imagenPath)) {
       try {
         const buffer = await sharp(imagenPath).resize(imageSize, imageSize).png().toBuffer();
@@ -98,19 +100,16 @@ export async function generarPDF(reservas, usuario) {
 
     // === Texto alineado junto a la imagen ===
     let yActual = startY;
-    doc.fontSize(16).fillColor('#0c4a6e').text(titulo, textX, yActual);
-    yActual = doc.y;
-
     doc.fontSize(12).fillColor('black').text(`${fechaInicio} - ${fechaFin}`, textX, yActual);
-    yActual = doc.y;
+    yActual = doc.y + 5;
 
     doc.text(`Precio: ${total} €`, textX, yActual);
     if (r.talla?.length) {
-      yActual = doc.y;
+      yActual = doc.y + 5;
       doc.text(`Talla(s): ${r.talla.join(', ')}`, textX, yActual);
     }
     if (r.medidas?.length) {
-      yActual = doc.y;
+      yActual = doc.y + 5;
       doc.text(`Medidas: ${r.medidas.join(', ')}`, textX, yActual);
     }
 
