@@ -46,15 +46,31 @@ export async function generarPDF(reservas, usuario) {
   doc.on('pageAdded', dibujarMarcaAgua);
 
   // === Cabecera ===
-  doc.fontSize(20).fillColor('#0c4a6e').text('Bigfoot.snow - Resumen de Reservas', { align: 'center' });
+  doc
+    .font('Helvetica-Bold') 
+    .fontSize(30)
+    .fillColor('#0c4a6e')
+    .text('Bigfoot', { align: 'center' });
   doc.moveDown();
-  doc.fontSize(12).fillColor('black').text(`Cliente: ${usuario?.nombre ?? 'Usuario'}`);
+  doc
+    .font('Helvetica-Bold') 
+    .fontSize(20)
+    .fillColor('#0c4a6e')
+    .text('~~ Resumen de Reservas ~~', { align: 'center' });
+  doc.moveDown();
+  doc
+    .fontSize(16)
+    .fillColor('black')
+    .text(`Cliente: ${usuario?.nombre ?? 'Usuario'}`);
   doc.text(`Fecha: ${new Date().toLocaleDateString('es-ES')}`);
   doc.moveDown();
 
   for (const r of reservas) {
-    const titulo = r.clase ? `Clase: ${r.clase.titulo}` :
-      r.productos?.[0] ? `Producto: ${r.productos[0].producto.nombre}` : 'Reserva';
+    const titulo = r.clase
+      ? `Clase: ${r.clase.titulo}`
+      : r.productos?.[0]
+      ? `Producto: ${r.productos[0].producto.nombre}`
+      : 'Reserva';
 
     const fechaInicio = new Date(r.fechaInicio).toLocaleString('es-ES');
     const fechaFin = new Date(r.fechaFin).toLocaleString('es-ES');
@@ -64,7 +80,7 @@ export async function generarPDF(reservas, usuario) {
     const imagenPath = r.clase
       ? path.resolve('./public/img/clases/imgProducto.webp')
       : r.productos?.[0]?.producto?.imagen
-      ? path.resolve(`./public/uploads/productos/${r.productos[0].producto.imagen}`)
+      ? path.resolve(`${r.productos[0].producto.imagenUrl}`)
       : null;
 
     if (imagenPath && fs.existsSync(imagenPath)) {
@@ -78,16 +94,28 @@ export async function generarPDF(reservas, usuario) {
 
     // === Texto ===
     doc.moveDown(0.5);
-    doc.fontSize(14).fillColor('#0c4a6e').text(titulo);
-    doc.fontSize(10).fillColor('black').text(`${fechaInicio} - ${fechaFin}`);
+    doc.fontSize(16).fillColor('#0c4a6e').text(titulo);
+    doc.fontSize(12).fillColor('black').text(`${fechaInicio} - ${fechaFin}`);
     doc.text(`Precio: ${total} €`);
     if (r.talla?.length) doc.text(`Talla(s): ${r.talla.join(', ')}`);
     if (r.medidas?.length) doc.text(`Medidas: ${r.medidas.join(', ')}`);
     doc.moveDown(1);
   }
 
+  doc.moveDown(0.5);
+  doc
+    .strokeColor('#0c4a6e')
+    .lineWidth(1)
+    .moveTo(doc.page.margins.left, doc.y) // desde el margen izquierdo
+    .lineTo(doc.page.width - doc.page.margins.right, doc.y) // hasta el margen derecho
+    .stroke();
+  doc.moveDown(1);
+
   const totalFinal = reservas.reduce((acc, r) => acc + r.total, 0);
-  doc.fontSize(14).fillColor('#0c4a6e').text(`Total: ${totalFinal.toFixed(2)} €`, { align: 'right' });
+  doc
+    .fontSize(14)
+    .fillColor('#0c4a6e')
+    .text(`Total: ${totalFinal.toFixed(2)} €`, { align: 'right' });
 
   doc.end();
 
