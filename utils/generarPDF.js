@@ -100,7 +100,7 @@ export async function generarPDF(reservas, usuario,total) {
       }
     }
 
-    let yActual = startY;
+    let yActual = startY + 10;
     doc.fontSize(12).fillColor('black').text(`${fechaInicio} - ${fechaFin}`, textX, yActual);
     yActual = doc.y + 5;
 
@@ -138,12 +138,11 @@ export async function generarPDF(reservas, usuario,total) {
     .lineTo(doc.page.width - doc.page.margins.right, doc.y) // hasta el margen derecho
     .stroke();
   doc.moveDown(1);
-
   
   doc
     .fontSize(14)
     .fillColor('#0c4a6e')
-    .text(`Total: ${total} €`, { align: 'right' });
+    .text(`Total: ${total.toFixed(2)} €`, { align: 'right' });
 
   doc.end();
 
