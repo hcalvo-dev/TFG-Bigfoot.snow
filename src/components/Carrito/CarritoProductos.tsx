@@ -195,6 +195,9 @@ export default function CarritoProductos({ session }: Props) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'CSRF-Token': csrfToken },
         credentials: 'include',
+        body: JSON.stringify({
+            total,
+          }),
       });
 
       const data = await res.json();

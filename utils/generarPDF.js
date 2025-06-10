@@ -4,7 +4,7 @@ import fsPromises from 'fs/promises';
 import path from 'path';
 import sharp from 'sharp';
 
-export async function generarPDF(reservas, usuario) {
+export async function generarPDF(reservas, usuario,total) {
   console.log('[📄] Generando PDF con PDFKit...');
 
   const fechaActual = new Date().toISOString().split('T')[0];
@@ -70,7 +70,7 @@ export async function generarPDF(reservas, usuario) {
 
     const fechaInicio = new Date(r.fechaInicio).toLocaleString('es-ES');
     const fechaFin = new Date(r.fechaFin).toLocaleString('es-ES');
-    const total = r.total.toFixed(2);
+    const total_indvidual = r.total.toFixed(2);
 
     //  Dibuja el título primero
     doc.fontSize(16).fillColor('#0c4a6e').text(titulo, doc.page.margins.left, doc.y);
@@ -104,7 +104,7 @@ export async function generarPDF(reservas, usuario) {
     doc.fontSize(12).fillColor('black').text(`${fechaInicio} - ${fechaFin}`, textX, yActual);
     yActual = doc.y + 5;
 
-    doc.text(`Precio: ${total} €`, textX, yActual);
+    doc.text(`Precio: ${total_indvidual} €`, textX, yActual);
     yActual = doc.y + 5;
 
     const tallas = r.productos?.[0]?.producto?.tallas;
@@ -139,11 +139,11 @@ export async function generarPDF(reservas, usuario) {
     .stroke();
   doc.moveDown(1);
 
-  const totalFinal = reservas.reduce((acc, r) => acc + r.total, 0);
+  
   doc
     .fontSize(14)
     .fillColor('#0c4a6e')
-    .text(`Total: ${totalFinal.toFixed(2)} €`, { align: 'right' });
+    .text(`Total: ${total} €`, { align: 'right' });
 
   doc.end();
 

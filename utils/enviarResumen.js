@@ -2,10 +2,10 @@ import { generarPDF } from './generarPDF.js';
 import { transporter } from './email.js';
 import fs from 'fs/promises';
 
-export async function enviarResumenPorEmailConReservas(reservas, usuario) {
+export async function enviarResumenPorEmailConReservas(reservas, usuario, total) {
   try {
     console.log('[📨] Generando PDF para usuario:', usuario?.email);
-    const pdfPath = await generarPDF(reservas, usuario);
+    const pdfPath = await generarPDF(reservas, usuario,total);
 
     console.log('[📬] Enviando correo...');
     await transporter.sendMail({
