@@ -1,7 +1,7 @@
 import prisma from '../../src/lib/prisma';
 import { JWT_SECRET, NODE_ENV } from '../config';
 import jwt from 'jsonwebtoken';
-import { generarPDF } from '../../utils/generarPDF';
+import { enviarResumenPorEmailConReservas } from '../../utils/enviarResumen';
 
 export const reservarClase = async (req, res) => {
   try {
