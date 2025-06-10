@@ -46,20 +46,16 @@ export async function generarPDF(reservas, usuario) {
   doc.on('pageAdded', dibujarMarcaAgua);
 
   // === Cabecera ===
+  doc.font('Helvetica-Bold').fontSize(30).fillColor('#0c4a6e').text('Bigfoot', { align: 'center' });
+  doc.moveDown(0.5);
   doc
-    .font('Helvetica-Bold') 
-    .fontSize(30)
-    .fillColor('#0c4a6e')
-    .text('Bigfoot', { align: 'center' });
-  doc.moveDown();
-  doc
-    .font('Helvetica-Bold') 
+    .font('Helvetica-Bold')
     .fontSize(20)
     .fillColor('#0c4a6e')
     .text('~~ Resumen de Reservas ~~', { align: 'center' });
   doc.moveDown();
   doc
-    .fontSize(16)
+    .fontSize(12)
     .fillColor('black')
     .text(`Cliente: ${usuario?.nombre ?? 'Usuario'}`);
   doc.text(`Fecha: ${new Date().toLocaleDateString('es-ES')}`);
@@ -76,30 +72,44 @@ export async function generarPDF(reservas, usuario) {
     const fechaFin = new Date(r.fechaFin).toLocaleString('es-ES');
     const total = r.total.toFixed(2);
 
-    // === Imagen ===
-    const imagenPath = r.clase
-      ? path.resolve('./public/img/clases/imgProducto.webp')
-      : r.productos?.[0]?.producto?.imagen
-      ? path.resolve(`${r.productos[0].producto.imagenUrl}`)
-      : null;
+    // === Imagen + Texto en línea horizontal ===
+    const imageSize = 100;
+    const gap = 20;
+    const startY = doc.y;
+    const imageX = doc.page.margins.left;
+    const textX = imageX + imageSize + gap;
+    let imageHeightUsed = 0;
 
     if (imagenPath && fs.existsSync(imagenPath)) {
       try {
-        const buffer = await sharp(imagenPath).resize(120, 120).png().toBuffer();
-        doc.image(buffer, { fit: [100, 100] });
+        const buffer = await sharp(imagenPath).resize(imageSize, imageSize).png().toBuffer();
+        doc.image(buffer, imageX, startY, { width: imageSize });
+        imageHeightUsed = imageSize;
       } catch (err) {
         console.warn('⚠️ Error al procesar imagen', imagenPath);
       }
     }
 
-    // === Texto ===
-    doc.moveDown(0.5);
-    doc.fontSize(16).fillColor('#0c4a6e').text(titulo);
-    doc.fontSize(12).fillColor('black').text(`${fechaInicio} - ${fechaFin}`);
-    doc.text(`Precio: ${total} €`);
-    if (r.talla?.length) doc.text(`Talla(s): ${r.talla.join(', ')}`);
-    if (r.medidas?.length) doc.text(`Medidas: ${r.medidas.join(', ')}`);
-    doc.moveDown(1);
+    // === Texto alineado junto a la imagen ===
+    let yActual = startY;
+    doc.fontSize(16).fillColor('#0c4a6e').text(titulo, textX, yActual);
+    yActual = doc.y;
+
+    doc.fontSize(12).fillColor('black').text(`${fechaInicio} - ${fechaFin}`, textX, yActual);
+    yActual = doc.y;
+
+    doc.text(`Precio: ${total} €`, textX, yActual);
+    if (r.talla?.length) {
+      yActual = doc.y;
+      doc.text(`Talla(s): ${r.talla.join(', ')}`, textX, yActual);
+    }
+    if (r.medidas?.length) {
+      yActual = doc.y;
+      doc.text(`Medidas: ${r.medidas.join(', ')}`, textX, yActual);
+    }
+
+    // Avanzar la posición vertical para la siguiente reserva (mínimo altura de imagen)
+    doc.y = Math.max(startY + imageHeightUsed, doc.y) + 20;
   }
 
   doc.moveDown(0.5);
