@@ -3,40 +3,45 @@ import fs from 'fs/promises';
 import path from 'path';
 
 export async function generarPDF(reservas, usuario) {
-  const htmlPath = path.resolve('./pdf/resumen.html');
-  const cssPath = path.resolve('./pdf/styles.css');
-  let html = await fs.readFile(htmlPath, 'utf-8');
-  const css = await fs.readFile(cssPath, 'utf-8');
+  try {
+    console.log('[📝] Generando HTML del PDF...');
+    const htmlPath = path.resolve('./pdf/resumen.html');
+    const cssPath = path.resolve('./pdf/styles.css');
 
-  const listaItems = reservas.map((r) => {
-    let nombre = 'Reserva';
-    if (r.clase) {
-      nombre = `Clase: ${r.clase.titulo}`;
-    } else if (r.productos?.length > 0) {
-      nombre = `Producto: ${r.productos[0].producto.nombre}`;
-    }
+    const htmlBase = await fs.readFile(htmlPath, 'utf-8');
+    const css = await fs.readFile(cssPath, 'utf-8');
 
-    return `<li>${nombre} (${r.fechaInicio.toLocaleString('es-ES')} - ${r.fechaFin.toLocaleString('es-ES')}) - ${r.total}€</li>`;
-  }).join('');
+    const listaItems = reservas.map((r) => {
+      let nombre = 'Reserva';
+      if (r.clase) nombre = `Clase: ${r.clase.titulo}`;
+      else if (r.productos?.length > 0) nombre = `Producto: ${r.productos[0].producto.nombre}`;
 
-  const total = reservas.reduce((acc, r) => acc + r.total, 0);
+      return `<li>${nombre} (${r.fechaInicio.toLocaleString('es-ES')} - ${r.fechaFin.toLocaleString('es-ES')}) - ${r.total}€</li>`;
+    }).join('');
 
-  html = html
-    .replace('{{cliente}}', usuario?.nombre ?? 'Usuario')
-    .replace('{{fecha}}', new Date().toLocaleDateString())
-    .replace('{{items}}', listaItems)
-    .replace('{{total}}', total);
+    const total = reservas.reduce((acc, r) => acc + r.total, 0);
 
-  html = html.replace('</head>', `<style>${css}</style></head>`);
+    let html = htmlBase
+      .replace('{{cliente}}', usuario?.nombre ?? 'Usuario')
+      .replace('{{fecha}}', new Date().toLocaleDateString())
+      .replace('{{items}}', listaItems)
+      .replace('{{total}}', total);
 
-  const browser = await puppeteer.launch();
-  const page = await browser.newPage();
+    html = html.replace('</head>', `<style>${css}</style></head>`);
 
-  await page.setContent(html, { waitUntil: 'networkidle0' });
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
 
-  const outputPath = `./temp/resumen-${reservas[0]?.id ?? 'reserva'}.pdf`;
-  await page.pdf({ path: outputPath, format: 'A4', printBackground: true });
+    console.log('[📄] Generando PDF con Puppeteer...');
+    await page.setContent(html, { waitUntil: 'networkidle0' });
 
-  await browser.close();
-  return outputPath;
+    const outputPath = `./temp/resumen-${reservas[0]?.id ?? 'reserva'}.pdf`;
+    await page.pdf({ path: outputPath, format: 'A4', printBackground: true });
+
+    await browser.close();
+    return outputPath;
+  } catch (error) {
+    console.error('❌ Error al generar el PDF:', error);
+    throw error;
+  }
 }
