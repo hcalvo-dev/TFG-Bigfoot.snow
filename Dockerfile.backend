@@ -1,30 +1,46 @@
 FROM node:20-alpine
 
-# Instalar herramientas
-RUN apk add --no-cache libc6-compat openssl
+# Instalar Chromium y dependencias necesarias para Puppeteer
+RUN apk add --no-cache \
+  chromium \
+  nss \
+  freetype \
+  harfbuzz \
+  ca-certificates \
+  ttf-freefont \
+  nodejs \
+  yarn \
+  udev \
+  bash \
+  libc6-compat \
+  openssl
+
+# Establecer variables necesarias para Puppeteer
+ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
 
 WORKDIR /app
 
-# Instalar dependencias
+# Instalar dependencias del proyecto
 COPY package.json pnpm-lock.yaml ./
 RUN npm install -g pnpm && pnpm install
 
 # Copiar código fuente
 COPY . .
+
+# Eliminar ficheros que no quieres
 RUN rm -rf public/uploads/productos/*.ts
 
-# Prisma: generar cliente
+# Prisma generate
 RUN npx prisma generate
 
-# Build Astro + compilar TS
+# Build del frontend y compilación de TS
 RUN pnpm build && pnpm tsc
 
-# Copiar script de entrada y hacerlo ejecutable
+# Script de entrada
 COPY entrypoint.sh /app/entrypoint.sh
 RUN chmod +x /app/entrypoint.sh
 
 ENV NODE_ENV=production
 EXPOSE 4000
 
-# Ejecutar script de entrada
 ENTRYPOINT ["/app/entrypoint.sh"]
