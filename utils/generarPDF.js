@@ -1,58 +1,49 @@
-import puppeteer from 'puppeteer';
-import fs from 'fs/promises';
+import PDFDocument from 'pdfkit';
+import fs from 'fs';
 import path from 'path';
+import fsPromises from 'fs/promises';
 import fsSync from 'fs';
 
 export async function generarPDF(reservas, usuario) {
   try {
-    console.log('[📝] Generando HTML del PDF...');
-    const htmlPath = path.resolve('./pdf/resumen.html');
-    const cssPath = path.resolve('./pdf/styles.css');
-
-    const htmlBase = await fs.readFile(htmlPath, 'utf-8');
-    const css = await fs.readFile(cssPath, 'utf-8');
-
-    const listaItems = reservas
-      .map((r) => {
-        let nombre = 'Reserva';
-        if (r.clase) nombre = `Clase: ${r.clase.titulo}`;
-        else if (r.productos?.length > 0) nombre = `Producto: ${r.productos[0].producto.nombre}`;
-
-        return `<li>${nombre} (${r.fechaInicio.toLocaleString(
-          'es-ES'
-        )} - ${r.fechaFin.toLocaleString('es-ES')}) - ${r.total}€</li>`;
-      })
-      .join('');
-
-    const total = reservas.reduce((acc, r) => acc + r.total, 0);
-
-    let html = htmlBase
-      .replace('{{cliente}}', usuario?.nombre ?? 'Usuario')
-      .replace('{{fecha}}', new Date().toLocaleDateString())
-      .replace('{{items}}', listaItems)
-      .replace('{{total}}', total);
-
-    html = html.replace('</head>', `<style>${css}</style></head>`);
-
-    const browser = await puppeteer.launch({
-      headless: true,
-      args: ['--no-sandbox', '--disable-setuid-sandbox'],
-    });
-    const page = await browser.newPage();
-
-    console.log('[📄] Generando PDF con Puppeteer...');
-    await page.setContent(html, { waitUntil: 'networkidle0' });
+    console.log('[📄] Generando PDF con PDFKit...');
 
     const fechaActual = new Date().toISOString().split('T')[0]; // yyyy-mm-dd
     const nombreUsuario = (usuario?.nombre ?? 'usuario').toLowerCase().replace(/\s+/g, '-');
-    const outputPath = `./temp/resumen-${nombreUsuario}-${fechaActual}.pdf`;
     const tempDir = path.resolve('./temp');
+    const outputPath = path.join(tempDir, `resumen-${nombreUsuario}-${fechaActual}.pdf`);
+
     if (!fsSync.existsSync(tempDir)) {
       fsSync.mkdirSync(tempDir, { recursive: true });
     }
-    await page.pdf({ path: outputPath, format: 'A4', printBackground: true });
 
-    await browser.close();
+    const doc = new PDFDocument();
+    const stream = fs.createWriteStream(outputPath);
+    doc.pipe(stream);
+
+    doc.fontSize(18).text(`Resumen de Reservas`, { align: 'center' });
+    doc.moveDown();
+    doc.fontSize(12).text(`Cliente: ${usuario?.nombre ?? 'Usuario'}`);
+    doc.text(`Fecha: ${new Date().toLocaleDateString()}`);
+    doc.moveDown();
+
+    reservas.forEach((r) => {
+      const nombre = r.clase ? `Clase: ${r.clase.titulo}` :
+        r.productos?.[0] ? `Producto: ${r.productos[0].producto.nombre}` : 'Reserva';
+      doc.text(`${nombre} (${new Date(r.fechaInicio).toLocaleString('es-ES')} - ${new Date(r.fechaFin).toLocaleString('es-ES')}) - ${r.total}€`);
+    });
+
+    const total = reservas.reduce((acc, r) => acc + r.total, 0);
+    doc.moveDown().fontSize(14).text(`Total: ${total}€`);
+
+    doc.end();
+
+    // Esperar a que el stream termine antes de continuar
+    await new Promise((resolve, reject) => {
+      stream.on('finish', resolve);
+      stream.on('error', reject);
+    });
+
     return outputPath;
   } catch (error) {
     console.error('❌ Error al generar el PDF:', error);
