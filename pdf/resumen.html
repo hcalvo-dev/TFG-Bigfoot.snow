@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Resumen de compra</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>Resumen de tu compra en Bigfoot.snow</h1>
+    <p class="cliente">Cliente: {{cliente}}</p>
+    <p>Fecha de compra: {{fecha}}</p>
+
+    <h2>Detalles:</h2>
+    <ul>
+      {{items}}
+    </ul>
+
+    <p class="total">Total pagado: {{total}}€</p>
+    <p class="gracias">¡Gracias por confiar en Bigfoot.snow!</p>
+  </div>
+</body>
+</html>

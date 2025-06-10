@@ -1,6 +1,7 @@
 import prisma from '../../src/lib/prisma';
 import { JWT_SECRET, NODE_ENV } from '../config';
 import jwt from 'jsonwebtoken';
+import { generarPDF } from '../../utils/generarPDF';
 
 export const reservarClase = async (req, res) => {
   try {
@@ -429,6 +430,8 @@ export async function realizarPagoCarrito(req, res) {
         },
       });
     }
+
+    await enviarResumenPorEmailConReservas(reservas, req.user);
 
     res.clearCookie('token_carrito_producto');
     res.clearCookie('token_carrito_clase');
