@@ -389,6 +389,7 @@ export async function realizarPagoCarrito(req, res) {
   try {
     const usuarioId = req.user?.id;
     const metodoPago = 'tarjeta';
+    const { total } = req.body;
 
     let token =
       req.cookies.token_carrito_producto ||
@@ -431,7 +432,7 @@ export async function realizarPagoCarrito(req, res) {
       });
     }
 
-    await enviarResumenPorEmailConReservas(reservas, req.user);
+    await enviarResumenPorEmailConReservas(reservas, req.user, total);
 
     res.clearCookie('token_carrito_producto');
     res.clearCookie('token_carrito_clase');
