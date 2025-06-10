@@ -1,6 +1,7 @@
 import puppeteer from 'puppeteer';
 import fs from 'fs/promises';
 import path from 'path';
+import fsSync from 'fs';
 
 export async function generarPDF(reservas, usuario) {
   try {
@@ -45,6 +46,10 @@ export async function generarPDF(reservas, usuario) {
     const fechaActual = new Date().toISOString().split('T')[0]; // yyyy-mm-dd
     const nombreUsuario = (usuario?.nombre ?? 'usuario').toLowerCase().replace(/\s+/g, '-');
     const outputPath = `./temp/resumen-${nombreUsuario}-${fechaActual}.pdf`;
+    const tempDir = path.resolve('./temp');
+    if (!fsSync.existsSync(tempDir)) {
+      fsSync.mkdirSync(tempDir, { recursive: true });
+    }
     await page.pdf({ path: outputPath, format: 'A4', printBackground: true });
 
     await browser.close();
