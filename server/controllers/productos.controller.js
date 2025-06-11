@@ -37,17 +37,8 @@ export const getAllProductos = async (req, res) => {
 
 export const createProductos = async (req, res) => {
   try {
-
-    const {
-      nombre,
-      descripcion,
-      precioDia,
-      stockTotal,
-      categoriaId,
-      tiendaId,
-      tallas,
-      medidas,
-    } = req.body;
+    const { nombre, descripcion, precioDia, stockTotal, categoriaId, tiendaId, tallas, medidas } =
+      req.body;
 
     const imagen = req.file;
 
@@ -65,7 +56,7 @@ export const createProductos = async (req, res) => {
         imagenUrl: `/uploads/productos/${imagen.filename}`,
         tallas: JSON.parse(tallas),
         medidas: JSON.parse(medidas),
-        ubicacion: "almacen1",
+        ubicacion: 'almacen1',
         categorias: {
           connect: { id: Number(categoriaId) },
         },
@@ -84,7 +75,6 @@ export const createProductos = async (req, res) => {
 
 export const editProductos = async (req, res) => {
   try {
-
     const {
       id,
       nombre,
@@ -120,14 +110,12 @@ export const editProductos = async (req, res) => {
       },
     };
 
-
     const producto = await prisma.producto.update({
       where: { id: Number(id) },
       data: dataUpdate,
     });
 
     res.status(200).json({ message: 'Producto actualizado', producto });
-
   } catch (error) {
     console.error('❌ Error editando producto:', error);
     res.status(500).json({ error: 'Error al editar producto' });
@@ -177,7 +165,7 @@ export const activarProductos = async (req, res) => {
 export const productosDisponibles = async (req, res) => {
   const { fechaInicio, fechaFin } = req.body;
 
-  if (!fechaInicio || !fechaFin ) {
+  if (!fechaInicio || !fechaFin) {
     return res.status(400).json({ error: 'Faltan parámetros' });
   }
 
@@ -191,7 +179,6 @@ export const productosDisponibles = async (req, res) => {
   const dias = eachDayOfInterval({ start: inicio, end: fin });
 
   try {
-
     const productos = await prisma.producto.findMany({
       where: {
         estado: 'activo',
@@ -248,17 +235,17 @@ export const getProductosReservados = async (req, res) => {
     const user = req.user;
     const productos = await prisma.productoReserva.findMany({
       where: {
-        reserva: { usuarioId: user.id }
+        reserva: { usuarioId: user.id },
       },
       include: {
         producto: {
           include: {
             tienda: true,
-            categorias: true
-          }
+            categorias: true,
+          },
         },
-        reserva: true
-      }
+        reserva: true,
+      },
     });
 
     res.json({ productos });
@@ -266,7 +253,6 @@ export const getProductosReservados = async (req, res) => {
     res.status(500).json({ error: 'Error al obtener productos reservados' });
   }
 };
-
 
 export const cancelarReservaProductos = async (req, res) => {
   try {
@@ -276,7 +262,11 @@ export const cancelarReservaProductos = async (req, res) => {
     const reserva = await prisma.reserva.findUnique({
       where: { id: Number(reservaId) },
       include: {
-        productos: true,
+        productos: {
+          include: {
+            producto: true,
+          },
+        },
       },
     });
 
@@ -284,7 +274,6 @@ export const cancelarReservaProductos = async (req, res) => {
       console.warn('⚠️ Reserva no encontrada con ID:', reservaId);
       return res.status(404).json({ success: false, error: 'Reserva no encontrada' });
     }
-
 
     if (reserva.productos.length > 0) {
       const deletedProductos = await prisma.productoReserva.deleteMany({
@@ -294,12 +283,14 @@ export const cancelarReservaProductos = async (req, res) => {
       });
     }
 
-     const ahora = new Date();
+    const ahora = new Date();
     const diferenciaHoras =
       (new Date(reserva.fechaInicio).getTime() - ahora.getTime()) / (1000 * 60 * 60);
 
     if (diferenciaHoras < 24) {
-      return res.status(400).json({ error: 'Quedan menos de 24 horas para la recogida del producto' });
+      return res
+        .status(400)
+        .json({ error: 'Quedan menos de 24 horas para la recogida del producto' });
     }
 
     await prisma.reserva.delete({
@@ -311,7 +302,7 @@ export const cancelarReservaProductos = async (req, res) => {
     reservas.push(reserva);
 
     const resumenReserva = false;
-    
+
     await enviarResumenPorEmailConReservas(reservas, req.user, reserva.total, resumenReserva);
 
     return res.status(200).json({ success: true });

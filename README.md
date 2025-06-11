@@ -77,8 +77,8 @@ Todos los comandos necesarios para arrancar el proyecto, desde la términal:
 - [x] Añadir Dockerfile para app Astro
 - [x] Ampliar `docker-compose.yml` para incluir Astro
 - [x] Preparar entorno de producción
-- [ ] Configurar VPS con Ubuntu + Docker
-- [ ] Desplegar aplicación completa en VPS
+- [x] Configurar VPS con Ubuntu + Docker
+- [x] Desplegar aplicación completa en VPS
 
 ---
 
@@ -88,6 +88,7 @@ Todos los comandos necesarios para arrancar el proyecto, desde la términal:
 - [X] Sistema de reservas con control de fechas y disponibilidad
 - [X] Añadir sistema de autenticación de usuarios (login/registro)
 - [X] Panel de administración para gestionar instructores, productos y reservas
+- [X] Envio de correos electronico de confirmación de compra o cancelación de una reserva.
 
 ---
 
