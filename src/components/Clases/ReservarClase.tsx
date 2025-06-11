@@ -350,7 +350,7 @@ export default function ReservarClase({ session }: Props) {
 
     if (exito) {
       setSuccessPagar(true);
-      toast.success('Enviando ticket de compra al correo');
+      toast.success('ENVIANDO TICKET DE COMPRA AL CORREO');
       setTimeout(() => {
         setSuccessPagar(false);
         setPantallaCongelada(false);
