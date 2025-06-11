@@ -299,12 +299,12 @@ export const cancelarReservaProductos = async (req, res) => {
         id: reserva.id,
       },
     });
-    
+
     reservas.push(reserva);
 
     const resumenReserva = false;
     
-    await enviarResumenPorEmailConReservas(reservas, req.user, precio, resumenReserva);
+    await enviarResumenPorEmailConReservas(reservas, req.user, reserva.total, resumenReserva);
 
     return res.status(200).json({ success: true });
   } catch (error) {
