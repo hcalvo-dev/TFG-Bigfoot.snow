@@ -38,6 +38,7 @@ export default function ClasesActivasTable({ csrfToken, onUpdateEstadisticas }: 
   const [clases, setClases] = useState<ClaseActiva[]>([]);
   const [busqueda, setBusqueda] = useState('');
   const [paginaActual, setPaginaActual] = useState(1);
+  const [cancelandoId, setCancelandoId] = useState<number | null>(null);
   const filasPorPagina = 4;
 
   const fetchClases = async () => {
@@ -70,7 +71,7 @@ export default function ClasesActivasTable({ csrfToken, onUpdateEstadisticas }: 
       confirmButtonText: 'Sí, cancelar',
     });
     if (!confirm.isConfirmed) return;
-
+    setCancelandoId(id);
     try {
       const res = await fetch(PUBLIC_API_URL + '/api/clases/cancelar-reserva', {
         method: 'DELETE',
@@ -90,6 +91,8 @@ export default function ClasesActivasTable({ csrfToken, onUpdateEstadisticas }: 
     } catch (err) {
       const error = err as Error;
       Swal.fire('Cancelación no permitida', error.message, 'error');
+    } finally {
+      setCancelandoId(null);
     }
   };
 
@@ -182,6 +185,7 @@ export default function ClasesActivasTable({ csrfToken, onUpdateEstadisticas }: 
                       {new Date(clase.fechaFin) >= new Date() && (
                         <button
                           onClick={() => handleCancelar(clase.id)}
+                          disabled={cancelandoId !== null}
                           className="bg-red-600 hover:bg-red-700 px-3 py-1 rounded font-medium text-white shadow shadow-black/40">
                           Cancelar
                         </button>

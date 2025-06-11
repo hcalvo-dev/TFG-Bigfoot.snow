@@ -294,6 +294,14 @@ export const cancelarReservaProductos = async (req, res) => {
       });
     }
 
+     const ahora = new Date();
+    const diferenciaHoras =
+      (new Date(reserva.fechaInicio).getTime() - ahora.getTime()) / (1000 * 60 * 60);
+
+    if (diferenciaHoras < 24) {
+      return res.status(400).json({ error: 'Quedan menos de 24 horas para la recogida del producto' });
+    }
+
     await prisma.reserva.delete({
       where: {
         id: reserva.id,

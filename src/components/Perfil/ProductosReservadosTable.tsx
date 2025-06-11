@@ -35,6 +35,7 @@ export default function ProductosReservadosTable({ csrfToken, onUpdateEstadistic
   const [productos, setProductos] = useState<ProductoReserva[]>([]);
   const [busqueda, setBusqueda] = useState('');
   const [paginaActual, setPaginaActual] = useState(1);
+  const [cancelandoId, setCancelandoId] = useState<number | null>(null);
   const filasPorPagina = 4;
 
   const fetchProductos = async () => {
@@ -78,6 +79,7 @@ export default function ProductosReservadosTable({ csrfToken, onUpdateEstadistic
       confirmButtonText: 'Sí, cancelar',
     });
     if (!confirm.isConfirmed) return;
+    setCancelandoId(reservaId);
 
     try {
       const res = await fetch(PUBLIC_API_URL + '/api/productos/cancelar-reserva', {
@@ -98,6 +100,8 @@ export default function ProductosReservadosTable({ csrfToken, onUpdateEstadistic
     } catch (err) {
       const error = err as Error;
       Swal.fire('Cancelación no permitida', error.message, 'error');
+    } finally {
+      setCancelandoId(null);
     }
   };
 
@@ -181,6 +185,7 @@ export default function ProductosReservadosTable({ csrfToken, onUpdateEstadistic
                         {new Date(r.reserva.fechaFin) >= new Date() && (
                           <button
                             onClick={() => handleCancelar(r.reserva.id)}
+                            disabled={cancelandoId !== null}
                             className="bg-red-600 hover:bg-red-700 px-3 py-1 rounded font-medium text-white shadow shadow-black/40">
                             Cancelar
                           </button>
