@@ -16,6 +16,7 @@ export default function NotificacionGlobal() {
           letterSpacing: '0.1em',
           overflow: 'hidden', 
           position: 'relative',
+          minWidth: '300px',
         },
         success: {
           iconTheme: {
