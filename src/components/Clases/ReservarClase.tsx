@@ -229,7 +229,7 @@ export default function ReservarClase({ session }: Props) {
 
   const procesarPagoYReservar = async () => {
     try {
-      const res = await fetch(PUBLIC_API_URL + '/api/reserva/clase', {
+      const promesa = fetch(PUBLIC_API_URL + '/api/reserva/clase', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'CSRF-Token': csrfToken },
         credentials: 'include',
@@ -242,42 +242,40 @@ export default function ReservarClase({ session }: Props) {
           nivelId: nivelSeleccionado,
           precio: precioTotal,
         }),
+      }).then(async (res) => {
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Error al reservar clase.');
+        return data;
       });
 
-      const data = await res.json();
+      const data = await toast.promise(promesa, {
+        loading: 'Procesando pago y generando ticket...',
+        success: 'Ticket enviado al correo',
+        error: (err) => `❌ ${err.message}`,
+      });
 
-      if (!res.ok) {
-        setMensajeModal(`❌ ${data.error || 'Error al reservar clase.'}`);
-        return false;
-      }
+      setMensaje(data.message);
+      setHorasSeleccionadas([]);
 
-      if (data?.horasReservadas?.length > 0) {
-        setMensaje(data.message);
-        setHorasSeleccionadas([]);
+      await fetch(PUBLIC_API_URL + '/api/instructor/horarios', {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+          'CSRF-Token': csrfToken,
+        },
+        body: JSON.stringify({
+          montanaId,
+          especialidad,
+          fechaSeleccionada,
+          instructorId: instructorSeleccionado?.id,
+        }),
+      })
+        .then((res) => res.json())
+        .then(setHorasDisponibles)
+        .catch((err) => console.error('Error actualizando horarios:', err));
 
-        await fetch(PUBLIC_API_URL + '/api/instructor/horarios', {
-          method: 'POST',
-          credentials: 'include',
-          headers: {
-            'Content-Type': 'application/json',
-            'CSRF-Token': csrfToken,
-          },
-          body: JSON.stringify({
-            montanaId,
-            especialidad,
-            fechaSeleccionada,
-            instructorId: instructorSeleccionado?.id,
-          }),
-        })
-          .then((res) => res.json())
-          .then(setHorasDisponibles)
-          .catch((err) => console.error('Error actualizando horarios:', err));
-
-        return true;
-      } else {
-        setMensajeModal('❌ Las horas seleccionadas ya no están disponibles.');
-        return false;
-      }
+      return true;
     } catch (error) {
       setMensajeModal('❌ Error inesperado al procesar la reserva.');
       return false;
@@ -350,7 +348,6 @@ export default function ReservarClase({ session }: Props) {
 
     if (exito) {
       setSuccessPagar(true);
-      toast.success('ENVIANDO TICKET DE COMPRA AL CORREO');
       setTimeout(() => {
         setSuccessPagar(false);
         setPantallaCongelada(false);
