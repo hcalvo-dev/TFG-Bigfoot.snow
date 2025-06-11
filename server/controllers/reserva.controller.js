@@ -2,13 +2,14 @@ import prisma from '../../src/lib/prisma';
 
 export const ReservaClase = async (req, res) => {
   try {
-    const { instructorId, montanaId, especialidad, fecha, horas, nivelId } = req.body;
+    const { instructorId, montanaId, especialidad, fecha, horas, nivelId, precio } = req.body;
     const usuarioId = req.user?.id;
 
     if (!usuarioId) return res.status(401).json({ error: 'No autenticado' });
 
     const fechaBase = new Date(fecha);
     const horasReservadas = [];
+    const reservas = [];
 
     const instructor = await prisma.instructor.findUnique({
       where: { id: Number(instructorId) },
@@ -108,7 +109,7 @@ export const ReservaClase = async (req, res) => {
           },
         }));
 
-      await prisma.reserva.create({
+      reserva_indvidual = await prisma.reserva.create({
         data: {
           fechaInicio: inicio,
           fechaFin: fin,
@@ -122,12 +123,15 @@ export const ReservaClase = async (req, res) => {
         },
       });
 
+      reservas.push(reserva_indvidual);
       horasReservadas.push(horaStr);
     }
 
     if (horasReservadas.length === 0) {
       return res.status(409).json({ message: 'Ninguna de las horas está disponible' });
     }
+
+    await enviarResumenPorEmailConReservas(reservas, req.user, precio);
 
     return res.status(200).json({ horasReservadas });
   } catch (error) {
