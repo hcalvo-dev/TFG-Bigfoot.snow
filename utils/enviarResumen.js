@@ -5,7 +5,7 @@ import fs from 'fs/promises';
 export async function enviarResumenPorEmailConReservas(reservas, usuario, total, resumenReserva) {
   try {
     console.log('[📨] Generando PDF para usuario:', usuario?.email);
-    const pdfPath="";
+    let pdfPath="";
     if(resumenReserva){
       pdfPath = await generarPDFReserva(reservas, usuario,total);
       
