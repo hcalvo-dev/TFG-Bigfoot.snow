@@ -1,5 +1,7 @@
 import prisma from '../../src/lib/prisma';
 const { parseISO, eachDayOfInterval } = require('date-fns');
+import { enviarResumenPorEmailConReservas } from '../../utils/enviarResumen';
+
 export const getAllProductos = async (req, res) => {
   try {
     const productos = await prisma.producto.findMany({
