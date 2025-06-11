@@ -180,7 +180,8 @@ export default function CarritoProductos({ session }: Props) {
 
     if (exito) {
       await fetchReservas();
-      toast.success('Enviando ticket de compra al correo');
+      toast.success('ENVIANDO TICKET DE COMPRA AL CORREO');
+
       setPantallaCongelada(true); // congelar pantalla al iniciar
       setTimeout(() => {
         setSuccessPago(false); // quitar animación

@@ -5,11 +5,12 @@ export default function NotificacionGlobal() {
     <Toaster
       position="top-right"
       toastOptions={{
+        duration: 5000, 
         style: {
-          background: '#0f172a', // dark bg
-          color: '#facc15', // amarillo neón Bigfoot
+          background: '#0f172a',
+          color: 'white',
           borderRadius: '12px',
-          padding: '12px 16px',
+          padding: '14px 20px',
           fontFamily: 'BlowBrush, sans-serif',
         },
         success: {
