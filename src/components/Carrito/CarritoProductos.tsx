@@ -10,6 +10,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import Swal from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
 import { PUBLIC_API_URL } from '../config';
+import NotificacionGlobal from '../ui/NotificacionGlobal';
+import { toast } from 'react-hot-toast';
 
 const descuentoSchema = z.object({
   codigo: z.string().min(3, 'Mínimo 3 caracteres').max(20),
@@ -178,6 +180,7 @@ export default function CarritoProductos({ session }: Props) {
 
     if (exito) {
       await fetchReservas();
+      toast.success('Enviando ticket de compra al correo');
       setPantallaCongelada(true); // congelar pantalla al iniciar
       setTimeout(() => {
         setSuccessPago(false); // quitar animación
@@ -196,8 +199,8 @@ export default function CarritoProductos({ session }: Props) {
         headers: { 'Content-Type': 'application/json', 'CSRF-Token': csrfToken },
         credentials: 'include',
         body: JSON.stringify({
-            total,
-          }),
+          total,
+        }),
       });
 
       const data = await res.json();
@@ -216,6 +219,7 @@ export default function CarritoProductos({ session }: Props) {
 
   return (
     <>
+      <NotificacionGlobal />
       {pantallaCongelada && <div className="fixed top-0 left-0 w-screen h-screen z-[999] " />}
 
       <div className="flex flex-col-reverse mt-18 xl:flex-row gap-10 p-4 sm:p-6 w-[95%] mx-auto">
@@ -329,7 +333,7 @@ export default function CarritoProductos({ session }: Props) {
             <div className="w-full bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-lg font-semibold">
               <motion.a
                 href="/equipos"
-                aria-label='Redirección a la tienda'
+                aria-label="Redirección a la tienda"
                 className="text-center w-full h-full py-3 flex items-center justify-center">
                 Seguir comprando
               </motion.a>

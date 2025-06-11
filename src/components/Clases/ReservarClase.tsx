@@ -7,6 +7,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import Swal from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
 import { PUBLIC_API_URL } from '../config';
+import NotificacionGlobal from '../ui/NotificacionGlobal';
+import { toast } from 'react-hot-toast';
 
 const paymentSchema = z.object({
   cardNumber: z.string().regex(/^4[0-9]{15}$/, 'Debe ser una tarjeta Visa válida'),
@@ -348,6 +350,7 @@ export default function ReservarClase({ session }: Props) {
 
     if (exito) {
       setSuccessPagar(true);
+      toast.success('Enviando ticket de compra al correo');
       setTimeout(() => {
         setSuccessPagar(false);
         setPantallaCongelada(false);
@@ -360,6 +363,7 @@ export default function ReservarClase({ session }: Props) {
   });
   return (
     <>
+      <NotificacionGlobal />
       {pantallaCongelada && <div className="fixed top-0 left-0 w-screen h-screen z-[999] " />}
       <section className="min-h-[50vh] px-6 py-16 ">
         <div className="max-w-3xl mt-4 mx-auto text-center mb-12">
@@ -376,7 +380,7 @@ export default function ReservarClase({ session }: Props) {
         <div className="flex flex-col md:flex-row items-center justify-center gap-4 mb-10">
           <select
             onChange={(e) => setMontanaId(e.target.value)}
-            aria-label='Elige una estación'
+            aria-label="Elige una estación"
             defaultValue=""
             className="p-3 rounded-xl border-2 border-blue-400 shadow">
             <option value="" disabled>
@@ -391,7 +395,7 @@ export default function ReservarClase({ session }: Props) {
 
           <input
             type="date"
-            aria-label='Selecciona una fecha'
+            aria-label="Selecciona una fecha"
             className="p-3 rounded-xl border-2 border-blue-400 shadow"
             min={(() => {
               const mañana = new Date();
@@ -404,7 +408,7 @@ export default function ReservarClase({ session }: Props) {
           <select
             onChange={(e) => setEspecialidad(e.target.value)}
             defaultValue=""
-            aria-label='Selecciona una especialidad'
+            aria-label="Selecciona una especialidad"
             className="p-3 rounded-xl border-2 border-blue-400 shadow">
             <option value="" disabled>
               Especialidad
@@ -415,7 +419,7 @@ export default function ReservarClase({ session }: Props) {
 
           <select
             value={nivelSeleccionado}
-            aria-label='Selecciona el nivel'
+            aria-label="Selecciona el nivel"
             onChange={(e) => setNivelSeleccionado(e.target.value)}
             className="p-3 rounded-xl border-2 border-blue-400 shadow">
             <option value="" disabled>
@@ -497,7 +501,7 @@ export default function ReservarClase({ session }: Props) {
                     <td className="w-4 p-4">
                       <input
                         type="checkbox"
-                        aria-label='Seleccion de horas'
+                        aria-label="Seleccion de horas"
                         disabled={!hora.disponible}
                         checked={horasSeleccionadas.includes(hora.hora)}
                         onChange={() => toggleHora(hora.hora)}
