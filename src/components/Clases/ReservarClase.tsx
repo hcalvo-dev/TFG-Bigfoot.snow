@@ -238,6 +238,7 @@ export default function ReservarClase({ session }: Props) {
           horas: horasSeleccionadas,
           instructorId: instructorSeleccionado?.id,
           nivelId: nivelSeleccionado,
+          precio: precioTotal,
         }),
       });
 
