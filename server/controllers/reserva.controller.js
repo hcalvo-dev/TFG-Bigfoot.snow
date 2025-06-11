@@ -1,4 +1,5 @@
 import prisma from '../../src/lib/prisma';
+import { enviarResumenPorEmailConReservas } from '../../utils/enviarResumen';
 
 export const ReservaClase = async (req, res) => {
   try {
