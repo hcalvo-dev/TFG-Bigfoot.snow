@@ -292,7 +292,7 @@ export async function generarPDFCancelación(reservas, usuario,total) {
   doc
     .fontSize(14)
     .fillColor('#0c4a6e')
-    .text(`Total: ${total.toFixed(2)} €`, { align: 'right' });
+    .text(`Total devuelto: ${total.toFixed(2)} €`, { align: 'right' });
 
   doc.end();
 
