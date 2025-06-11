@@ -51,3 +51,25 @@
   height: 6px;
   border-bottom: 2px solid #125cfd;
 }
+
+.toast-con-barra::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 4px;
+  width: 100%;
+  background-color: #22c55e;
+  animation: barra-progreso 5s linear forwards;
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px;
+}
+
+@keyframes barra-progreso {
+  from {
+    width: 100%;
+  }
+  to {
+    width: 0%;
+  }
+}
