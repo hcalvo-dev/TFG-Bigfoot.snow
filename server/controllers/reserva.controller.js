@@ -109,7 +109,7 @@ export const ReservaClase = async (req, res) => {
           },
         }));
 
-      reserva_indvidual = await prisma.reserva.create({
+      const reserva_indvidual = await prisma.reserva.create({
         data: {
           fechaInicio: inicio,
           fechaFin: fin,
