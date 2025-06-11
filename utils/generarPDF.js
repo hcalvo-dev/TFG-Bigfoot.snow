@@ -212,6 +212,7 @@ export async function generarPDFCancelación(reservas, usuario,total) {
   doc.moveDown();
 
   for (const r of reservas) {
+    console.log(r);
     const titulo = r.clase
       ? `Clase: ${r.clase.titulo}`
       : r.productos?.[0]
