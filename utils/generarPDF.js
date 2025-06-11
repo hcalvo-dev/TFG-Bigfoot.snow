@@ -81,7 +81,7 @@ export async function generarPDF(reservas, usuario,total) {
       ? path.resolve('./public/img/clases/imgProducto.webp')
       : r.productos?.[0]?.producto?.imagenUrl
       ? path.resolve(`./public/${r.productos[0].producto.imagenUrl}`)
-      : null;
+      : path.resolve('./public/img/clases/imgProducto.webp');
 
     const imageSize = 100;
     const gap = 20;
