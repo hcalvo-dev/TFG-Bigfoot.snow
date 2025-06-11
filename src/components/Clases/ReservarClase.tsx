@@ -249,8 +249,8 @@ export default function ReservarClase({ session }: Props) {
       });
 
       const data = await toast.promise(promesa, {
-        loading: 'Procesando pago y generando ticket...',
-        success: 'Ticket enviado al correo',
+        loading: 'PROCESANDO PAGO Y GENERANDO TICKET...',
+        success: 'TICKET ENVIADO AL CORREO',
         error: (err) => `❌ ${err.message}`,
       });
 
