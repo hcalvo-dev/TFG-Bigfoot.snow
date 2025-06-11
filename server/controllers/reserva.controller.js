@@ -16,7 +16,7 @@ export const ReservaClase = async (req, res) => {
       where: { id: Number(instructorId) },
       select: { userId: true },
     });
-  
+
     if (!instructor) {
       return res.status(404).json({ error: 'Instructor no encontrado' });
     }
@@ -131,8 +131,9 @@ export const ReservaClase = async (req, res) => {
     if (horasReservadas.length === 0) {
       return res.status(409).json({ message: 'Ninguna de las horas está disponible' });
     }
+    const resumenReserva = true;
 
-    await enviarResumenPorEmailConReservas(reservas, req.user, precio);
+    await enviarResumenPorEmailConReservas(reservas, req.user, precio, resumenReserva);
 
     return res.status(200).json({ horasReservadas });
   } catch (error) {
