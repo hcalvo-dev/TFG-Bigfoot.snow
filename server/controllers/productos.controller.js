@@ -291,11 +291,15 @@ export const cancelarReservaProductos = async (req, res) => {
       });
     }
 
-    await prisma.reserva.delete({
+    const reservas = await prisma.reserva.delete({
       where: {
         id: reserva.id,
       },
     });
+
+    const resumenReserva = false;
+    
+    await enviarResumenPorEmailConReservas(reservas, req.user, precio, resumenReserva);
 
     return res.status(200).json({ success: true });
   } catch (error) {

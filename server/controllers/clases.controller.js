@@ -79,7 +79,7 @@ export const deleteReserva = async (req, res) => {
     });
 
     // Eliminar la reserva
-    await prisma.reserva.delete({
+    const reservas = await prisma.reserva.delete({
       where: { id: reserva.id },
     });
 
@@ -93,6 +93,10 @@ export const deleteReserva = async (req, res) => {
         where: { id: reserva.claseId },
       });
     }
+    
+    const resumenReserva = false;
+    
+    await enviarResumenPorEmailConReservas(reservas, req.user, precio, resumenReserva);
 
     return res.json({ ok: true, message: 'Reserva eliminada correctamente' });
   } catch (error) {

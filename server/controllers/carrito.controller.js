@@ -21,7 +21,7 @@ export const reservarClase = async (req, res) => {
 
     if (!token) {
       token = jwt.sign({ tipo: 'reservaClase' }, JWT_SECRET, { expiresIn: '10m' });
-    } 
+    }
 
     const nivel = await prisma.nivel.findUnique({
       where: { id: Number(nivelId) },
@@ -45,13 +45,11 @@ export const reservarClase = async (req, res) => {
     }
 
     for (const horaStr of horas) {
-
       const [h, m] = horaStr.split(':').map(Number);
       const inicio = new Date(fechaBase);
       inicio.setHours(h, m, 0, 0);
       const fin = new Date(inicio);
       fin.setHours(fin.getHours() + 1);
-
 
       const yaOcupada = await prisma.instructorDisponibilidad.findFirst({
         where: {
@@ -77,7 +75,6 @@ export const reservarClase = async (req, res) => {
       });
 
       if (disponibilidad) {
-
         if (disponibilidad.disponible) {
           await prisma.instructorDisponibilidad.update({
             where: { id: disponibilidad.id },
@@ -336,7 +333,6 @@ export async function deleteReserva(req, res) {
       return res.status(404).json({ success: false, error: 'Reserva no encontrada' });
     }
 
-
     // Si es clase y hay instructor asociado, liberar disponibilidad
     if (reserva.clase) {
       const result = await prisma.instructorDisponibilidad.updateMany({
@@ -431,8 +427,8 @@ export async function realizarPagoCarrito(req, res) {
         },
       });
     }
-
-    await enviarResumenPorEmailConReservas(reservas, req.user, total);
+    const resumenReserva = true;
+    await enviarResumenPorEmailConReservas(reservas, req.user, total, resumenReserva);
 
     res.clearCookie('token_carrito_producto');
     res.clearCookie('token_carrito_clase');
