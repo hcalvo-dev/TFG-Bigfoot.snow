@@ -99,7 +99,7 @@ export const deleteReserva = async (req, res) => {
     const resumenReserva = false;
     reservas.push(reservas_eliminadas);
     
-    await enviarResumenPorEmailConReservas(reservas, req.user, precio, resumenReserva);
+    await enviarResumenPorEmailConReservas(reservas, req.user, reservas_eliminadas.total, resumenReserva);
 
     return res.json({ ok: true, message: 'Reserva eliminada correctamente' });
   } catch (error) {
