@@ -93,7 +93,7 @@ export default function ProductosReservadosTable({ csrfToken, onUpdateEstadistic
       if (!res.ok) throw new Error(data.error);
       fetchProductos();
       onUpdateEstadisticas();
-      toast.success('Ticket de cancelación enviado al correo');
+      toast.success('TICKET DE CANCELACIÓN ENVIADO AL CORREO');
       Swal.fire('Cancelado', 'La reserva ha sido cancelada', 'success');
     } catch (err) {
       const error = err as Error;

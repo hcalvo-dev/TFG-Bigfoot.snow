@@ -85,7 +85,7 @@ export default function ClasesActivasTable({ csrfToken, onUpdateEstadisticas }: 
       if (!res.ok) throw new Error(data.error);
       fetchClases();
       onUpdateEstadisticas();
-      toast.success('Ticket de cancelación enviado al correo');
+      toast.success('TICKET DE CANCELACIÓN ENVIADO AL CORREO');
       Swal.fire('Cancelado', 'La reserva ha sido cancelada', 'success');
     } catch (err) {
       const error = err as Error;
