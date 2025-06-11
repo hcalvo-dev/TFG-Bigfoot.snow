@@ -180,8 +180,6 @@ export default function CarritoProductos({ session }: Props) {
 
     if (exito) {
       await fetchReservas();
-      toast.success('ENVIANDO TICKET DE COMPRA AL CORREO');
-
       setPantallaCongelada(true); // congelar pantalla al iniciar
       setTimeout(() => {
         setSuccessPago(false); // quitar animación
@@ -195,21 +193,24 @@ export default function CarritoProductos({ session }: Props) {
 
   const procesarPagoYReservar = async () => {
     try {
-      const res = await fetch(PUBLIC_API_URL + '/api/carrito/realizarPagoCarrito', {
+      const promesa = fetch(PUBLIC_API_URL + '/api/carrito/realizarPagoCarrito', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'CSRF-Token': csrfToken },
         credentials: 'include',
-        body: JSON.stringify({
-          total,
-        }),
+        body: JSON.stringify({ total }),
+      }).then(async (res) => {
+        const data = await res.json();
+        if (!res.ok) {
+          throw new Error(data.error || 'Error al reservar clase.');
+        }
+        return data;
       });
 
-      const data = await res.json();
-
-      if (!res.ok) {
-        setMensajeModal(`❌ ${data.error || 'Error al reservar clase.'}`);
-        return false;
-      }
+      await toast.promise(promesa, {
+        loading: 'Procesando pago y generando ticket...',
+        success: 'Ticket enviado al correo',
+        error: (err) => `❌ ${err.message}`,
+      });
 
       return true;
     } catch (error) {
