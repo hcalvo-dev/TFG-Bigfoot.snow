@@ -46,11 +46,7 @@ export const deleteReserva = async (req, res) => {
     const reserva = await prisma.reserva.findUnique({
       where: { id: Number(id) },
       include: {
-        clase: {
-          include: {
-            reservas: true,
-          },
-        },
+        clase: true, 
       },
     });
 
@@ -95,11 +91,16 @@ export const deleteReserva = async (req, res) => {
         where: { id: reserva.claseId },
       });
     }
-    
+
     const resumenReserva = false;
     reservas.push(reservas_eliminadas);
-    
-    await enviarResumenPorEmailConReservas(reservas, req.user, reservas_eliminadas.total, resumenReserva);
+
+    await enviarResumenPorEmailConReservas(
+      reservas,
+      req.user,
+      reservas_eliminadas.total,
+      resumenReserva
+    );
 
     return res.json({ ok: true, message: 'Reserva eliminada correctamente' });
   } catch (error) {
@@ -145,7 +146,7 @@ export const clases_agendadas = async (req, res) => {
       },
     });
 
-   return res.json({ total: reservas.length, datos: reservas });
+    return res.json({ total: reservas.length, datos: reservas });
   } catch (error) {
     console.error('❌ Error al obtener clases agendadas:', error);
     return res.status(500).json({ error: 'Error al obtener clases agendadas' });

@@ -45,7 +45,12 @@ export default function ProductosReservadosTable({ csrfToken, onUpdateEstadistic
         headers: { 'CSRF-Token': csrfToken },
       });
       const data = await res.json();
-      setProductos(data.productos || []);
+      const ordenados = [...(data.productos || [])].sort(
+        (a, b) =>
+          new Date(a.reserva.fechaInicio).getTime() - new Date(b.reserva.fechaInicio).getTime()
+      );
+
+      setProductos(ordenados);
     } catch (err) {
       console.error('Error al cargar productos reservados', err);
     }
