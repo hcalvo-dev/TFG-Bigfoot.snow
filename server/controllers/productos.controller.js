@@ -271,6 +271,7 @@ export const getProductosReservados = async (req, res) => {
 export const cancelarReservaProductos = async (req, res) => {
   try {
     const { reservaId } = req.body;
+    const reservas = [];
 
     const reserva = await prisma.reserva.findUnique({
       where: { id: Number(reservaId) },
@@ -293,11 +294,13 @@ export const cancelarReservaProductos = async (req, res) => {
       });
     }
 
-    const reservas = await prisma.reserva.delete({
+    await prisma.reserva.delete({
       where: {
         id: reserva.id,
       },
     });
+    
+    reservas.push(reserva);
 
     const resumenReserva = false;
     

@@ -37,6 +37,7 @@ export const deleteReserva = async (req, res) => {
   try {
     const { id } = req.body;
     const usuarioId = req.user?.id;
+    const reservas = [];
 
     if (!usuarioId) {
       return res.status(401).json({ error: 'No autenticado' });
@@ -80,7 +81,7 @@ export const deleteReserva = async (req, res) => {
     });
 
     // Eliminar la reserva
-    const reservas = await prisma.reserva.delete({
+    const reservas_eliminadas = await prisma.reserva.delete({
       where: { id: reserva.id },
     });
 
@@ -96,6 +97,7 @@ export const deleteReserva = async (req, res) => {
     }
     
     const resumenReserva = false;
+    reservas.push(reservas_eliminadas);
     
     await enviarResumenPorEmailConReservas(reservas, req.user, precio, resumenReserva);
 
