@@ -5,7 +5,6 @@ import path from 'path';
 import sharp from 'sharp';
 
 export async function generarPDFReserva(reservas, usuario,total) {
-  console.log('[📄] Generando PDF con PDFKit...');
 
   const fechaActual = new Date().toISOString().split('T')[0];
   const nombreUsuario = (usuario?.nombre ?? 'usuario').toLowerCase().replace(/\s+/g, '-');
@@ -155,7 +154,6 @@ export async function generarPDFReserva(reservas, usuario,total) {
 }
 
 export async function generarPDFCancelación(reservas, usuario,total) {
-  console.log('[📄] Generando PDF con PDFKit...');
 
   const fechaActual = new Date().toISOString().split('T')[0];
   const nombreUsuario = (usuario?.nombre ?? 'usuario').toLowerCase().replace(/\s+/g, '-');
@@ -212,7 +210,6 @@ export async function generarPDFCancelación(reservas, usuario,total) {
   doc.moveDown();
 
   for (const r of reservas) {
-    console.log(r);
     const titulo = r.clase
       ? `Clase: ${r.clase.titulo}`
       : r.productos?.[0]

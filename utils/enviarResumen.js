@@ -4,12 +4,10 @@ import fs from 'fs/promises';
 
 export async function enviarResumenPorEmailConReservas(reservas, usuario, total, resumenReserva) {
   try {
-    console.log('[📨] Generando PDF para usuario:', usuario?.email);
     let pdfPath="";
     if(resumenReserva){
       pdfPath = await generarPDFReserva(reservas, usuario,total);
       
-      console.log('[📬] Enviando correo...');
       
       await transporter.sendMail({
         from: `"Bigfoot.snow" <${process.env.EMAIL_USER}>`,
@@ -27,7 +25,6 @@ export async function enviarResumenPorEmailConReservas(reservas, usuario, total,
     }else{
       pdfPath = await generarPDFCancelación(reservas, usuario,total);
       
-      console.log('[📬] Enviando correo...');
   
       await transporter.sendMail({
         from: `"Bigfoot.snow" <${process.env.EMAIL_USER}>`,
@@ -44,7 +41,6 @@ export async function enviarResumenPorEmailConReservas(reservas, usuario, total,
       });
     }
 
-    console.log('[🧹] Eliminando archivo temporal:', pdfPath);
     await fs.unlink(pdfPath);
   } catch (error) {
     console.error('❌ Error al enviar el resumen por email:', error);
