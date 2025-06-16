@@ -73,6 +73,4 @@ export async function limpiarReservasExpiradas() {
     },
   });
 
-  console.log(`🗑️ Reservas eliminadas: ${result.count}`);
-  console.log('✅ Limpieza finalizada.');
 }
